@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Home, Search, Compass, User } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Navbar() {
-  // State to track if user has scrolled down
   const [scrolled, setScrolled] = useState(false);
-  // State to track active page for demo purposes
   const [activePage, setActivePage] = useState('home');
 
   useEffect(() => {
-    // Handle scroll event to trigger glassmorphism effect
     const handleScroll = () => setScrolled(window.scrollY > 90);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Simulate NavLink behavior for demo
   const NavLink = ({ to, children, className, ...props }) => {
     const isActive = activePage === to;
     return (
@@ -28,98 +26,94 @@ export default function Navbar() {
   };
 
   return (
-    <div className="h-[10vh] border-b-2 border-white/60 bg-gradient-to-br  from-gray-900/50 via-purple-900 to-indigo-900">
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${
-          scrolled 
-            ? 'bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 backdrop-blur-xl shadow-xl border-b border-white/10' 
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6  py-4 flex  items-center justify-between text-white">
-          
-          {/* Left Section - Brand Logo */}
-          <NavLink 
-            to="/" 
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
-          >
-            Animex
-          </NavLink>
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        scrolled
+          ? 'bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 backdrop-blur-md shadow-md'
+          : 'bg-transparent'
+      } border-b border-white/20`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between text-white">
+        {/* Brand Logo */}
+        <NavLink
+          to="/"
+          className="text-xl font-bold bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+        >
+          Animex
+        </NavLink>
 
-          {/* Center Section - Navigation Links */}
-          <div className="flex gap-8 text-sm font-medium">
-            
-            {/* Home Navigation Link */}
-            <NavLink
-              to="home"
-              className={({ isActive }) =>
-                `relative px-4 py-2 rounded-lg transition-all duration-300 ${
-                  isActive 
-                    ? 'text-indigo-300' 
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  Home
-                  {/* Active indicator line for navigation items */}
-                  <span 
-                    className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-400 to-indigo-400 transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0'
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-
-            {/* Search Button (not a navigation link) */}
-            <button
-              className="relative px-4 py-2 rounded-lg text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-indigo-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
-            >
-              Search
-            </button>
-
-            {/* Explore Navigation Link */}
-            <NavLink
-              to="explore"
-              className={({ isActive }) =>
-                `relative px-4 py-2 rounded-lg transition-all duration-300 ${
-                  isActive 
-                    ? 'text-indigo-300' 
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  Explore
-                  {/* Active indicator line for navigation items */}
-                  <span 
-                    className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-400 to-indigo-400 transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0'
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-          </div>
-
-          {/* Right Section - Login Link */}
+        {/* Navigation Links */}
+        <div className="flex gap-6 text-sm font-medium">
           <NavLink
-            to="login"
+            to="home"
             className={({ isActive }) =>
-              `px-6 py-2 rounded-full border transition-all duration-300 ${
-                isActive
-                  ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg shadow-purple-500/30 border-purple-400'
-                  : 'text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-indigo-500/20 hover:border-indigo-400 border-white/30'
+              `relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 ${
+                isActive ? 'text-indigo-300' : 'text-white/80 hover:text-white hover:bg-white/10'
               }`
             }
           >
-            Login
+            {({ isActive }) => (
+              <>
+                <Home size={16} />
+                Home
+                <motion.span
+                  layout
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-400 to-indigo-400"
+                  animate={{ width: isActive ? '100%' : '0%' }}
+                  transition={{ duration: 0.3 }}
+                />
+              </>
+            )}
+          </NavLink>
+
+          <button
+            className="relative px-4 py-2 rounded-md text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-indigo-500/20 transition-all duration-300 flex items-center gap-2"
+          >
+            <Search size={16} />
+            Search
+          </button>
+
+          <NavLink
+            to="explore"
+            className={({ isActive }) =>
+              `relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 ${
+                isActive ? 'text-indigo-300' : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <Compass size={16} />
+                Explore
+                <motion.span
+                  layout
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-400 to-indigo-400"
+                  animate={{ width: isActive ? '100%' : '0%' }}
+                  transition={{ duration: 0.3 }}
+                />
+              </>
+            )}
           </NavLink>
         </div>
-      </nav>
-    </div>
+
+        {/* Login Button with color and User Icon */}
+        <NavLink
+          to="login"
+          className={({ isActive }) =>
+            `px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-2 text-sm ${
+              isActive
+                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md shadow-purple-500/30 border-purple-400'
+                : 'text-white border-white/30 hover:border-indigo-400 hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-indigo-500/20'
+            }`
+          }
+        >
+          <User size={16} />
+          Login
+        </NavLink>
+      </div>
+    </motion.nav>
   );
 }
