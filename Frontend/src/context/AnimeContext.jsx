@@ -23,7 +23,7 @@ const AnimeContext = ({ children }) => {
           FetchTrendingAnime(),
           FetchUpcomingAnime(),
           FetchTopRatedAnime(),
-          FetchSeasonalAnime(2025, 'summer')
+          FetchSeasonalAnime()
         ]);
 
         // Handle trending anime
@@ -87,7 +87,7 @@ const AnimeContext = ({ children }) => {
             FetchTrendingAnime(),
             FetchUpcomingAnime(),
             FetchTopRatedAnime(),
-            FetchSeasonalAnime(2025, 'summer')
+            FetchSeasonalAnime()
           ]);
 
           if (trending.status === 'fulfilled') setTrendingAnime(trending.value || []);

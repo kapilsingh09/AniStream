@@ -19,22 +19,22 @@ const Homepage = () => {
   return (
     <div className='flex-1'>
       <HeroSlider />
-{/*       
+      
       <AnimeSection 
         title="Trending Now" 
         fetchFunction={FetchTrendingAnime}
         className=""
-      /> */}
+      /> 
 
-      {/* <AnimeSection 
+      <AnimeSection 
         title="Top Rated Anime" 
         fetchFunction={FetchTopRatedAnime}
         className=""
-      /> */}
+      />
 
       <AnimeSection 
-        title="Upcoming This year" 
-        fetchFunction={FetchUpcomingAnime}
+        title="Summer anime" 
+        fetchFunction={fetchSummer2024}
         className=""
       />
     </div>
