@@ -56,3 +56,10 @@ export const FetchGenres = async () => {
   const res = await axios.get(`${BASE_URL}/genres/anime`);
   return res.data.data;
 };
+
+
+//recommendation route by id 
+export const FetchRecommendations = async (id) => {
+  const res = await axios.get(`${BASE_URL}/anime/${id}/recommendations`);
+  return res.data.data;
+};

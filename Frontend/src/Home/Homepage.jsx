@@ -33,7 +33,7 @@ const Homepage = () => {
       /> */}
 
       <AnimeSection 
-        title="Upcoming Anime" 
+        title="Upcoming This year" 
         fetchFunction={FetchUpcomingAnime}
         className=""
       />

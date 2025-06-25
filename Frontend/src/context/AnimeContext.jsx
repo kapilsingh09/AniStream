@@ -1,6 +1,6 @@
 // AnimeContext.jsx
 import React, { createContext, useEffect, useState } from 'react';
-import { FetchTrendingAnime, FetchUpcomingAnime, FetchTopRatedAnime } from '../services/JikhanAnimeApi';
+import { FetchTrendingAnime, FetchSeasonalAnime, FetchUpcomingAnime, FetchTopRatedAnime } from '../services/JikhanAnimeApi';
 
 export const DataContext = createContext();
 
@@ -8,19 +8,22 @@ const AnimeContext = ({ children }) => {
   const [trendingAnime, setTrendingAnime] = useState([]);
   const [upcomingAnime, setUpcomingAnime] = useState([]);
   const [topRatedAnime, setTopRatedAnime] = useState([]);
+  const [sesonalAnime, setSesonalAnime] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        const [trending, upcoming, topRated] = await Promise.allSettled([
+        const [trending, upcoming, topRated, seasonal] = await Promise.allSettled([
           FetchTrendingAnime(),
           FetchUpcomingAnime(),
-          FetchTopRatedAnime()
+          FetchTopRatedAnime(),
+          FetchSeasonalAnime(2025, 'summer')
         ]);
 
         // Handle trending anime
@@ -44,6 +47,13 @@ const AnimeContext = ({ children }) => {
           console.error('Failed to fetch top rated anime:', topRated.reason);
         }
 
+        // Handle seasonal anime
+        if (seasonal.status === 'fulfilled') {
+          setSesonalAnime(seasonal.value || []);
+        } else {
+          console.error('Failed to fetch seasonal anime:', seasonal.reason);
+        }
+
         // Set error if all requests failed
         if (trending.status === 'rejected' && upcoming.status === 'rejected' && topRated.status === 'rejected') {
           setError('Failed to fetch anime data');
@@ -63,33 +73,11 @@ const AnimeContext = ({ children }) => {
     trendingAnime,
     upcomingAnime,
     topRatedAnime,
+    sesonalAnime,
     loading,
     error,
     // Utility function to refetch data
-    refetch: () => {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-          
-          const [trending, upcoming, topRated] = await Promise.allSettled([
-            FetchTrendingAnime(),
-            FetchUpcomingAnime(),
-            FetchTopRatedAnime()
-          ]);
 
-          if (trending.status === 'fulfilled') setTrendingAnime(trending.value || []);
-          if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value || []);
-          if (topRated.status === 'fulfilled') setTopRatedAnime(topRated.value || []);
-        } catch (err) {
-          console.error('Error refetching anime data:', err);
-          setError('An unexpected error occurred');
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchData();
-    }
   };
 
   return (
