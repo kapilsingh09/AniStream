@@ -6,11 +6,9 @@ import { BrowserRouter } from 'react-router-dom'
 import AnimeContext from './context/AnimeContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <BrowserRouter>
       <AnimeContext>
         <App />
       </AnimeContext>
     </BrowserRouter>
-  </StrictMode>
 )

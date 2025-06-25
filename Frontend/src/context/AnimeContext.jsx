@@ -1,28 +1,102 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { FetchTrendingAnime } from '../services/JikhanAnimeApi';
-import axios from 'axios';
+// AnimeContext.jsx
+import React, { createContext, useEffect, useState } from 'react';
+import { FetchTrendingAnime, FetchUpcomingAnime, FetchTopRatedAnime } from '../services/JikhanAnimeApi';
 
 export const DataContext = createContext();
 
-const AnimeContext = ({children}) => {
-    const [TrendingAnime, setTrendingAnime] = useState([])
+const AnimeContext = ({ children }) => {
+  const [trendingAnime, setTrendingAnime] = useState([]);
+  const [upcomingAnime, setUpcomingAnime] = useState([]);
+  const [topRatedAnime, setTopRatedAnime] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-      (async()=>{
-        try {
-          setTrendingAnime(await FetchTrendingAnime());
-        } catch (error) {
-          console.error('Error fetching trending anime:', error);
-          setTrendingAnime([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const [trending, upcoming, topRated] = await Promise.allSettled([
+          FetchTrendingAnime(),
+          FetchUpcomingAnime(),
+          FetchTopRatedAnime()
+        ]);
+
+        // Handle trending anime
+        if (trending.status === 'fulfilled') {
+          setTrendingAnime(trending.value || []);
+        } else {
+          console.error('Failed to fetch trending anime:', trending.reason);
         }
-      })()
-    }, [])
-    
-  return (
-    <DataContext.Provider value={{TrendingAnime}}>
-        {children}
-    </DataContext.Provider>
-  )
-}
 
-export default AnimeContext
+        // Handle upcoming anime
+        if (upcoming.status === 'fulfilled') {
+          setUpcomingAnime(upcoming.value || []);
+        } else {
+          console.error('Failed to fetch upcoming anime:', upcoming.reason);
+        }
+
+        // Handle top rated anime
+        if (topRated.status === 'fulfilled') {
+          setTopRatedAnime(topRated.value || []);
+        } else {
+          console.error('Failed to fetch top rated anime:', topRated.reason);
+        }
+
+        // Set error if all requests failed
+        if (trending.status === 'rejected' && upcoming.status === 'rejected' && topRated.status === 'rejected') {
+          setError('Failed to fetch anime data');
+        }
+      } catch (err) {
+        console.error('Error fetching anime data:', err);
+        setError('An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const contextValue = {
+    trendingAnime,
+    upcomingAnime,
+    topRatedAnime,
+    loading,
+    error,
+    // Utility function to refetch data
+    refetch: () => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const [trending, upcoming, topRated] = await Promise.allSettled([
+            FetchTrendingAnime(),
+            FetchUpcomingAnime(),
+            FetchTopRatedAnime()
+          ]);
+
+          if (trending.status === 'fulfilled') setTrendingAnime(trending.value || []);
+          if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value || []);
+          if (topRated.status === 'fulfilled') setTopRatedAnime(topRated.value || []);
+        } catch (err) {
+          console.error('Error refetching anime data:', err);
+          setError('An unexpected error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
+  };
+
+  return (
+    <DataContext.Provider value={contextValue}>
+      {children}
+    </DataContext.Provider>
+  );
+};
+
+export default AnimeContext;
