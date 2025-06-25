@@ -1,20 +1,20 @@
-import React from 'react'
+// Footer.jsx
+import React from 'react';
 
 const Footer = () => {
   return (
-    <div>
-         <footer className="bg-gray-800 text-gray-300 py-6">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
-          </div>
-        </div>
-      </footer>
-    </div>
-  )
-}
+    <footer className="bg-gray-900 text-gray-300 py-6 ">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+        <p className="text-sm">&copy; {new Date().getFullYear()} MySite. All rights reserved.</p>
 
-export default Footer
+        <div className="flex gap-4 mt-4 md:mt-0">
+          <a href="/privacy" className="hover:text-white text-sm">Privacy</a>
+          <a href="/terms" className="hover:text-white text-sm">Terms</a>
+          <a href="/contact" className="hover:text-white text-sm">Contact</a>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

@@ -42,8 +42,8 @@ export default function Navbar() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 backdrop-blur-xl shadow-xl border-b border-white/10'
-          : 'bg-transparent'
+          ? 'bg-transparent border-b-2'
+          : 'bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 backdrop-blur-xl shadow-xl border-b border-white/10'
       } border-b border-white/20`}
     >
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between text-white">
