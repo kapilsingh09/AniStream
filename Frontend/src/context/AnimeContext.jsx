@@ -77,7 +77,31 @@ const AnimeContext = ({ children }) => {
     loading,
     error,
     // Utility function to refetch data
+    refetch: () => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const [trending, upcoming, topRated] = await Promise.allSettled([
+            FetchTrendingAnime(),
+            FetchUpcomingAnime(),
+            FetchTopRatedAnime(),
+            FetchSeasonalAnime(2025, 'summer')
+          ]);
 
+          if (trending.status === 'fulfilled') setTrendingAnime(trending.value || []);
+          if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value || []);
+          if (topRated.status === 'fulfilled') setTopRatedAnime(topRated.value || []);
+        } catch (err) {
+          console.error('Error refetching anime data:', err);
+          setError('An unexpected error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
   };
 
   return (
