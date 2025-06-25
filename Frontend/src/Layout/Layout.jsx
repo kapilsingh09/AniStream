@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 const Layout = () => {
   return (
-    <div className="bg-zinc-900 text-white min-h-screen pt-16 pb-16">
+    <div className="bg-zinc-900 text-white min-h-screen ">
       {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 w-full z-50">
         <Navbar />
