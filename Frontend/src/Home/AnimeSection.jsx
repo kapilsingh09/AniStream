@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom'; // Removed for demo
 
 const SectionComponent = ({ title = "Trending Anime", fetchFunction, className = "" }) => {
   const [animeData, setAnimeData] = useState([]); 
@@ -9,22 +9,18 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   const [error, setError] = useState(null); 
   const [canScrollLeft, setCanScrollLeft] = useState(false); 
   const [canScrollRight, setCanScrollRight] = useState(false); 
+  
+  // Simplified overlay state
   const [hoveredAnime, setHoveredAnime] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 }); 
-  const [hoverTimeout, setHoverTimeout] = useState(null); 
-  const [autoHideTimeout, setAutoHideTimeout] = useState(null);
-  
-  // 🆕 NEW: State for tracking which cards should be hidden
-  const [hiddenCards, setHiddenCards] = useState(new Set());
   
   const sliderRef = useRef(); 
-  const isHoveringCard = useRef(false); 
-  const isHoveringHoverCard = useRef(false); 
-  
-  // 🆕 NEW: Refs for managing auto-hide timers for each card
-  const cardHideTimers = useRef(new Map());
+  const showOverlayTimer = useRef(null);
+  const hideOverlayTimer = useRef(null);
+  const isMouseOverCard = useRef(false);
+  const isMouseOverOverlay = useRef(false);
 
-  const navigate = useNavigate(); 
+  // const navigate = useNavigate(); // Removed for demo 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,147 +134,79 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     return { x, y };
   };
 
-  // 🆕 NEW: Function to start auto-hide timer for a specific card
-  const startAutoHideTimer = (cardIndex) => {
-    // Clear existing timer if any
-    if (cardHideTimers.current.has(cardIndex)) {
-      clearTimeout(cardHideTimers.current.get(cardIndex));
+  // Clear all timers
+  const clearAllTimers = () => {
+    if (showOverlayTimer.current) {
+      clearTimeout(showOverlayTimer.current);
+      showOverlayTimer.current = null;
     }
-
-    // 🎯 CUSTOMIZATION POINT: Change delay here (currently 2000ms = 2 seconds)
-    const hideDelay = 2000;
-
-    const timer = setTimeout(() => {
-      setHiddenCards(prev => new Set([...prev, cardIndex]));
-      
-      // Auto-unhide after another 2 seconds
-      setTimeout(() => {
-        setHiddenCards(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(cardIndex);
-          return newSet;
-        });
-      }, hideDelay); // 🎯 CUSTOMIZATION POINT: Change auto-unhide delay here
-      
-    }, hideDelay);
-
-    cardHideTimers.current.set(cardIndex, timer);
+    if (hideOverlayTimer.current) {
+      clearTimeout(hideOverlayTimer.current);
+      hideOverlayTimer.current = null;
+    }
   };
 
-  // 🆕 NEW: Function to cancel auto-hide timer for a specific card
-  const cancelAutoHideTimer = (cardIndex) => {
-    if (cardHideTimers.current.has(cardIndex)) {
-      clearTimeout(cardHideTimers.current.get(cardIndex));
-      cardHideTimers.current.delete(cardIndex);
-    }
+  // Show overlay with delay
+  const showOverlay = (anime, rect) => {
+    clearAllTimers();
     
-    // Also make sure the card is visible
-    setHiddenCards(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(cardIndex);
-      return newSet;
-    });
-  };
-
-  const handleMouseEnter = (anime, e) => {
-    isHoveringCard.current = true;
-
-    if (hoverTimeout) clearTimeout(hoverTimeout);
-    if (autoHideTimeout) clearTimeout(autoHideTimeout);
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    
-    const newTimeout = setTimeout(() => {
+    showOverlayTimer.current = setTimeout(() => {
       const position = calculateHoverPosition(rect);
       setHoverPosition(position);
       setHoveredAnime(anime);
-    }, 300);
-
-    setHoverTimeout(newTimeout);
+      
+      // Auto-hide after 2 seconds
+      hideOverlayTimer.current = setTimeout(() => {
+        if (!isMouseOverOverlay.current) {
+          setHoveredAnime(null);
+        }
+      }, 2000);
+    }, 300); // Show after 300ms
   };
 
-  const handleMouseLeave = () => {
-    isHoveringCard.current = false;
-
+  // Hide overlay immediately
+  const hideOverlay = () => {
+    clearAllTimers();
+    
+    // Small delay to allow mouse to move to overlay
     setTimeout(() => {
-      if (!isHoveringHoverCard.current) {
+      if (!isMouseOverCard.current && !isMouseOverOverlay.current) {
         setHoveredAnime(null);
       }
-    }, 200);
+    }, 100);
   };
 
-  const handleHoverCardEnter = () => {
-    isHoveringHoverCard.current = true;
-    
-    if (hoverTimeout) clearTimeout(hoverTimeout);
-    if (autoHideTimeout) clearTimeout(autoHideTimeout);
+  const handleCardMouseEnter = (anime, e) => {
+    isMouseOverCard.current = true;
+    const rect = e.currentTarget.getBoundingClientRect();
+    showOverlay(anime, rect);
   };
 
-  const handleHoverCardLeave = () => {
-    isHoveringHoverCard.current = false;
-
-    setTimeout(() => {
-      if (!isHoveringCard.current) {
-        setHoveredAnime(null);
-      }
-    }, 200);
+  const handleCardMouseLeave = () => {
+    isMouseOverCard.current = false;
+    hideOverlay();
   };
 
-  // 🆕 UPDATED: Enhanced card mouse enter handler with auto-hide logic
-  const handleCardMouseEnter = (anime, e, index) => {
-    handleMouseEnter(anime, e);
-    
-    // 🎯 CUSTOMIZATION POINT: Define which cards should have auto-hide behavior
-    // Currently applies to first card (index 0) and its next sibling (index 1)
-    const shouldAutoHide = index === 0 || index === 1;
-    
-    if (shouldAutoHide) {
-      // Start auto-hide timer for the NEXT card (sibling)
-      const siblingIndex = index === 0 ? 1 : 0; // If first card, hide second; if second card, hide first
-      
-      // 🎯 CUSTOMIZATION POINT: You can change the logic here
-      // Example: Hide all cards after current one
-      // for (let i = index + 1; i < animeData.length && i < index + 3; i++) {
-      //   startAutoHideTimer(i);
-      // }
-      
-      // Current logic: Hide the sibling card
-      if (siblingIndex < animeData.length) {
-        startAutoHideTimer(siblingIndex);
-      }
-    }
+  const handleOverlayMouseEnter = () => {
+    isMouseOverOverlay.current = true;
+    clearAllTimers(); // Cancel auto-hide when hovering overlay
   };
 
-  // 🆕 UPDATED: Enhanced card mouse leave handler
-  const handleCardMouseLeave = (index) => {
-    handleMouseLeave();
-    
-    // Cancel any pending auto-hide timers for nearby cards when mouse leaves
-    const shouldCancelAutoHide = index === 0 || index === 1;
-    
-    if (shouldCancelAutoHide) {
-      const siblingIndex = index === 0 ? 1 : 0;
-      if (siblingIndex < animeData.length) {
-        cancelAutoHideTimer(siblingIndex);
-      }
-    }
+  const handleOverlayMouseLeave = () => {
+    isMouseOverOverlay.current = false;
+    setHoveredAnime(null); // Hide immediately when leaving overlay
   };
 
-  // Clean up all timers on unmount
+  // Clean up timers on unmount
   useEffect(() => {
     return () => {
-      if (hoverTimeout) clearTimeout(hoverTimeout);
-      if (autoHideTimeout) clearTimeout(autoHideTimeout);
-      
-      // Clear all card hide timers
-      cardHideTimers.current.forEach(timer => clearTimeout(timer));
-      cardHideTimers.current.clear();
+      clearAllTimers();
     };
-  }, [hoverTimeout, autoHideTimeout]);
+  }, []);
 
   if (loading) {
     return (
-      <div className={`h-[60vh]  to-indigo-400 py-3 flex items-center justify-center ${className}`}>
+      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
         <div className="flex flex-col items-center space-y-2">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
           <div className="text-white text-lg">Loading {title.toLowerCase()}...</div>
@@ -291,7 +219,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     return (
       <div className={`h-[60vh] bg-zinc-900 py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center">
-          <div className="text-4xl mb-2"></div>
+          <div className="text-4xl mb-2">❌</div>
           <div className="text-lg">{error}</div>
         </div>
       </div>
@@ -326,59 +254,50 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
           className="w-full h-[50vh] flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {animeData.map((anime, index) => {
-            const isHidden = hiddenCards.has(index);
-            
-            return (
-              <motion.div
-                key={anime.mal_id}
-                onClick={() => handleCardClick(anime)}
-                onMouseEnter={(e) => handleCardMouseEnter(anime, e, index)}
-                onMouseLeave={() => handleCardMouseLeave(index)}
-                initial={{ opacity: 1, y: 20 }}
-                animate={{ 
-                  opacity: isHidden ? 0 : 1,
-                  y: 0,
-                  scale: isHidden ? 0.95 : 1
-                }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="min-w-[13vw] max-w-[13vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
-                style={{ pointerEvents: isHidden ? 'none' : 'auto' }}
-              >
-                <div className="relative h-[40vh] w-full">
-                  <img
-                    src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url}
-                    alt={anime.title}
-                    onError={handleImageError}
-                    className="w-full h-full object-cover rounded group-hover:brightness-110 transition-all duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
-                  
-                  {/* 🆕 FIXED: Better fallback for score and rank display */}
-                  {(anime.score || anime.scored_by) && (
-                    <motion.div className="absolute top-2 right-2 bg-red-600 text-xs px-2 py-1 rounded backdrop-blur-sm">
-                      ⭐ {anime.score || anime.scored_by || 'N/A'}
-                    </motion.div>
-                  )}
-                  
-                  {(anime.rank || anime.popularity) && (
-                    <div className="absolute top-2 left-2 bg-purple-600 text-xs px-3 py-1 rounded backdrop-blur-sm">
-                      #{anime.rank || anime.popularity || 'N/A'}
-                    </div>
-                  )}
-                </div>
+          {animeData.map((anime, index) => (
+            <motion.div
+              key={anime.mal_id}
+              onClick={() => handleCardClick(anime)}
+              onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
+              onMouseLeave={handleCardMouseLeave}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="min-w-[13vw] max-w-[13vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
+            >
+              <div className="relative h-[40vh] w-full">
+                <img
+                  src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url}
+                  alt={anime.title}
+                  onError={handleImageError}
+                  className="w-full h-full object-cover rounded group-hover:brightness-110 transition-all duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
                 
-                <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
-                  <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={anime.title}>
-                    {anime.title}
+                {(anime.score || anime.scored_by) && (
+                  <motion.div className="absolute top-2 right-2 bg-red-600 text-xs px-2 py-1 rounded backdrop-blur-sm">
+                    ⭐ {anime.score || anime.scored_by || 'N/A'}
+                  </motion.div>
+                )}
+                
+                {(anime.rank || anime.popularity) && (
+                  <div className="absolute top-2 left-2 bg-purple-600 text-xs px-3 py-1 rounded backdrop-blur-sm">
+                    #{anime.rank || anime.popularity || 'N/A'}
                   </div>
+                )}
+              </div>
+              
+              <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
+                <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={anime.title}>
+                  {anime.title}
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
+        {/* Simplified Overlay */}
         <AnimatePresence>
           {hoveredAnime && (
             <motion.div
@@ -386,8 +305,8 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2 }}
-              onMouseEnter={handleHoverCardEnter}
-              onMouseLeave={handleHoverCardLeave}
+              onMouseEnter={handleOverlayMouseEnter}
+              onMouseLeave={handleOverlayMouseLeave}
               className="fixed z-[60] w-80 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-auto"
               style={{
                 left: `${hoverPosition.x}px`,
@@ -401,6 +320,11 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+                
+                {/* Auto-hide indicator */}
+                <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                  Auto-hide: 2s
+                </div>
                 
                 <div className="absolute bottom-2 left-3 right-3">
                   <h3 className="text-white font-bold text-lg mb-1 drop-shadow-lg">

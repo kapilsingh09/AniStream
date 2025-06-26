@@ -37,15 +37,21 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? 'bg-transparent border-b-2'
-          : 'bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 backdrop-blur-xl shadow-xl border-b border-white/10'
-      } border-b border-white/20`}
-    >
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, ease: 'easeOut' }}
+    className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-out ${
+      scrolled
+        ? 'bg-white/5 backdrop-blur-sm border-b border-white/10 shadow-lg'
+        : 'bg-white/15 backdrop-blur-xl border-b-2 border-white/30 shadow-2xl'
+    }`}
+    style={{
+      background: scrolled 
+        ? 'linear-gradient(135deg, rgb(255 255 255 / 0.05) 0%, rgb(255 255 255 / 0.02) 100%)'
+        : 'linear-gradient(135deg, rgb(255 255 255 / 0.15) 0%, rgb(255 255 255 / 0.08) 50%, rgb(147 51 234 / 0.1) 100%)',
+    }}
+  >
+{/**/}
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between text-white">
         {/* Brand Logo */}
         <Link
