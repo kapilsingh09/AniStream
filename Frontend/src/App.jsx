@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import Layout from './Layout/Layout'
 import ExplorePage from './pages/ExplorePage'
 import HomePage from './Home/Homepage'
+import AnimeCard from './routes/AnimeCard'
 
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
         <Route path='/' element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path='/explore' element={<ExplorePage />} />
+          <Route path="/play/:id" element={<AnimeCard />} />
         </Route>
       </Routes>
     </>

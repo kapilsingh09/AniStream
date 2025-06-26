@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 import { motion, AnimatePresence } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom'; // Removed for demo
 
@@ -20,7 +22,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   const isMouseOverCard = useRef(false);
   const isMouseOverOverlay = useRef(false);
 
-  // const navigate = useNavigate(); // Removed for demo 
+  const navigate = useNavigate(); // Removed for demo 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,40 +102,37 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     e.target.src = 'https://via.placeholder.com/300x400/374151/ffffff?text=No+Image';
   };
 
-  const handleCardClick = (anime) => {
-    navigate(`/play/${anime.mal_id}`);
-  };
-
+  
   const handleMoreInfo = (anime, e) => {
     e.stopPropagation(); 
     navigate(`/anime/${anime.mal_id}`); 
   };
-
+  
   const calculateHoverPosition = (rect) => {
     const hoverCardWidth = 320; 
     const hoverCardHeight = 400; 
     const screenWidth = window.innerWidth; 
     const screenHeight = window.innerHeight;
     const padding = 20; 
-
+    
     let x = rect.right + 15; 
     let y = rect.top; 
-
+    
     if (x + hoverCardWidth > screenWidth - padding) {
       x = rect.left - hoverCardWidth - 15;
     }
-
+    
     if (y + hoverCardHeight > screenHeight - padding) {
       y = screenHeight - hoverCardHeight - padding;
     }
-
+    
     if (y < padding) {
       y = padding;
     }
-
+    
     return { x, y };
   };
-
+  
   // Clear all timers
   const clearAllTimers = () => {
     if (showOverlayTimer.current) {
@@ -145,7 +144,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
       hideOverlayTimer.current = null;
     }
   };
-
+  
   // Show overlay with delay
   const showOverlay = (anime, rect) => {
     clearAllTimers();
@@ -163,7 +162,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
       }, 2000);
     }, 300); // Show after 300ms
   };
-
+  
   // Hide overlay immediately
   const hideOverlay = () => {
     clearAllTimers();
@@ -175,34 +174,41 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
       }
     }, 100);
   };
-
+  
   const handleCardMouseEnter = (anime, e) => {
     isMouseOverCard.current = true;
     const rect = e.currentTarget.getBoundingClientRect();
     showOverlay(anime, rect);
   };
-
+  
   const handleCardMouseLeave = () => {
     isMouseOverCard.current = false;
     hideOverlay();
   };
-
+  
   const handleOverlayMouseEnter = () => {
     isMouseOverOverlay.current = true;
     clearAllTimers(); // Cancel auto-hide when hovering overlay
   };
-
+  
   const handleOverlayMouseLeave = () => {
     isMouseOverOverlay.current = false;
     setHoveredAnime(null); // Hide immediately when leaving overlay
   };
-
+  
   // Clean up timers on unmount
   useEffect(() => {
     return () => {
       clearAllTimers();
     };
   }, []);
+  
+  const handleCardClick = (anime) => {
+    navigate(`/play/${anime.mal_id}`);
+    console.log("hell worl");
+    
+  };
+
 
   if (loading) {
     return (
@@ -254,6 +260,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
           className="w-full h-[50vh] flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
+          {/* maincard component */}
           {animeData.map((anime, index) => (
             <motion.div
               key={anime.mal_id}
