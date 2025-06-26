@@ -253,7 +253,7 @@ export default function Slider() {
   }
 
   return (
-    <div className="relative w-full h-[70vh] mt-14 overflow-hidden bg-black">
+    <div className="relative w-full h-[70vh] mt-16 overflow-hidden bg-black">
       {/* Category Selector */}
       <div className="absolute top-4 left-4 z-40 flex gap-2">
         {Object.keys(apiEndpoints).map((category) => (

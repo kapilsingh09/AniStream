@@ -26,11 +26,11 @@ const Homepage = () => {
         className=""
     />
        
-      <AnimeSection 
+      {/* <AnimeSection 
         title="Rom-Com Anime" 
         fetchFunction={FetchRomComAnime}
         className=""
-      />
+      /> */}
   
       <AnimeSection 
         title="Top Rated Anime" 

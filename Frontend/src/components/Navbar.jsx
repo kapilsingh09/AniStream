@@ -16,7 +16,7 @@ const NavLink = ({ to, children, className }) => {
       {isActive && (
         <motion.span
           layout
-          className="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-purple-400 to-indigo-400"
+          className="absolute bottom-0 left-0 h-0.5 w-full rounded-2xl  bg-white "
           initial={{ width: 0 }}
           animate={{ width: '100%' }}
           transition={{ duration: 0.3 }}
@@ -40,22 +40,18 @@ export default function Navbar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-out ${scrolled
-        ? 'bg-white/5 backdrop-blur-sm border-b border-white/10 shadow-lg'
-        : 'bg-white/15 backdrop-blur-xl border-b-2 border-white/30 shadow-2xl'
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-in-out ${scrolled
+        ? 'bg-gradient-to-br from-violet-500/25 via-purple-500/25 to-pink-500/25 backdrop-blur-sm border-b text-white border-white/12 shadow-lg'
+        : 'bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-pink-400/80 backdrop-blur-xl border-b-2 border-white/15 shadow-2xl'
         }`}
-      style={{
-        background: scrolled
-          ? 'linear-gradient(135deg, rgb(255 255 255 / 0.05) 0%, rgb(255 255 255 / 0.02) 100%)'
-          : 'linear-gradient(135deg, rgb(255 255 255 / 0.15) 0%, rgb(255 255 255 / 0.08) 50%, rgb(147 51 234 / 0.1) 100%)',
-      }}
+      
     >
       {/**/}
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between text-white">
         {/* Brand Logo */}
         <Link
           to="/"
-          className="text-xl font-bold bg-gradient-to-r from-pink-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+          className="text-xl font-bold bg-white bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
         >
           Animex
         </Link>
