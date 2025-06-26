@@ -8,6 +8,7 @@ import {
   FetchTopRatedAnime
 } from '../services/JikhanAnimeApi';
 import { FetchRomComAnime } from '../services/kitsuAnimeApi';
+import AnimeBanner from './AnimeBanner';
 
 const Homepage = () => {
   // Wrapper functions for seasonal anime
@@ -31,18 +32,24 @@ const Homepage = () => {
         fetchFunction={FetchRomComAnime}
         className=""
       /> */}
-  
+     <div className='flex items-center justify-center bg-zinc-900'> 
+
+<AnimeBanner />
+</div>
       <AnimeSection 
         title="Top Rated Anime" 
         fetchFunction={FetchTopRatedAnime}
         className=""
       />
-      
-      {/* <AnimeSection 
+      <div className='flex items-center justify-center bg-zinc-900'> 
+
+      <AnimeBanner />
+      </div>
+      <AnimeSection 
         title="Upcoming Anime" 
         fetchFunction={FetchUpcomingAnime}
-        className=""
-      />  */}
+        className="" 
+      />  
 
     </div>
   );

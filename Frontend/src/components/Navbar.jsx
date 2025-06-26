@@ -42,6 +42,7 @@ export default function Navbar() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-in-out ${scrolled
         ? 'bg-gradient-to-br from-violet-500/25 via-purple-500/25 to-pink-500/25 backdrop-blur-sm border-b text-white border-white/12 shadow-lg'
+        
         : 'bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-pink-400/80 backdrop-blur-xl border-b-2 border-white/15 shadow-2xl'
         }`}
       
