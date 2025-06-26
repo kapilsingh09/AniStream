@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle, Users, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Slider() {
@@ -7,51 +7,80 @@ export default function Slider() {
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState('trending');
   const hasFetched = useRef(false);
 
-  useEffect(() => {
-    if (hasFetched.current && slides.length > 0) {
-      setLoading(false);
-      return;
-    }
 
+  const apiEndpoints = {
+    trending: 'https://kitsu.io/api/edge/trending/anime?limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank&include=genres',
+    topRated: 'https://kitsu.io/api/edge/anime?filter[status]=finished&sort=-averageRating&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+    romcom: 'https://kitsu.io/api/edge/anime?filter[categories]=romance,comedy&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+    airing: 'https://kitsu.io/api/edge/anime?filter[status]=current&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank'
+  };
+
+  useEffect(() => {
     const fetchAnime = async () => {
       try {
         setLoading(true);
-        const res = await fetch('https://kitsu.io/api/edge/trending/anime?limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating');
+        const res = await fetch(apiEndpoints[currentCategory]);
         const response = await res.json();
         const data = response.data;
 
-        const formattedSlides = data.map((anime) => ({
-          id: anime.id,
-          image: anime.attributes.coverImage?.original ||
-            anime.attributes.posterImage?.original ||
-            anime.attributes.coverImage?.large ||
-            anime.attributes.posterImage?.large ||
-            anime.attributes.posterImage?.medium,
-          title: anime.attributes.titles?.en ||
-            anime.attributes.titles?.en_jp ||
-            anime.attributes.titles?.ja_jp ||
-            anime.attributes.slug,
-          description: anime.attributes.synopsis?.slice(0, 200) || 'No description available.',
-          rating: anime.attributes.averageRating ? (parseFloat(anime.attributes.averageRating) / 10).toFixed(1) : 'N/A',
-          status: anime.attributes.status,
-          startDate: anime.attributes.startDate,
-          episodeCount: anime.attributes.episodeCount,
-          ageRating: anime.attributes.ageRating
-        }));
+        if (!data || data.length === 0) {
+          console.warn('No anime data received');
+          setSlides([]);
+          setLoading(false);
+          return;
+        }
+
+        const formattedSlides = data.map((anime) => {
+          const attributes = anime.attributes;
+          
+          return {
+            id: anime.id,
+            malId: attributes.mappings?.find(m => m.externalSite === 'myanimelist/anime')?.externalId,
+            image: attributes.coverImage?.original ||
+              attributes.coverImage?.large ||
+              attributes.posterImage?.original ||
+              attributes.posterImage?.large ||
+              attributes.posterImage?.medium ||
+              'https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image',
+            title: attributes.titles?.en ||
+              attributes.titles?.en_jp ||
+              attributes.titles?.ja_jp ||
+              attributes.canonicalTitle ||
+              'Unknown Title',
+            description: attributes.synopsis ? 
+              (attributes.synopsis.length > 200 ? 
+                attributes.synopsis.slice(0, 200) + '...' : 
+                attributes.synopsis) : 
+              'No description available.',
+            rating: attributes.averageRating ? 
+              (parseFloat(attributes.averageRating) / 10).toFixed(1) : 
+              'N/A',
+            status: attributes.status,
+            startDate: attributes.startDate,
+            episodeCount: attributes.episodeCount,
+            ageRating: attributes.ageRating,
+            userCount: attributes.userCount,
+            favoritesCount: attributes.favoritesCount,
+            popularityRank: attributes.popularityRank,
+            category: currentCategory
+          };
+        });
 
         setSlides(formattedSlides);
-        hasFetched.current = true;
+        setCurrent(0); // Reset to first slide when changing category
       } catch (error) {
         console.error('Error fetching anime:', error);
+        setSlides([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAnime();
-  }, []);
+  }, [currentCategory]);
 
   useEffect(() => {
     if (slides.length === 0) return;
@@ -77,9 +106,23 @@ export default function Slider() {
     setCurrent(index);
   };
 
+  const changeCategory = (category) => {
+    if (category !== currentCategory) {
+      setCurrentCategory(category);
+      setLoading(true);
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'TBA';
     return new Date(dateString).getFullYear();
+  };
+
+  const formatNumber = (num) => {
+    if (!num) return '0';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
   };
 
   const getStatusColor = (status) => {
@@ -87,6 +130,7 @@ export default function Slider() {
       case 'current': return 'bg-green-500';
       case 'finished': return 'bg-blue-500';
       case 'upcoming': return 'bg-yellow-500';
+      case 'tba': return 'bg-purple-500';
       default: return 'bg-gray-500';
     }
   };
@@ -96,7 +140,28 @@ export default function Slider() {
       case 'current': return 'Airing';
       case 'finished': return 'Completed';
       case 'upcoming': return 'Upcoming';
+      case 'tba': return 'TBA';
       default: return 'Unknown';
+    }
+  };
+
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'trending': return <TrendingUp className="w-4 h-4" />;
+      case 'topRated': return <Star className="w-4 h-4" />;
+      case 'romcom': return '💕';
+      case 'airing': return <Play className="w-4 h-4" />;
+      default: return null;
+    }
+  };
+
+  const getCategoryTitle = (category) => {
+    switch (category) {
+      case 'trending': return 'Trending';
+      case 'topRated': return 'Top Rated';
+      case 'romcom': return 'Rom-Com';
+      case 'airing': return 'Currently Airing';
+      default: return 'Anime';
     }
   };
 
@@ -167,12 +232,13 @@ export default function Slider() {
     return (
       <div className="w-full h-[60vh] bg-gray-900 flex items-center justify-center">
         <motion.div
-          className="text-white text-xl"
+          className="text-white text-xl flex items-center gap-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          Loading trending anime...
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          Loading {getCategoryTitle(currentCategory).toLowerCase()} anime...
         </motion.div>
       </div>
     );
@@ -181,16 +247,35 @@ export default function Slider() {
   if (slides.length === 0) {
     return (
       <div className="w-full h-[60vh] bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">No anime data available</div>
+        <div className="text-white text-xl">No anime data available for {getCategoryTitle(currentCategory)}</div>
       </div>
     );
   }
 
   return (
     <div className="relative w-full h-[70vh] mt-14 overflow-hidden bg-black">
+      {/* Category Selector */}
+      <div className="absolute top-4 left-4 z-40 flex gap-2">
+        {Object.keys(apiEndpoints).map((category) => (
+          <motion.button
+            key={category}
+            onClick={() => changeCategory(category)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 backdrop-blur-sm ${
+              currentCategory === category
+                ? 'bg-white/20 text-white border border-white/30'
+                : 'bg-black/40 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {getCategoryIcon(category)}
+            {getCategoryTitle(category)}
+          </motion.button>
+        ))}
+      </div>
+
       {/* Gradient Overlays */}
       <div className="pointer-events-none absolute inset-0 z-10">
-        {/* <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-pink-800/100 via-white/50 to-transparent" /> */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/100 via-black/50 to-transparent" />
         <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-black/90 via-black/10 to-transparent" />
         <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-black/100 via-black/50 to-transparent" />
@@ -228,7 +313,7 @@ export default function Slider() {
               initial="hidden"
               animate="visible"
             >
-              {/* Status */}
+              {/* Status & Age Rating */}
               <motion.div className="flex items-center gap-2 mb-2" variants={itemVariants}>
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getStatusColor(slides[current].status)}`}>
                   {getStatusText(slides[current].status)}
@@ -236,6 +321,11 @@ export default function Slider() {
                 {slides[current].ageRating && (
                   <span className="px-2 py-1 bg-gray-800 rounded text-xs font-medium">
                     {slides[current].ageRating}
+                  </span>
+                )}
+                {slides[current].popularityRank && (
+                  <span className="px-2 py-1 bg-yellow-600 rounded text-xs font-medium">
+                    #{slides[current].popularityRank}
                   </span>
                 )}
               </motion.div>
@@ -246,7 +336,7 @@ export default function Slider() {
               </motion.h1>
 
               {/* Info */}
-              <motion.div className="flex items-center gap-4 mb-3" variants={itemVariants}>
+              <motion.div className="flex items-center gap-4 mb-3 flex-wrap" variants={itemVariants}>
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 text-yellow-400 fill-current" />
                   <span className="text-sm font-semibold">{slides[current].rating}/10</span>
@@ -261,6 +351,12 @@ export default function Slider() {
                   <div className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-gray-300" />
                     <span className="text-gray-300 text-sm">{slides[current].episodeCount} Episodes</span>
+                  </div>
+                )}
+                {slides[current].userCount && (
+                  <div className="flex items-center gap-1">
+                    <Users className="w-3 h-3 text-gray-300" />
+                    <span className="text-gray-300 text-sm">{formatNumber(slides[current].userCount)} Users</span>
                   </div>
                 )}
               </motion.div>
