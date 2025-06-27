@@ -63,3 +63,11 @@ export const FetchRecommendations = async (id) => {
   const res = await axios.get(`${BASE_URL}/anime/${id}/recommendations`);
   return res.data.data;
 };
+
+export const FetchRomComAnime = async (limit = 18) => {
+  const res = await axios.get(
+    `https://api.jikan.moe/v4/anime?genres=22,4&order_by=popularity&sort=desc&limit=${limit}`
+  );
+
+  return res.data.data;
+};

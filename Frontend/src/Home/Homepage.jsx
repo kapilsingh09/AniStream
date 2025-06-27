@@ -7,8 +7,9 @@ import {
   FetchUpcomingAnime,
   FetchTopRatedAnime
 } from '../services/JikhanAnimeApi';
-import { FetchRomComAnime } from '../services/kitsuAnimeApi';
+import { FetchRomComAnime } from '../services//JikhanAnimeApi';
 import AnimeBanner from './AnimeBanner';
+import SorryCard from '../utils/SorryCard';
 
 const Homepage = () => {
   // Wrapper functions for seasonal anime
@@ -19,7 +20,7 @@ const Homepage = () => {
 
   return (
     <div className="flex-1">
-     <HeroSlider />
+   <HeroSlider />
       
       <AnimeSection 
         title="Trending Now" 
@@ -27,12 +28,12 @@ const Homepage = () => {
         className=""
     />
        
-      {/* <AnimeSection 
+    <AnimeSection 
         title="Rom-Com Anime" 
         fetchFunction={FetchRomComAnime}
         className=""
-      /> */}
-     <div className='flex items-center justify-center bg-zinc-900'> 
+      /> 
+      <div className='flex items-center justify-center bg-zinc-900'> 
 
 <AnimeBanner />
 </div>
@@ -49,7 +50,8 @@ const Homepage = () => {
         title="Upcoming Anime" 
         fetchFunction={FetchUpcomingAnime}
         className="" 
-      />  
+      />   
+      
 
     </div>
   );

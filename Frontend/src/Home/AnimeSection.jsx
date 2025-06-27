@@ -205,7 +205,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   
   const handleCardClick = (anime) => {
     navigate(`/play/${anime.mal_id}`);
-    console.log("hell worl");
+    // console.log("hell worl");
     
   };
 

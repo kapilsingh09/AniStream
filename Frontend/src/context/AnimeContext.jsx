@@ -2,9 +2,10 @@ import React, { createContext, useEffect, useState } from 'react';
 import { 
   FetchTrendingAnime, 
   FetchSeasonalAnime, 
-  FetchUpcomingAnime
+  FetchUpcomingAnime,
+  FetchRomComAnime
 } from '../services/JikhanAnimeApi';
-import { FetchRomComAnime ,getRandomAnime } from '../services/kitsuAnimeApi';
+import { getRandomAnime } from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
 
@@ -17,18 +18,18 @@ const AnimeContext = ({ children }) => {
 
 
   const fetchAllData = async () => {
-    const [trending, upcoming, seasonal, romComData ,randomAnime] = await Promise.allSettled([
+    const [trending, upcoming, romComData ,randomAnime] = await Promise.allSettled([
       FetchTrendingAnime(),
       FetchUpcomingAnime(),
-      FetchSeasonalAnime(),
-      FetchRomComAnime()
+      FetchRomComAnime(),
+      // FetchSeasonalAnime(),
+      // FetchRomComAnime()
     ]);
     setTrendingAnime(trending || []);
     setUpcomingAnime(upcoming || []);
-    setSeasonalAnime(seasonal || []);
-    setrandomAnime(randomAnime || []
-    )
-    // setRomCom(romComData || []);
+    // setSeasonalAnime(seasonal || []);
+    setrandomAnime(randomAnime || []);
+    setRomCom(romComData || []);
   
   };
 
@@ -39,9 +40,10 @@ const AnimeContext = ({ children }) => {
   const contextValue = {
     trendingAnime,
     upcomingAnime,
-    seasonalAnime,
-    randomAnime,
+    // seasonalAnime,
     romCom,
+    randomAnime,
+    // romCom,
    
     refetch: fetchAllData
   };
