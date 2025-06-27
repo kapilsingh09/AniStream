@@ -3,15 +3,15 @@ import React, { useContext } from 'react';
 import { DataContext } from '../context/AnimeContext'; // adjust path as needed
 
 const AnimeSlider = () => {
-  const { TrendingAnime } = useContext(DataContext);
+  const { trendingAnime } = useContext(DataContext);
 
-  if (!TrendingAnime || TrendingAnime.length === 0) {
+  if (!trendingAnime || trendingAnime.length === 0) {
     return <div className="text-white text-center py-8">Loading anime...</div>;
   }
 
   return (
     <div className="w-full overflow-x-auto whitespace-nowrap">
-      {TrendingAnime.map(anime => (
+      {trendingAnime.map(anime => (
         <div key={anime.mal_id} className="inline-block w-64 m-2 bg-gray-800 rounded-xl shadow-md">
           <img src={anime.images.jpg.image_url} alt={anime.title} className="w-full h-40 object-cover rounded-t-xl" />
           <div className="p-2 text-white">

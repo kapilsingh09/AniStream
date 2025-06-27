@@ -15,12 +15,12 @@ const App = () => {
       <Route path="/" element={<Layout />}>
 
         {/* Default (index) route renders HomePage */}
-        <Route index element={<HomePage />} />
+        {/* <Route index element={<HomePage />} /> */}
 
         {/* Nested routes (relative paths) */}
         <Route path="explore" element={<ExplorePage />} />
-        <Route path="play/:id" element={<AnimeCard />} />
-        <Route path="kitsu/:id" element={<KitsuAnimeCard  />} />
+        {/* <Route path="play/:id" element={<AnimeCard />} /> */}
+        {/* <Route path="kitsu/:id" element={<KitsuAnimeCard  />} /> */}
 
         {/* 404 fallback route */}
         <Route path="*" element={<SorryCard />} />

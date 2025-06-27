@@ -3,10 +3,11 @@ import {
   FetchTrendingAnime,
   FetchSeasonalAnime,
   FetchUpcomingAnime,
+  FetchRomComAnime,
+  // FetchSeasonalAnime
 } from '../services/JikhanAnimeApi';
 import {
   getRandomAnime,
-  getRomComAnime,
 } from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
@@ -16,22 +17,24 @@ const AnimeContext = ({ children }) => {
   const [upcomingAnime, setUpcomingAnime] = useState([]);
   const [seasonalAnime, setSeasonalAnime] = useState([]);
   const [randomAnime, setRandomAnime] = useState([]);
-  const [romComAnime, setRomComAnime] = useState([]);
+  const [romcomAnime, setRomcomAnime] = useState([]);
 
   const fetchAllData = async () => {
     const results = await Promise.allSettled([
       FetchTrendingAnime(),
       FetchUpcomingAnime(),
+      FetchSeasonalAnime(),
       getRandomAnime(),
-      getRomComAnime(),
+      FetchRomComAnime(),
     ]);
 
-    const [trending, upcoming, random, romcom] = results;
+    const [trending, upcoming, seasonal, random, romcom] = results;
 
     if (trending.status === 'fulfilled') setTrendingAnime(trending.value);
     if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value);
+    if (seasonal.status === 'fulfilled') setSeasonalAnime(seasonal.value);
     if (random.status === 'fulfilled') setRandomAnime(random.value);
-    if (romcom.status === 'fulfilled') setRomComAnime(romcom.value);
+    if (romcom.status === 'fulfilled') setRomcomAnime(romcom.value);
   };
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const AnimeContext = ({ children }) => {
     upcomingAnime,
     seasonalAnime,
     randomAnime,
-    romComAnime,
+    romcomAnime,
     refetch: fetchAllData,
   };
 
