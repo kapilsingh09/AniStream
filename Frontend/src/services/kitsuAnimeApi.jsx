@@ -144,14 +144,27 @@ export const fetchStreamingLinks = async (animeId) => {
 };
 
 // ✅ 16. Get Anime Cover Image + Poster
-export const fetchAnimeMediaImages = async (animeId) => {
-  const res = await axios.get(`${BASE_URL}/anime/${animeId}`);
-  return {
-    poster: res.data.data.attributes.posterImage,
-    cover: res.data.data.attributes.coverImage,
-  };
-};
+export const fetchRandomRomcomAnime = async () => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[genres]': 'romance,comedy',
+      'page[limit]': 20,
+      'sort': 'popularityRank'
+    }
+  })
 
+  const animeList = res.data.data
+  if (animeList.length === 0) throw new Error('No romcom anime found')
+
+  const randomAnime = animeList[Math.floor(Math.random() * animeList.length)]
+
+  return {
+    id: randomAnime.id,
+    title: randomAnime.attributes.titles.en_jp || randomAnime.attributes.canonicalTitle,
+    image: randomAnime.attributes.coverImage?.original || randomAnime.attributes.posterImage?.original,
+    watchUrl: `https://kitsu.io/anime/${randomAnime.id}`
+  }
+}
 export const getRandomAnime = async () => {
   const randomOffset = Math.floor(Math.random() * 100)
   const res = await axios.get(

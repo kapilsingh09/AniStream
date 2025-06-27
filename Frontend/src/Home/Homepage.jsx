@@ -8,13 +8,14 @@ import {
   fetchTrendingAnime,
 
 } from '../services/kitsuAnimeApi';
+import SimpleAnimeBanner from './SimpleAnimeBanner';
 
 const Homepage = () => {
   return (
     <div className="flex-1">
-      <AnimeSlider />
+      {/* <AnimeSlider />
       {/* Seasonal Anime from Kitsu */}
-      <SectionComponentKitsu 
+      {/* <SectionComponentKitsu 
         title="Trending Now!" 
         fetchFunction={fetchTrendingAnime} 
       />
@@ -24,9 +25,14 @@ const Homepage = () => {
         title="Rom-Com Anime" 
         fetchFunction={fetchRomComAnime} 
       /> */}
-      <AnimeSection fetchFunction={FetchUpcomingAnime} title='Upcoming Anime' />
+      {/* <AnimeSection fetchFunction={FetchUpcomingAnime} title='Upcoming Anime' />
 
-      <AnimeBanner />
+      <AnimeBanner /> */} \
+      <div className='flex items-center justify-center'>
+
+      <SimpleAnimeBanner />
+      </div>
+      
     </div>
   );
 };
