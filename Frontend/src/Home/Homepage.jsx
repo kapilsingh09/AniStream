@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import AnimeSlider from './AnimeSlider';
+import AnimeSection from './AnimeSection';
+import { DataContext } from '../context/AnimeContext';
 
 const Homepage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const { fetchTopRatedAnime } = useContext(DataContext);
 
-export default Homepage
+  return (
+    <div className='flex-1'>
+      <AnimeSlider />
+
+      <AnimeSection 
+        title="Top Rated Anime" 
+        fetchFunction={fetchTopRatedAnime} // Now this works perfectly!
+      />
+    </div>
+  );
+};
+
+export default Homepage;

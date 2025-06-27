@@ -13,8 +13,11 @@ export default function Slider() {
 
   const apiEndpoints = {
     trending: 'https://kitsu.io/api/edge/trending/anime?limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank&include=genres',
+
     topRated: 'https://kitsu.io/api/edge/anime?filter[status]=finished&sort=-averageRating&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+    
     romcom: 'https://kitsu.io/api/edge/anime?filter[categories]=romance,comedy&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+
     airing: 'https://kitsu.io/api/edge/anime?filter[status]=current&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank'
   };
 
@@ -82,14 +85,14 @@ export default function Slider() {
     fetchAnime();
   }, [currentCategory]);
 
-  useEffect(() => {
-    if (slides.length === 0) return;
-    const interval = setInterval(() => {
-      setDirection(1);
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
+  // useEffect(() => {
+  //   if (slides.length === 0) return;
+  //   const interval = setInterval(() => {
+  //     setDirection(1);
+  //     setCurrent((prev) => (prev + 1) % slides.length);
+  //   }, 8000);
+  //   return () => clearInterval(interval);
+  // }, [slides.length]);
 
   const nextSlide = () => {
     setDirection(1);

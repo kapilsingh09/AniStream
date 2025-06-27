@@ -1,60 +1,73 @@
-import React, { createContext, useEffect, useState } from 'react';
-import {
-  FetchTrendingAnime,
-  FetchSeasonalAnime,
-  FetchUpcomingAnime,
-  FetchRomComAnime,
-  // FetchSeasonalAnime
-} from '../services/JikhanAnimeApi';
-import {
-  getRandomAnime,
-} from '../services/kitsuAnimeApi';
+import React, { createContext, useEffect, useState, useCallback } from 'react';
+import { FetchTopRatedAnime } from '../services/JikhanAnimeApi';
 
-export const DataContext = createContext();
+const DataContext = createContext();
 
 const AnimeContext = ({ children }) => {
-  const [trendingAnime, setTrendingAnime] = useState([]);
-  const [upcomingAnime, setUpcomingAnime] = useState([]);
-  const [seasonalAnime, setSeasonalAnime] = useState([]);
-  const [randomAnime, setRandomAnime] = useState([]);
-  const [romcomAnime, setRomcomAnime] = useState([]);
+  const [topRatedAnime, setTopRatedAnime] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchAllData = async () => {
-    const results = await Promise.allSettled([
-      FetchTrendingAnime(),
-      FetchUpcomingAnime(),
-      FetchSeasonalAnime(),
-      getRandomAnime(),
-      FetchRomComAnime(),
-    ]);
-
-    const [trending, upcoming, seasonal, random, romcom] = results;
-
-    if (trending.status === 'fulfilled') setTrendingAnime(trending.value);
-    if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value);
-    if (seasonal.status === 'fulfilled') setSeasonalAnime(seasonal.value);
-    if (random.status === 'fulfilled') setRandomAnime(random.value);
-    if (romcom.status === 'fulfilled') setRomcomAnime(romcom.value);
-  };
-
-  useEffect(() => {
-    fetchAllData();
+  // Create a fetch function that can be called by components
+  const fetchTopRatedAnime = useCallback(async () => {
+    try {
+      const data = await FetchTopRatedAnime();
+      return data;
+    } catch (error) {
+      console.error('Error fetching top rated anime:', error);
+      throw error; // Re-throw so components can handle it
+    }
   }, []);
 
-  const contextValue = {
-    trendingAnime,
-    upcomingAnime,
-    seasonalAnime,
-    randomAnime,
-    romcomAnime,
-    refetch: fetchAllData,
-  };
+  // Initial load
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchTopRatedAnime();
+        setTopRatedAnime(data);
+      } catch (error) {
+        console.error('Error fetching top rated anime:', error);
+        setError('Failed to load top rated anime');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [fetchTopRatedAnime]);
+
+  // Refresh function for manual retry
+  const refreshTopRatedAnime = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchTopRatedAnime();
+      setTopRatedAnime(data);
+      return data;
+    } catch (error) {
+      console.error('Error refreshing top rated anime:', error);
+      setError('Failed to refresh top rated anime');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchTopRatedAnime]);
 
   return (
-    <DataContext.Provider value={contextValue}>
+    <DataContext.Provider value={{ 
+      // Data
+      topRatedAnime, 
+      loading, 
+      error,
+      
+      // Functions for components
+      fetchTopRatedAnime,
+      refreshTopRatedAnime
+    }}>
       {children}
     </DataContext.Provider>
   );
 };
 
 export default AnimeContext;
+export { DataContext };

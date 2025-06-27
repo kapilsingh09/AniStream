@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,6 +11,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   const [error, setError] = useState(null); 
   const [canScrollLeft, setCanScrollLeft] = useState(false); 
   const [canScrollRight, setCanScrollRight] = useState(false); 
+  const [retrying, setRetrying] = useState(false);
   
   // Simplified overlay state
   const [hoveredAnime, setHoveredAnime] = useState(null);
@@ -24,47 +25,53 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
 
   const navigate = useNavigate(); // Removed for demo 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!fetchFunction) {
-        setError('No fetch function provided');
-        setLoading(false);
-        return;
-      }
+  const fetchData = useCallback(async () => {
+    if (!fetchFunction) {
+      setError('No fetch function provided');
+      setLoading(false);
+      return;
+    }
 
-      setLoading(true); 
-      setError(null); 
+    setLoading(true); 
+    setError(null); 
+    
+    try {
+      const data = await fetchFunction();
       
-      try {
-        const data = await fetchFunction();
-        
-        const validData = Array.isArray(data)
-          ? data.filter(anime =>
-              anime?.mal_id && 
-              anime?.title && 
-              (anime?.images?.jpg?.large_image_url || anime?.images?.jpg?.image_url)
-            )
-          : [];
+      const validData = Array.isArray(data)
+        ? data.filter(anime =>
+            anime?.mal_id && 
+            anime?.title && 
+            (anime?.images?.jpg?.large_image_url || anime?.images?.jpg?.image_url)
+          )
+        : [];
 
-        // Remove duplicate entries
-        const seen = new Set();
-        const unique = validData.filter(anime => {
-          if (seen.has(anime.mal_id)) return false; 
-          seen.add(anime.mal_id); 
-          return true;
-        });
+      // Remove duplicate entries
+      const seen = new Set();
+      const unique = validData.filter(anime => {
+        if (seen.has(anime.mal_id)) return false; 
+        seen.add(anime.mal_id); 
+        return true;
+      });
 
-        setAnimeData(unique); 
-      } catch (err) {
-        console.error('Error fetching anime data:', err);
-        setError('Failed to load anime data'); 
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+      setAnimeData(unique); 
+    } catch (err) {
+      console.error('Error fetching anime data:', err);
+      setError('Failed to load anime data'); 
+    } finally {
+      setLoading(false);
+      setRetrying(false);
+    }
   }, [fetchFunction]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleRetry = async () => {
+    setRetrying(true);
+    await fetchData();
+  };
 
   const checkScrollPosition = useCallback(() => {
     if (sliderRef.current) {
@@ -215,7 +222,9 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
       <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
         <div className="flex flex-col items-center space-y-2">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <div className="text-white text-lg">Loading {title.toLowerCase()}...</div>
+          <div className="text-white text-lg">
+            {retrying ? `Retrying ${title.toLowerCase()}...` : `Loading ${title.toLowerCase()}...`}
+          </div>
         </div>
       </div>
     );
@@ -225,8 +234,21 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     return (
       <div className={`h-[60vh] bg-zinc-900 py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center">
-          <div className="text-4xl mb-2">❌</div>
-          <div className="text-lg">{error}</div>
+          <div className="text-4xl mb-4">❌</div>
+          <div className="text-lg mb-4">{error}</div>
+          <motion.button
+            onClick={handleRetry}
+            disabled={retrying}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+          >
+            <RefreshCw 
+              size={18} 
+              className={retrying ? 'animate-spin' : ''} 
+            />
+            {retrying ? 'Retrying...' : 'Try Again'}
+          </motion.button>
         </div>
       </div>
     );
@@ -236,8 +258,21 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     return (
       <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center">
-          <div className="text-4xl mb-2">📺</div>
-          <div className="text-lg">No anime found</div>
+          <div className="text-4xl mb-4">📺</div>
+          <div className="text-lg mb-4">No anime found</div>
+          <motion.button
+            onClick={handleRetry}
+            disabled={retrying}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+          >
+            <RefreshCw 
+              size={18} 
+              className={retrying ? 'animate-spin' : ''} 
+            />
+            {retrying ? 'Retrying...' : 'Retry'}
+          </motion.button>
         </div>
       </div>
     );
