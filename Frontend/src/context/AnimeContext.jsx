@@ -1,11 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { 
-  FetchTrendingAnime, 
-  FetchSeasonalAnime, 
+import {
+  FetchTrendingAnime,
+  FetchSeasonalAnime,
   FetchUpcomingAnime,
-  FetchRomComAnime
 } from '../services/JikhanAnimeApi';
-import { getRandomAnime } from '../services/kitsuAnimeApi';
+import {
+  getRandomAnime,
+  getRomComAnime,
+} from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
 
@@ -13,24 +15,23 @@ const AnimeContext = ({ children }) => {
   const [trendingAnime, setTrendingAnime] = useState([]);
   const [upcomingAnime, setUpcomingAnime] = useState([]);
   const [seasonalAnime, setSeasonalAnime] = useState([]);
-  const [randomAnime, setrandomAnime] = useState([])
-  const [romCom, setRomCom] = useState([]);
-
+  const [randomAnime, setRandomAnime] = useState([]);
+  const [romComAnime, setRomComAnime] = useState([]);
 
   const fetchAllData = async () => {
-    const [trending, upcoming, romComData ,randomAnime] = await Promise.allSettled([
+    const results = await Promise.allSettled([
       FetchTrendingAnime(),
       FetchUpcomingAnime(),
-      FetchRomComAnime(),
-      // FetchSeasonalAnime(),
-      // FetchRomComAnime()
+      getRandomAnime(),
+      getRomComAnime(),
     ]);
-    setTrendingAnime(trending || []);
-    setUpcomingAnime(upcoming || []);
-    // setSeasonalAnime(seasonal || []);
-    setrandomAnime(randomAnime || []);
-    setRomCom(romComData || []);
-  
+
+    const [trending, upcoming, random, romcom] = results;
+
+    if (trending.status === 'fulfilled') setTrendingAnime(trending.value);
+    if (upcoming.status === 'fulfilled') setUpcomingAnime(upcoming.value);
+    if (random.status === 'fulfilled') setRandomAnime(random.value);
+    if (romcom.status === 'fulfilled') setRomComAnime(romcom.value);
   };
 
   useEffect(() => {
@@ -40,12 +41,10 @@ const AnimeContext = ({ children }) => {
   const contextValue = {
     trendingAnime,
     upcomingAnime,
-    // seasonalAnime,
-    romCom,
+    seasonalAnime,
     randomAnime,
-    // romCom,
-   
-    refetch: fetchAllData
+    romComAnime,
+    refetch: fetchAllData,
   };
 
   return (
