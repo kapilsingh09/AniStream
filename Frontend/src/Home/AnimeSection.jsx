@@ -12,6 +12,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   const [canScrollLeft, setCanScrollLeft] = useState(false); 
   const [canScrollRight, setCanScrollRight] = useState(false); 
   const [retrying, setRetrying] = useState(false);
+  const [retryDelay, setRetryDelay] = useState(2000); // Start with 2 seconds
   
   // Simplified overlay state
   const [hoveredAnime, setHoveredAnime] = useState(null);
@@ -57,7 +58,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
       setAnimeData(unique); 
     } catch (err) {
       console.error('Error fetching anime data:', err);
-      setError('Failed to load anime data'); 
+      setError(err?.response?.status === 429 ? 'Rate limit exceeded (429). Retrying...' : 'Failed to load anime data'); 
     } finally {
       setLoading(false);
       setRetrying(false);
@@ -67,6 +68,24 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Auto-retry if error or no data
+  useEffect(() => {
+    if ((error || !animeData || animeData.length === 0) && !loading) {
+      // If error is 429, increase delay (exponential backoff)
+      let nextDelay = retryDelay;
+      if (error && error.toString().includes('429')) {
+        nextDelay = Math.min(retryDelay * 2, 30000); // Max 30 seconds
+        setRetryDelay(nextDelay);
+      } else {
+        setRetryDelay(2000); // Reset for other errors
+      }
+      const retryTimeout = setTimeout(() => {
+        fetchData();
+      }, nextDelay);
+      return () => clearTimeout(retryTimeout);
+    }
+  }, [error, animeData, loading, fetchData, retryDelay]);
 
   const handleRetry = async () => {
     setRetrying(true);

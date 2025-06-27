@@ -12,6 +12,8 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+
+
         <Route index element={<HomePage />} />
 
         {/* Nested routes (relative paths) */}

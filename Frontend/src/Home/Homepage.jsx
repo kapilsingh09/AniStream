@@ -1,19 +1,32 @@
-import React, { useContext } from 'react';
-import AnimeSlider from './AnimeSlider';
-import AnimeSection from './AnimeSection';
-import { DataContext } from '../context/AnimeContext';
+import React from 'react';
+import SectionComponentKitsu from './SectionComponentKitsu';
+import AnimeSlider from './AnimeSlider'
+import AnimeBanner from './AnimeBanner'
+import AnimeSection from './AnimeSection'
+import { FetchUpcomingAnime } from '../services/JikhanAnimeApi';
+import {
+  fetchTrendingAnime,
+
+} from '../services/kitsuAnimeApi';
 
 const Homepage = () => {
-  const { fetchTopRatedAnime } = useContext(DataContext);
-
   return (
-    <div className='flex-1'>
+    <div className="flex-1">
       <AnimeSlider />
-
-      <AnimeSection 
-        title="Top Rated Anime" 
-        fetchFunction={fetchTopRatedAnime} // Now this works perfectly!
+      {/* Seasonal Anime from Kitsu */}
+      <SectionComponentKitsu 
+        title="Trending Now!" 
+        fetchFunction={fetchTrendingAnime} 
       />
+
+      {/* Rom-Com Anime from Kitsu */}
+      {/* <SectionComponentKitsu 
+        title="Rom-Com Anime" 
+        fetchFunction={fetchRomComAnime} 
+      /> */}
+      <AnimeSection fetchFunction={FetchUpcomingAnime} title='Upcoming Anime' />
+
+      <AnimeBanner />
     </div>
   );
 };

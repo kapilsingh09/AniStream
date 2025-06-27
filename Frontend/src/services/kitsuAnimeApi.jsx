@@ -2,6 +2,29 @@ import axios from 'axios';
 
 const BASE_URL = 'https://kitsu.io/api/edge';
 
+
+export const fetchSeasonalAnime = async (season = 'spring', year = 2024, limit = 20) => {
+ const seasonMonths = {
+    winter: ['01', '02', '03'],
+    spring: ['04', '05', '06'],
+    summer: ['07', '08', '09'],
+    fall: ['10', '11', '12'],
+  };
+
+  const monthFilters = seasonMonths[season.toLowerCase()];
+  const filters = monthFilters.map(month => `${year}-${month}`).join(',');
+
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[startDate]': filters,
+      'page[limit]': limit,
+    },
+  });
+
+  return res.data.data;
+};
+
+
 // ✅ 1. Get Trending Anime
 export const fetchTrendingAnime = async (limit = 20) => {
   const res = await axios.get(`${BASE_URL}/trending/anime?limit=${limit}`);
