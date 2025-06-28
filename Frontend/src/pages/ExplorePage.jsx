@@ -1,13 +1,14 @@
 import { useState } from "react";
+import Filter from '../ExplorePage/Filter'
 import { 
   Flame, Star, Compass, PlayCircle, Heart, Search, Users, BookOpen, 
-  TrendingUp, Clock, Award, Globe, Zap, Calendar, Filter, Grid,
+  TrendingUp, Clock, Award, Globe, Zap, Calendar, Grid,
   ChevronRight, Play, Eye, MessageCircle, ThumbsUp, Share2
 } from "lucide-react";
 
 export default function ExplorePage() {
   const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState("All");
+
 
   const featuredAnime = [
     {
@@ -64,7 +65,7 @@ export default function ExplorePage() {
   ];
 
   const seasons = ["Spring 2024", "Summer 2024", "Fall 2024", "Winter 2025"];
-  const filters = ["All", "Completed", "Ongoing", "Upcoming", "Movies"];
+;
 
   const upcomingAnime = [
     { title: "Attack on Titan: Final Season", date: "2025-07-15", studio: "Wit Studio" },
@@ -104,22 +105,7 @@ export default function ExplorePage() {
 
       <div className="p-8 space-y-12">
         {/* Quick Filters */}
-        <section className="flex flex-wrap gap-4 items-center">
-          <Filter className="text-gray-400" />
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-                activeFilter === filter
-                  ? "bg-pink-600 text-white shadow-lg"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </section>
+        <Filter />
 
         {/* Featured Spotlight */}
         <section className="space-y-6">
