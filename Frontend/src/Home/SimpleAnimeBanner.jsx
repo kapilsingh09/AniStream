@@ -156,9 +156,9 @@ const GhibliMovieBanner = () => {
     setLoading(false)
 
     // Set interval for every 5 seconds
-    // const interval = setInterval(() => {
-    //   pickRandomFilm()
-    // }, 6000)
+    const interval = setInterval(() => {
+      pickRandomFilm()
+    }, 6000)
 
     // Cleanup
     return () => clearInterval(interval)
@@ -166,7 +166,7 @@ const GhibliMovieBanner = () => {
 
   if (loading || !currentFilm) {
     return (
-      <div className="h-[70vh] flex items-center justify-center bg-gradient-to-br from-emerald-900 via-teal-800 to-green-900 text-white">
+      <div className="h-[50vh] flex items-center justify-center bg-gradient-to-br from-emerald-900 via-teal-800 to-green-900 text-white">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2 }}>
           <Loader className="w-8 h-8 text-emerald-300" />
         </motion.div>
@@ -191,7 +191,7 @@ const GhibliMovieBanner = () => {
           <div className="relative w-[35%] h-full flex flex-col justify-center px-8 md:px-12 z-20 bg-gradient-to-r from-black via-black to-transparent">
             {/* Studio Ghibli Badge */}
             <motion.div 
-              className="absolute top-10 left-7   px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-lg "
+              className="absolute top-9 left-7   px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-lg "
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -220,8 +220,8 @@ const GhibliMovieBanner = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <div className="flex   ">
-                {/* <Star className="w-4 h-4 text-white fill-white" /> */}
-                {/* <span className="text-black font-bold text-sm">{currentFilm.rt_score}%</span> */}
+                <Star className="w-4 h-4 text-white fill-white" />
+                <span className="text-white font-bold text-sm ml-3">{currentFilm.rt_score}%</span>
               </div>
               <span className="text-white text-lg font-medium"> | {currentFilm.release_date}</span>
               <span className="text-gray-300 text-lg font-semibold">
@@ -229,7 +229,7 @@ const GhibliMovieBanner = () => {
             </motion.div>
 
             {/* Description */}
-            {/* <motion.p 
+            <motion.p 
               className="text-gray-200 text-lg leading-relaxed mb-8 max-w-lg drop-shadow-lg"
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -238,7 +238,7 @@ const GhibliMovieBanner = () => {
               {currentFilm.description?.length > 180 
                 ? `${currentFilm.description?.substring(0, 180)}...` 
                 : currentFilm.description}
-            </motion.p> */}
+            </motion.p>
 
             {/* Buttons */}
             <motion.div 

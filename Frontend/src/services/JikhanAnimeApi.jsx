@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const BASE_URL = 'https://api.jikan.moe/v4';
 
-// ✅ 1. Trending Anime
+
 export const FetchTrendingAnime = async (limit = 18) => {
   const res = await axios.get(`${BASE_URL}/top/anime?filter=bypopularity&limit=${limit}`);
   return res.data.data;
@@ -89,7 +89,7 @@ export const FetchRomComAnime = async (limit = 18) => {
   return res.data.data;
 };
 
-// ✅ 15. Action Anime
+
 export const FetchActionAnime = async (limit = 18) => {
   const res = await axios.get(
     `${BASE_URL}/anime?genres=1&order_by=popularity&sort=desc&limit=${limit}`
@@ -97,7 +97,7 @@ export const FetchActionAnime = async (limit = 18) => {
   return res.data.data;
 };
 
-// ✅ 16. Shounen Anime
+
 export const FetchShounenAnime = async (limit = 18) => {
   const res = await axios.get(
     `${BASE_URL}/anime?genres=27&order_by=popularity&sort=desc&limit=${limit}`

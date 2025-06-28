@@ -12,9 +12,9 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   const [canScrollLeft, setCanScrollLeft] = useState(false); 
   const [canScrollRight, setCanScrollRight] = useState(false); 
   const [retrying, setRetrying] = useState(false);
-  const [retryDelay, setRetryDelay] = useState(2000); // Start with 2 seconds
+  const [retryDelay, setRetryDelay] = useState(1000); // Start with 2 seconds
   
-  // Simplified overlay state
+
   const [hoveredAnime, setHoveredAnime] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 }); 
   
@@ -314,7 +314,6 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
           className="w-full h-[50vh] flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {/* maincard component */}
           {animeData.map((anime, index) => (
             <motion.div
               key={anime.mal_id}

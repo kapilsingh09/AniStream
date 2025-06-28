@@ -85,14 +85,14 @@ export default function Slider() {
     fetchAnime();
   }, [currentCategory]);
 
-  // useEffect(() => {
-  //   if (slides.length === 0) return;
-  //   const interval = setInterval(() => {
-  //     setDirection(1);
-  //     setCurrent((prev) => (prev + 1) % slides.length);
-  //   }, 8000);
-  //   return () => clearInterval(interval);
-  // }, [slides.length]);
+  useEffect(() => {
+    if (slides.length === 0) return;
+    const interval = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
 
   const nextSlide = () => {
     setDirection(1);
@@ -256,7 +256,7 @@ export default function Slider() {
   }
 
   return (
-    <div className="relative w-full h-[70vh] mt-16 overflow-hidden bg-black">
+    <div className="relative w-full h-[70vh] overflow-hidden bg-black">
       {/* Category Selector */}
       <div className="absolute top-4 left-4 z-40 flex gap-2">
         {Object.keys(apiEndpoints).map((category) => (
