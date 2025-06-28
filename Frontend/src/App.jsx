@@ -19,7 +19,7 @@ const App = () => {
         {/* Nested routes (relative paths) */}
         <Route path="explore" element={<ExplorePage />} />
         <Route path="play/:id" element={<AnimeCard />} />
-        <Route path="kitsu/:id" element={<KitsuAnimeCard  />} />
+        <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
 
         {/* 404 fallback route */}
         <Route path="*" element={<SorryCard />} />

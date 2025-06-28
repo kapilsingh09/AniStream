@@ -130,6 +130,10 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
     e.stopPropagation(); 
     navigate(`/anime/${anime.id}`); 
   };
+
+  const handlepage = (anime) =>{
+    navigate(`kitsu/${id}`)
+  }
   
   const calculateHoverPosition = (rect) => {
     const hoverCardWidth = 320; 
@@ -227,7 +231,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
   }, []);
   
   const handleCardClick = (anime) => {
-    navigate(`/play/${anime.id}`);
+    navigate(`/kitsu/${anime.id}`);
   };
 
   if (loading) {
@@ -307,7 +311,8 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
       <div className="relative px-10">
         <div
           ref={sliderRef}
-          className="w-full h-[50vh] flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
+
+          className="w-full h-[50vh]  flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {/* maincard component */}
@@ -316,13 +321,14 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
             return (
               <motion.div
                 key={anime.id}
-                onClick={() => handleCardClick(anime)}
+                // onClick={() => handleCardClick(anime)}
+                onClick={()=> {handleCardClick(anime)}}
                 onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
                 onMouseLeave={handleCardMouseLeave}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="min-w-[13vw] max-w-[13vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
+                className="min-w-[13vw] max-w-[13vw] rounded-xl border-2 overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
               >
                 <div className="relative h-[40vh] w-full">
                   <img

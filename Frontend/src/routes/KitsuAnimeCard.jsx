@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-/**
- * KitsuAnimeCard Component
- * 
- * Dark theme anime details component using Kitsu API
- * Matches the Jikan component's dark aesthetic while maintaining Kitsu API structure
- */
 const KitsuAnimeCard = ({ onNavigate }) => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [anime, setAnime] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isFavorited, setIsFavorited] = useState(false);
     const [isWatched, setIsWatched] = useState(false);
+    const [showFullDescription, setShowFullDescription] = useState(false);
+    const [activeTab, setActiveTab] = useState('overview');
 
     // Fetch anime details from Kitsu API
     const fetchAnimeDetails = async () => {
@@ -45,7 +42,9 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     };
 
     useEffect(() => {
-        fetchAnimeDetails();
+        if (id) {
+            fetchAnimeDetails();
+        }
     }, [id]);
 
     const formatDate = (dateString) => {
@@ -61,24 +60,24 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'finished':
-                return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+                return 'text-emerald-600 bg-emerald-50 border-emerald-200';
             case 'current':
-                return 'text-blue-400 bg-blue-500/10 border-blue-500/30';
+                return 'text-blue-600 bg-blue-50 border-blue-200';
             case 'upcoming':
-                return 'text-amber-400 bg-amber-500/10 border-amber-500/30';
+                return 'text-amber-600 bg-amber-50 border-amber-200';
             case 'tba':
-                return 'text-purple-400 bg-purple-500/10 border-purple-500/30';
+                return 'text-purple-600 bg-purple-50 border-purple-200';
             default:
-                return 'text-slate-400 bg-slate-500/10 border-slate-500/30';
+                return 'text-gray-600 bg-gray-50 border-gray-200';
         }
     };
 
     const renderStars = (rating) => {
-        const score = Math.round((rating || 0) / 20); // Kitsu uses 0-100 scale
+        const score = Math.round((rating || 0) / 20);
         return [...Array(5)].map((_, i) => (
             <Star
                 key={i}
-                className={`h-4 w-4 ${i < score ? 'text-amber-400' : 'text-slate-600'}`}
+                className={`h-4 w-4 ${i < score ? 'text-amber-400' : 'text-gray-300'}`}
                 fill={i < score ? 'currentColor' : 'none'}
             />
         ));
@@ -98,48 +97,49 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                'https://via.placeholder.com/300x400/0f172a/64748b?text=No+Poster';
     };
 
-    // Handle card click to navigate to detailed view
-    const handleCardClick = (e) => {
-        // Prevent navigation if clicking on interactive elements
-        if (e.target.closest('button') || e.target.closest('a')) {
-            return;
-        }
-        
-        if (onNavigate) {
-            onNavigate(`/kitsu/${id}`);
+    const handleWatchClick = () => {
+        window.open('https://www.crunchyroll.com', '_blank');
+    };
+
+    const handleEpisodesClick = () => {
+        window.open('https://www.funimation.com', '_blank');
+    };
+
+    const handleKitsuLink = () => {
+        if (anime?.id) {
+            window.open(`https://kitsu.io/anime/${anime.id}`, '_blank');
         } else {
-            // Fallback: use window.location for direct navigation
-            window.location.href = `/kitsu/${id}`;
+            window.open('https://kitsu.io', '_blank');
         }
     };
 
-    // Handle watch button click
-    const handleWatchClick = (e) => {
-        e.stopPropagation();
-        if (onNavigate) {
-            onNavigate(`/kitsu/${id}/watch`);
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: anime?.attributes?.canonicalTitle,
+                    text: `Check out ${anime?.attributes?.canonicalTitle} on Kitsu!`,
+                    url: window.location.href,
+                });
+            } catch (err) {
+                console.log('Error sharing:', err);
+            }
         } else {
-            window.location.href = `/kitsu/${id}/watch`;
-        }
-    };
-
-    // Handle episodes button click
-    const handleEpisodesClick = (e) => {
-        e.stopPropagation();
-        if (onNavigate) {
-            onNavigate(`/kitsu/${id}/episodes`);
-        } else {
-            window.location.href = `/kitsu/${id}/episodes`;
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard!');
         }
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500"></div>
-                    <div className="text-white text-xl font-medium">Loading from Kitsu API...</div>
-                    <div className="text-slate-300 text-sm">Fetching anime database</div>
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-blue-50 to-indigo-100">
+                <div className="flex flex-col items-center space-y-6">
+                    <div className="relative">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-rose-200 border-t-rose-500"></div>
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400 to-pink-400 opacity-20 animate-pulse"></div>
+                    </div>
+                    <div className="text-gray-700 text-xl font-medium">Loading anime details...</div>
+                    <div className="text-gray-500 text-sm">Fetching from Kitsu API</div>
                 </div>
             </div>
         );
@@ -147,16 +147,16 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
     if (error || !anime) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-red-900 to-slate-900">
-                <div className="text-center max-w-md">
-                    <div className="text-6xl mb-4">⚠️</div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Kitsu API Error</h2>
-                    <p className="text-red-300 mb-6">{error || 'Anime not found in Kitsu database'}</p>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+                <div className="text-center max-w-md bg-white p-8 rounded-2xl shadow-lg border border-red-100">
+                    <div className="text-6xl mb-4">😔</div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops! Something went wrong</h2>
+                    <p className="text-red-600 mb-6">{error || 'Anime not found in Kitsu database'}</p>
                     <button
                         onClick={fetchAnimeDetails}
-                        className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 font-medium"
+                        className="px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
-                        Retry Connection
+                        Try Again
                     </button>
                 </div>
             </div>
@@ -164,302 +164,302 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     }
 
     const attributes = anime.attributes;
+    const truncatedDescription = attributes?.synopsis?.substring(0, 300) + '...';
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
-            <div className="max-w-7xl mx-auto p-6">
-                {/* API Source Indicator */}
-                <div className="mb-4 flex items-center gap-2 text-sm">
-                    <div className="bg-purple-600 text-white px-3 py-1 rounded-full font-medium flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Kitsu API
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-blue-50 to-indigo-100 py-4 px-4">
+            <div className="max-w-none w-[70%] mx-auto">
+                
+                {/* API Source Badge */}
+                <div className="mb-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 shadow-lg">
+                            <Sparkles className="h-4 w-4" />
+                            Kitsu API
+                        </div>
+                        <span className="text-gray-600 text-sm">Beautiful Anime Database</span>
                     </div>
-                    <span className="text-slate-400">Beautiful Anime Database</span>
-                </div>
-
-                {/* Main Container */}
-                <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50">
                     
-                    {/* Back Button */}
                     <button
-                        onClick={() => window.history.back()}
-                        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-white hover:text-purple-300 transition-colors duration-200 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20 hover:bg-black/50"
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-gray-200 hover:bg-white/80 shadow-sm"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span className="text-sm font-medium">Back</span>
                     </button>
+                </div>
 
-                    {/* Hero Banner Section */}
-                    <div className="h-[50vh] w-full relative overflow-hidden">
+                {/* Main Card */}
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/50">
+                    
+                    {/* Hero Banner */}
+                    <div className="h-64 md:h-80 lg:h-96 w-full relative overflow-hidden">
                         <img
                             src={getBannerImage()}
-                            alt={attributes?.canonicalTitle || attributes?.titles?.en}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/1200x600/0f172a/64748b?text=Kitsu+API+-+No+Banner';
-                            }}
+                            alt={attributes?.canonicalTitle}
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-800/98 via-slate-800/40 to-transparent"></div>
-
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                        
                         {/* Play Button */}
                         <button
                             onClick={handleWatchClick}
-                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-purple-600/90 hover:bg-purple-600 hover:scale-110 transition-all duration-300 rounded-full p-6 shadow-2xl border-2 border-white/20"
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md hover:bg-white/30 hover:scale-110 transition-all duration-300 rounded-full p-6 shadow-2xl border border-white/30 group"
                         >
-                            <Play className="h-8 w-8 text-white ml-1" fill="white" />
+                            <Play className="h-8 w-8 text-white ml-1 group-hover:text-rose-200" fill="white" />
                         </button>
 
-                        {/* Production Info Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-slate-900/95 to-transparent">
-                            <div className="flex items-end justify-between">
-                                <div>
-                                    <h3 className="text-lg font-bold mb-2 text-purple-300">Production Details</h3>
-                                    <p className="text-slate-300 text-sm">From Kitsu Database</p>
+                        {/* Quick Stats Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-white">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
+                                    <span>{attributes?.showType}</span>
                                 </div>
-                                <div className="grid grid-cols-2 gap-6 text-sm">
-                                    <div className="flex items-center gap-2 text-white">
-                                        <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                                        <span><strong>Type:</strong> {attributes?.showType || 'Unknown'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                        <span><strong>Year:</strong> {attributes?.startDate ? new Date(attributes.startDate).getFullYear() : 'Unknown'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                                        <span><strong>Episodes:</strong> {attributes?.episodeCount || 'Unknown'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-                                        <span><strong>Rating:</strong> {attributes?.averageRating ? `${Math.round(attributes.averageRating)}%` : 'N/A'}</span>
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                    <span>{attributes?.episodeCount} Episodes</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                                    <span>{Math.round(attributes?.averageRating)}% Rating</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex flex-col lg:flex-row p-8 gap-8">
-
-                        {/* Left Sidebar */}
-                        <div className="lg:w-1/3 space-y-6">
+                    <div className="p-6 md:p-8 lg:p-10">
+                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                             
-                            {/* Poster */}
-                            <div className="relative group">
-                                <img
-                                    src={getPosterImage()}
-                                    alt={attributes?.canonicalTitle}
-                                    className="w-full max-w-sm h-96 object-cover rounded-2xl shadow-2xl border-2 border-purple-500/30 group-hover:border-purple-400/50 transition-all duration-300"
-                                    onError={(e) => {
-                                        e.target.src = 'https://via.placeholder.com/300x400/0f172a/64748b?text=No+Poster';
-                                    }}
-                                />
-                            </div>
+                            {/* Left Column - Poster & Actions */}
+                            <div className="lg:w-1/3 space-y-6">
+                                
+                                {/* Poster */}
+                                <div className="relative group">
+                                    <img
+                                        src={getPosterImage()}
+                                        alt={attributes?.canonicalTitle}
+                                        className="w-full max-w-sm mx-auto lg:mx-0 h-80 md:h-96 object-cover rounded-2xl shadow-lg border-2 border-white group-hover:shadow-2xl transition-all duration-300"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </div>
 
-                            {/* Action Buttons */}
-                            <div className="space-y-4">
-                                {/* Watch Button */}
-                                <button
-                                    onClick={handleWatchClick}
-                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg font-semibold text-lg"
-                                >
-                                    <Play className="h-5 w-5" fill="white" />
-                                    Start Watching
-                                </button>
-
-                                {/* Secondary Actions */}
-                                <div className="grid grid-cols-3 gap-3">
+                                {/* Action Buttons */}
+                                <div className="space-y-4">
                                     <button
-                                        onClick={() => setIsBookmarked(!isBookmarked)}
-                                        className={`${isBookmarked ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-700 hover:bg-slate-600'} text-white py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2`}
+                                        onClick={handleWatchClick}
+                                        className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl font-semibold text-lg transform hover:scale-105"
                                     >
-                                        <Bookmark className="h-5 w-5" fill={isBookmarked ? "white" : "none"} />
-                                        <span className="text-xs font-medium">Save</span>
+                                        <Play className="h-5 w-5" fill="white" />
+                                        Watch Now
                                     </button>
 
-                                    <button
-                                        onClick={() => setIsFavorited(!isFavorited)}
-                                        className={`${isFavorited ? 'bg-red-500 hover:bg-red-600' : 'bg-slate-700 hover:bg-slate-600'} text-white py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2`}
-                                    >
-                                        <Heart className="h-5 w-5" fill={isFavorited ? "white" : "none"} />
-                                        <span className="text-xs font-medium">Love</span>
-                                    </button>
+                                    {/* Secondary Actions */}
+                                    <div className="grid grid-cols-4 gap-3">
+                                        <button
+                                            onClick={() => setIsBookmarked(!isBookmarked)}
+                                            className={`${isBookmarked ? 'bg-gradient-to-br from-amber-400 to-orange-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                        >
+                                            <Bookmark className="h-4 w-4" fill={isBookmarked ? "white" : "none"} />
+                                            <span className="text-xs font-medium">Save</span>
+                                        </button>
 
-                                    <button
-                                        onClick={() => setIsWatched(!isWatched)}
-                                        className={`${isWatched ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-slate-700 hover:bg-slate-600'} text-white py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2`}
-                                    >
-                                        <Eye className="h-5 w-5" />
-                                        <span className="text-xs font-medium">Seen</span>
-                                    </button>
+                                        <button
+                                            onClick={() => setIsFavorited(!isFavorited)}
+                                            className={`${isFavorited ? 'bg-gradient-to-br from-red-400 to-pink-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                        >
+                                            <Heart className="h-4 w-4" fill={isFavorited ? "white" : "none"} />
+                                            <span className="text-xs font-medium">Love</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => setIsWatched(!isWatched)}
+                                            className={`${isWatched ? 'bg-gradient-to-br from-emerald-400 to-green-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                        >
+                                            <Eye className="h-4 w-4" />
+                                            <span className="text-xs font-medium">Seen</span>
+                                        </button>
+
+                                        <button
+                                            onClick={handleShare}
+                                            className="bg-gray-100 hover:bg-gray-200 text-gray-600 py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm"
+                                        >
+                                            <Share2 className="h-4 w-4" />
+                                            <span className="text-xs font-medium">Share</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Rating Card */}
+                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-2xl border border-amber-100 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Award className="h-6 w-6 text-amber-500" />
+                                        <span className="text-lg font-bold text-gray-800">Community Score</span>
+                                    </div>
+                                    <div className="flex items-center gap-4 mb-3">
+                                        <div className="flex items-center gap-1">
+                                            {renderStars(attributes?.averageRating)}
+                                        </div>
+                                        <span className="text-gray-800 font-bold text-2xl">
+                                            {Math.round(attributes?.averageRating)}%
+                                        </span>
+                                    </div>
+                                    <div className="text-gray-600 text-sm">
+                                        {attributes?.userCount?.toLocaleString()} users rated
+                                    </div>
+                                </div>
+
+                                {/* Stats Grid */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-100 shadow-sm">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Users className="h-4 w-4 text-purple-500" />
+                                            <span className="text-xs text-gray-600">Popularity</span>
+                                        </div>
+                                        <div className="text-gray-800 font-bold text-lg">#{attributes?.popularityRank}</div>
+                                    </div>
+
+                                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-100 shadow-sm">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Star className="h-4 w-4 text-blue-500" />
+                                            <span className="text-xs text-gray-600">Rank</span>
+                                        </div>
+                                        <div className="text-gray-800 font-bold text-lg">#{attributes?.ratingRank}</div>
+                                    </div>
+
+                                    <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Heart className="h-4 w-4 text-emerald-500" />
+                                            <span className="text-xs text-gray-600">Favorites</span>
+                                        </div>
+                                        <div className="text-gray-800 font-bold text-sm">{attributes?.favoritesCount?.toLocaleString()}</div>
+                                    </div>
+
+                                    <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-4 rounded-xl border border-rose-100 shadow-sm">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Globe className="h-4 w-4 text-rose-500" />
+                                            <span className="text-xs text-gray-600">Users</span>
+                                        </div>
+                                        <div className="text-gray-800 font-bold text-sm">{Math.floor(attributes?.userCount / 1000)}K</div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Rating Display */}
-                            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 p-6 rounded-2xl border border-purple-500/30">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Award className="h-6 w-6 text-amber-400" />
-                                    <span className="text-lg font-bold text-white">Kitsu Score</span>
-                                </div>
-                                <div className="flex items-center gap-4 mb-3">
-                                    <div className="flex items-center gap-1">
-                                        {renderStars(attributes?.averageRating)}
+                            {/* Right Column - Details */}
+                            <div className="lg:w-2/3 space-y-8">
+                                
+                                {/* Title Section */}
+                                <div>
+                                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                                        {attributes?.canonicalTitle}
+                                    </h1>
+                                    {attributes?.titles?.ja_jp && (
+                                        <h2 className="text-xl md:text-2xl text-gray-600 mb-6">
+                                            {attributes.titles.ja_jp}
+                                        </h2>
+                                    )}
+
+                                    <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(attributes?.status)} mb-6`}>
+                                        <div className="w-2 h-2 rounded-full bg-current"></div>
+                                        {attributes?.status?.charAt(0).toUpperCase() + attributes?.status?.slice(1)}
                                     </div>
-                                    <span className="text-white font-bold text-2xl">
-                                        {attributes?.averageRating ? `${Math.round(attributes.averageRating)}%` : 'Not Rated'}
-                                    </span>
+
+                                    {/* Description */}
+                                    <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                        <p className="text-gray-700 text-base leading-relaxed">
+                                            {showFullDescription ? attributes?.synopsis : truncatedDescription}
+                                        </p>
+                                        {attributes?.synopsis?.length > 300 && (
+                                            <button
+                                                onClick={() => setShowFullDescription(!showFullDescription)}
+                                                className="mt-3 text-rose-600 hover:text-rose-700 font-medium text-sm flex items-center gap-1 transition-colors"
+                                            >
+                                                {showFullDescription ? 'Show Less' : 'Read More'}
+                                                <ChevronDown className={`h-4 w-4 transition-transform ${showFullDescription ? 'rotate-180' : ''}`} />
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="text-slate-300 text-sm">
-                                    {attributes?.userCount ? `${attributes.userCount.toLocaleString()} users rated` : 'No ratings yet'}
+
+                                {/* Information Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Tv className="h-5 w-5 text-rose-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Format</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-lg">{attributes?.showType}</span>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Calendar className="h-5 w-5 text-blue-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Aired</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-sm">
+                                            {formatDate(attributes?.startDate)}
+                                        </span>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <List className="h-5 w-5 text-purple-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Episodes</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-lg">{attributes?.episodeCount}</span>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Clock className="h-5 w-5 text-emerald-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Duration</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-lg">{attributes?.episodeLength} min</span>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Info className="h-5 w-5 text-amber-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Age Rating</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-lg">{attributes?.ageRating}</span>
+                                    </div>
+
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Globe className="h-5 w-5 text-indigo-500" />
+                                            <span className="text-gray-600 font-medium text-sm">Status</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800 text-lg capitalize">{attributes?.status}</span>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Statistics */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 p-4 rounded-xl border border-purple-500/30">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Users className="h-5 w-5 text-purple-400" />
-                                        <span className="text-sm text-slate-300">Popularity</span>
-                                    </div>
-                                    <div className="text-white font-bold text-lg">#{attributes?.popularityRank || 'N/A'}</div>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 p-4 rounded-xl border border-blue-500/30">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Globe className="h-5 w-5 text-blue-400" />
-                                        <span className="text-sm text-slate-300">Rank</span>
-                                    </div>
-                                    <div className="text-white font-bold text-lg">#{attributes?.ratingRank || 'N/A'}</div>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-emerald-600/20 to-green-600/20 p-4 rounded-xl border border-emerald-500/30">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Star className="h-5 w-5 text-emerald-400" />
-                                        <span className="text-sm text-slate-300">Users</span>
-                                    </div>
-                                    <div className="text-white font-bold text-lg">{attributes?.userCount ? attributes.userCount.toLocaleString() : 'N/A'}</div>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-orange-600/20 to-red-600/20 p-4 rounded-xl border border-orange-500/30">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Heart className="h-5 w-5 text-orange-400" />
-                                        <span className="text-sm text-slate-300">Favorites</span>
-                                    </div>
-                                    <div className="text-white font-bold text-lg">{attributes?.favoritesCount || 'N/A'}</div>
-                                </div>
-                            </div>
-
-                            {/* External Link */}
+                        {/* Action Buttons */}
+                        <div className="mt-10 flex flex-col sm:flex-row gap-4">
                             <button
-                                onClick={() => window.open(`https://kitsu.io/anime/${id}`, '_blank')}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center gap-3 shadow-lg font-semibold"
+                                onClick={handleEpisodesClick}
+                                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                             >
-                                <ExternalLink className="h-5 w-5" />
-                                View on Kitsu
+                                <div className="flex items-center justify-center gap-3">
+                                    <Film className="h-5 w-5" />
+                                    <span>Browse Episodes</span>
+                                    <ChevronRight className="h-5 w-5" />
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={handleKitsuLink}
+                                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300 font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                            >
+                                <div className="flex items-center justify-center gap-3">
+                                    <ExternalLink className="h-5 w-5" />
+                                    <span>View on Kitsu</span>
+                                </div>
                             </button>
                         </div>
-
-                        {/* Right Content */}
-                        <div className="lg:w-2/3 text-white space-y-8">
-                            
-                            {/* Title Section */}
-                            <div>
-                                <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                                    {attributes?.canonicalTitle || attributes?.titles?.en || 'Unknown Title'}
-                                </h1>
-                                {attributes?.titles?.ja_jp && (
-                                    <h2 className="text-2xl text-slate-300 mb-6">
-                                        {attributes.titles.ja_jp}
-                                    </h2>
-                                )}
-
-                                <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-bold border ${getStatusColor(attributes?.status)} mb-6`}>
-                                    <div className="w-3 h-3 rounded-full bg-current animate-pulse"></div>
-                                    {attributes?.status?.charAt(0).toUpperCase() + attributes?.status?.slice(1) || 'Unknown Status'}
-                                </div>
-
-                                <p className="text-slate-300 text-lg leading-relaxed">
-                                    {attributes?.synopsis || 'No description available for this anime.'}
-                                </p>
-                            </div>
-
-                            {/* Information Grid */}
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Tv className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Format</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.showType?.charAt(0).toUpperCase() + attributes?.showType?.slice(1) || 'Unknown'}
-                                    </span>
-                                </div>
-
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Calendar className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Start Date</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.startDate ? formatDate(attributes.startDate) : 'Unknown'}
-                                    </span>
-                                </div>
-
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <List className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Episodes</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.episodeCount || 'Unknown'}
-                                    </span>
-                                </div>
-
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Clock className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Duration</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.episodeLength ? `${attributes.episodeLength} min` : 'Unknown'}
-                                    </span>
-                                </div>
-
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Star className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Age Rating</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.ageRating || 'Not Rated'}
-                                    </span>
-                                </div>
-
-                                <div className="bg-slate-700/60 p-6 rounded-2xl border border-slate-600/50 hover:bg-slate-700/80 transition-all duration-300">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Globe className="h-6 w-6 text-purple-400" />
-                                        <span className="text-slate-400 font-medium">Status</span>
-                                    </div>
-                                    <span className="font-bold text-white text-lg">
-                                        {attributes?.status ? attributes.status.charAt(0).toUpperCase() + attributes.status.slice(1) : 'Unknown'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Episodes Button */}
-                    <div className="px-8 pb-8">
-                        <button
-                            onClick={handleEpisodesClick}
-                            className="group w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] shadow-2xl"
-                        >
-                            <div className="flex items-center justify-center gap-4">
-                                <Film className="h-6 w-6" />
-                                <span className="text-xl">Explore Episodes</span>
-                                <ChevronRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
-                            </div>
-                        </button>
                     </div>
                 </div>
             </div>
