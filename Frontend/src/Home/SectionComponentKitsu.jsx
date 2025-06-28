@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Info, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SectionComponentKitsu = ({ title = "Trending Anime", fetchFunction, className = "" }) => {
+const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetchFunction, className = "" }) => {
   const [animeData, setAnimeData] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
@@ -298,10 +298,12 @@ const SectionComponentKitsu = ({ title = "Trending Anime", fetchFunction, classN
 
       <div className="flex items-center px-10 mb-2">
         <h1 className="text-white text-2xl font-bold drop-shadow-lg">{title}</h1>
+        <br />
         <div className="flex-1 h-px bg-white/30 ml-4"></div>
         <div className="text-white/80 text-sm ml-4 drop-shadow">{animeData.length} items</div>
       </div>
 
+        <h3 className= " ml-10 text-red-300 text-sm  font-bold drop-shadow-lg">{subtitle}</h3>
       <div className="relative px-10">
         <div
           ref={sliderRef}

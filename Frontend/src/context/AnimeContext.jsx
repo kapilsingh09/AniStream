@@ -4,47 +4,20 @@ import {
   FetchTopRatedAnime,//done
   FetchPopularAnime,//done
   FetchUpcomingAnime,//done
-  FetchTopAnime,//
-  FetchSeasonalAnime,//
+  FetchTopAnime,//done
+  FetchSeasonalAnime,//done
   FetchCurrentSeasonAnime,//done
-  FetchRomComAnime,//wasted
-  FetchActionAnime,//wasted
-  FetchShounenAnime,
-  FetchSliceOfLifeAnime,
-  FetchHorrorAnime,//
-  FetchDramaAnime,
-  FetchFantasyAnime,
-  FetchComedyAnime,
-  FetchThrillerAnime,
-  FetchSportsAnime,
-  FetchSchoolAnime,
-  FetchIsekaiAnime,
-  FetchMovieAnime,
-  FetchOVAAnime,
-  FetchRandomAnime,
-  FetchTopCharacters,
-  FetchGenres
+  FetchTrendingRomanceComedyAnime,
 } from '../services/JikhanAnimeApi';
 
 import {
-  fetchSeasonalAnime,//wasted
-  fetchTrendingAnime,
+  fetchSeasonalAnime,//
+  fetchTrendingAnime,//useing
+  getRandomAnime,//imp 
   searchAnime,
-  fetchAnimeDetails,
-  fetchAnimeEpisodes,
-  fetchCategories,
-  fetchAnimeByCategory,
-  fetchAnimeReviews,
-  fetchAnimeCharacters,
-  fetchRelatedAnime,
-  fetchAnimeStaff,
-  fetchTopManga,
-  searchManga,
-  fetchMangaDetails,
-  fetchAnimeGenres,
-  fetchStreamingLinks,
-  fetchRandomRomcomAnime,
-  getRandomAnime
+  fetchRomanceAnime,//using
+  fetchActionAnime,//working
+  fetchHorrorAnime,//working
 } from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
@@ -58,23 +31,7 @@ const AnimeContext = ({ children }) => {
   const [topAnime, setTopAnime] = useState([]);
   const [seasonalAnime, setSeasonalAnime] = useState([]);
   const [currentSeasonAnime, setCurrentSeasonAnime] = useState([]);
-  const [romcomAnime, setRomcomAnime] = useState([]);
-  const [actionAnime, setActionAnime] = useState([]);
-  const [shounenAnime, setShounenAnime] = useState([]);
-  const [sliceOfLifeAnime, setSliceOfLifeAnime] = useState([]);
-  const [horrorAnime, setHorrorAnime] = useState([]);
-  const [dramaAnime, setDramaAnime] = useState([]);
-  const [fantasyAnime, setFantasyAnime] = useState([]);
-  const [comedyAnime, setComedyAnime] = useState([]);
-  const [thrillerAnime, setThrillerAnime] = useState([]);
-  const [sportsAnime, setSportsAnime] = useState([]);
-  const [schoolAnime, setSchoolAnime] = useState([]);
-  const [isekaiAnime, setIsekaiAnime] = useState([]);
-  const [movieAnime, setMovieAnime] = useState([]);
-  const [ovaAnime, setOvaAnime] = useState([]);
-  const [randomAnime, setRandomAnime] = useState([]);
-  const [topCharacters, setTopCharacters] = useState([]);
-  const [genres, setGenres] = useState([]);
+  const [trendingRomanceComedyAnime, setTrendingRomanceComedyAnime] = useState([]);
 
   // ===== KITSU STATES =====
   const [kitsuSeasonalAnime, setKitsuSeasonalAnime] = useState([]);
@@ -112,34 +69,36 @@ const AnimeContext = ({ children }) => {
   const fetchUpcomingData = (limit = 15) => fetchWithErrorHandling(() => FetchUpcomingAnime(limit), setUpcomingAnime, 'upcoming', 'upcomingError');
   const fetchSeasonalData = (year = 2024, season = 'spring', limit = 15) => fetchWithErrorHandling(() => FetchSeasonalAnime(year, season, limit), setSeasonalAnime, 'seasonal', 'seasonalError');
   const fetchCurrentSeasonData = (limit = 15) => fetchWithErrorHandling(() => FetchCurrentSeasonAnime(limit), setCurrentSeasonAnime, 'currentSeason', 'currentSeasonError');
-  const fetchRomcomData = (limit = 18) => fetchWithErrorHandling(() => FetchRomComAnime(limit), setRomcomAnime, 'romcom', 'romcomError');
-  const fetchActionData = (limit = 18) => fetchWithErrorHandling(() => FetchActionAnime(limit), setActionAnime, 'action', 'actionError');
-  const fetchHorrorData = (limit = 18) => fetchWithErrorHandling(() => FetchHorrorAnime(limit), setHorrorAnime, 'horror', 'horrorError');
-  const fetchRandomData = () => fetchWithErrorHandling(FetchRandomAnime, setRandomAnime, 'random', 'randomError');
+  const fetchTrendingRomanceComedyData = (limit = 18) => fetchWithErrorHandling(() => FetchTrendingRomanceComedyAnime(limit), setTrendingRomanceComedyAnime, 'trendingRomanceComedy', 'trendingRomanceComedyError');
 
   // ===== KITSU FETCH FUNCTIONS =====
   const fetchKitsuSeasonalData = (season = 'summer', year = 2024, limit = 20) => fetchWithErrorHandling(() => fetchSeasonalAnime(season, year, limit), setKitsuSeasonalAnime, 'kitsuSeasonal', 'kitsuSeasonalError');
   const fetchKitsuTrendingData = (limit = 20) => fetchWithErrorHandling(() => fetchTrendingAnime(limit), setKitsuTrendingAnime, 'kitsuTrending', 'kitsuTrendingError');
   const fetchKitsuRandomData = () => fetchWithErrorHandling(getRandomAnime, setKitsuRandomAnime, 'kitsuRandom', 'kitsuRandomError');
   const searchKitsuAnime = (query, limit = 20) => fetchWithErrorHandling(() => searchAnime(query, limit), setKitsuTrendingAnime, 'search', 'searchError');
+  
+  // ===== ADDITIONAL KITSU FUNCTIONS =====
+  const fetchRomanceData = (limit = 20) => fetchWithErrorHandling(() => fetchRomanceAnime(limit), setKitsuRomcomAnime, 'romance', 'romanceError');
+  const fetchActionData = (limit = 20) => fetchWithErrorHandling(() => fetchActionAnime(limit), setKitsuTrendingAnime, 'action', 'actionError');
+  const fetchHorrorData = (limit = 20) => fetchWithErrorHandling(() => fetchHorrorAnime(limit), setKitsuTrendingAnime, 'horror', 'horrorError');
 
   // ===== ALL DATA LOADER =====
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
       await Promise.allSettled([
-        // fetchSeasonalAnime(), /wasted
-        //jikhan api...
-        // FetchTopAnime(),//wasted
-        // FetchDramaAnime(),//wasted
-        FetchHorrorAnime(),
         fetchTrendingData(),
         fetchUpcomingData(),
-        fetchRandomData(),
-        fetchHorrorData(),
+        fetchTopRatedData(),
+        FetchTopAnime(),
+        fetchSeasonalData(),
+        fetchCurrentSeasonData(),
+        FetchTrendingRomanceComedyAnime(),
         // kisthuapi
         fetchKitsuTrendingData(),
+        fetchRomanceData(),
         fetchKitsuRandomData(),
+        fetchHorrorData(),
       ]);
     } catch (e) {
       console.error('Error in fetchAllData:', e);
@@ -163,23 +122,7 @@ const AnimeContext = ({ children }) => {
         topAnime,
         seasonalAnime,
         currentSeasonAnime,
-        romcomAnime,
-        actionAnime,
-        shounenAnime,
-        sliceOfLifeAnime,
-        horrorAnime,
-        dramaAnime,
-        fantasyAnime,
-        comedyAnime,
-        thrillerAnime,
-        sportsAnime,
-        schoolAnime,
-        isekaiAnime,
-        movieAnime,
-        ovaAnime,
-        randomAnime,
-        topCharacters,
-        genres,
+        trendingRomanceComedyAnime,
 
         // Kitsu States
         kitsuSeasonalAnime,
@@ -202,16 +145,16 @@ const AnimeContext = ({ children }) => {
         fetchUpcomingData,
         fetchSeasonalData,
         fetchCurrentSeasonData,
-        fetchRomcomData,
-        fetchActionData,
-        fetchHorrorData,
-        fetchRandomData,
+        fetchTrendingRomanceComedyData,
 
         // Kitsu Functions
         fetchKitsuSeasonalData,
         fetchKitsuTrendingData,
         fetchKitsuRandomData,
         searchKitsuAnime,
+        fetchRomanceData,
+        fetchActionData,
+        fetchHorrorData,
 
         // Re-fetch all
         fetchAllData,
