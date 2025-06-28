@@ -2,6 +2,20 @@ import axios from 'axios';
 
 const BASE_URL = 'https://kitsu.io/api/edge';
 
+// FOR FILTER PAG//E
+
+export const fetchAllAnime = async (limit = 20, offset = 0) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'page[limit]': limit,
+      'page[offset]': offset,
+      'sort': '-popularityRank', // sort by popular
+    },
+  });
+  return res.data.data;
+};
+
+
 //done
 export const fetchTrendingAnime = async (limit = 20) => {
   const res = await axios.get(`${BASE_URL}/trending/anime?limit=${limit}`);

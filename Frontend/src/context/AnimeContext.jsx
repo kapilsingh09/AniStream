@@ -18,6 +18,7 @@ import {
   fetchRomanceAnime,//using
   fetchActionAnime,//working
   fetchHorrorAnime,//working
+  fetchAllAnime,//for filter page all option
 } from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
@@ -34,6 +35,7 @@ const AnimeContext = ({ children }) => {
   const [trendingRomanceComedyAnime, setTrendingRomanceComedyAnime] = useState([]);
 
   // ===== KITSU STATES =====
+  const [allAnime,setAllanime] = useState([]);
   const [kitsuSeasonalAnime, setKitsuSeasonalAnime] = useState([]);
   const [kitsuTrendingAnime, setKitsuTrendingAnime] = useState([]);
   const [kitsuRandomAnime, setKitsuRandomAnime] = useState([]);
@@ -125,6 +127,7 @@ const AnimeContext = ({ children }) => {
         fetchHorrorData(),
         // Ghibli API
         fetchGhibliFilms(),
+        fetchAllAnime()
       ]);
     } catch (e) {
       console.error('Error in fetchAllData:', e);
@@ -152,6 +155,7 @@ const AnimeContext = ({ children }) => {
 
         // Kitsu States
         kitsuSeasonalAnime,
+        allAnime,
         kitsuTrendingAnime,
         kitsuRandomAnime,
         kitsuRomcomAnime,
