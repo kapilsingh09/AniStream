@@ -5,6 +5,7 @@ import {
   TrendingUp, Clock, Award, Globe, Zap, Calendar, Grid,
   ChevronRight, Play, Eye, MessageCircle, ThumbsUp, Share2
 } from "lucide-react";
+import Spotlight from "../ExplorePage/Spotlight";
 
 export default function ExplorePage() {
   const [search, setSearch] = useState("");
@@ -83,7 +84,7 @@ export default function ExplorePage() {
   return (
     <div className="bg-gradient-to-b from-gray-950 via-gray-900 to-black min-h-screen text-white">
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-purple-900/50 to-pink-800/50 overflow-hidden">
+      {/* <div className="relative h-96 bg-gradient-to-r from-purple-900/50 to-pink-800/50 overflow-hidden">
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 p-8 h-full flex flex-col justify-center">
           <h1 className="text-6xl font-bold mb-4 flex items-center gap-4">
@@ -101,60 +102,14 @@ export default function ExplorePage() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="p-8 space-y-12">
         {/* Quick Filters */}
         <Filter />
 
         {/* Featured Spotlight */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-4xl font-bold flex items-center gap-3">
-              <Flame className="text-orange-500" /> Featured Spotlight
-            </h2>
-            <button className="flex items-center gap-2 text-pink-400 hover:text-pink-300">
-              View All <ChevronRight />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredAnime.map((anime, idx) => (
-              <div key={idx} className="group bg-gray-900 rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/20 transition-all duration-300 hover:scale-105">
-                <div className="relative">
-                  <img src={anime.image} alt={anime.title} className="w-full h-64 object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex gap-2 mb-2">
-                        <button className="bg-pink-600 p-2 rounded-full hover:bg-pink-700">
-                          <Play size={16} />
-                        </button>
-                        <button className="bg-gray-800/80 p-2 rounded-full hover:bg-gray-700">
-                          <Heart size={16} />
-                        </button>
-                        <button className="bg-gray-800/80 p-2 rounded-full hover:bg-gray-700">
-                          <Share2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold">
-                    ★ {anime.rating}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 line-clamp-2">{anime.title}</h3>
-                  <div className="flex justify-between text-sm text-gray-400 mb-4">
-                    <span>{anime.year}</span>
-                    <span>{anime.episodes} eps</span>
-                    <span className={`px-2 py-1 rounded ${anime.status === 'Ongoing' ? 'bg-green-600' : 'bg-blue-600'} text-white`}>
-                      {anime.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+   <Spotlight />
 
         {/* Trending Now */}
         <section className="space-y-6">

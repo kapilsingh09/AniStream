@@ -22,7 +22,6 @@ import {
 } from "../services/JikhanAnimeApi";
 
 const filters = [
-  {label:"wait"},
   { label: "All", value: "all", api: "kitsu", icon: "🎬" },
   { label: "Trending", value: "trending", api: "jikan", icon: "🔥" },
   { label: "Top Rated", value: "topRated", api: "jikan", icon: "⭐" },
@@ -82,7 +81,7 @@ const FeaturedSection = () => {
           result = await FetchUpcomingAnime(20);
           break;
         default:
-          result = '';
+          result = await fetchTrendingAnime(20);
       }
       setCurrentAnimeData(result);
     } catch (err) {
