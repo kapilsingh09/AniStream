@@ -315,7 +315,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
           className="w-full h-[50vh]  flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {/* maincard component */}
+          {/* maincard component  parent of cards*/}
           {animeData.map((anime, index) => {
             const attr = anime.attributes;
             return (
@@ -328,7 +328,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="min-w-[13vw] max-w-[13vw] rounded-xl border-2 overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
+                className="min-w-[13vw] max-w-[13vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
               >
                 <div className="relative h-[40vh] w-full">
                   <img
