@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+
+#second-slider::-webkit-scrollbar{
+    display: none;
+}

@@ -104,7 +104,7 @@ const AnimeBanner = () => {
   };
 
   return (
-    <div className="h-[60vh] w-full flex overflow-hidden text-white relative">
+    <div className="h-[60vh] w-[80%] flex overflow-hidden text-white relative">
       {/* Left Side */}
       <div className="w-[60%] bg-black flex flex-col justify-center p-6 md:p-12 z-10">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">

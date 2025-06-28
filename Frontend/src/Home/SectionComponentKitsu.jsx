@@ -167,14 +167,14 @@ const SectionComponentKitsu = ({ title = "Trending Anime", fetchFunction, classN
   }
 
   return (
-    <div className={`h-[60vh] bg-zinc-900 py-3 ${className} relative text-white`}>
+    <div  className={`h-[60vh] bg-zinc-900 py-3 ${className} relative text-white`}>
       <div className="flex items-center px-10 mb-2">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <div className="ml-4 text-sm opacity-70">{animeData.length} items</div>
+        {/* <div className="ml-4 text-sm opacity-70">{animeData.length} items</div> */}
       </div>
 
-      <div className="relative px-10">
-        <div ref={sliderRef} className="w-full h-[50vh] flex overflow-x-auto gap-6 py-2 scrollbar-hide scroll-smooth">
+      <div className="relative px-10 " >
+        <div ref={sliderRef} id='second-slider' className="w-full h-[50vh] flex overflow-x-auto gap-6 py-2 scrollbar-hide scroll-smooth">
           {animeData.map((anime, index) => {
             const attr = anime.attributes;
             return (

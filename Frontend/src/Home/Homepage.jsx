@@ -6,28 +6,30 @@ import AnimeSection from './AnimeSection'
 import { FetchUpcomingAnime } from '../services/JikhanAnimeApi';
 import {
   fetchTrendingAnime,
-
+  fetchSeasonalAnime,
 } from '../services/kitsuAnimeApi';
 import SimpleAnimeBanner from './SimpleAnimeBanner';
 
 const Homepage = () => {
   return (
     <div className="flex-1">
-      {/* <AnimeSlider />
-      {/* Seasonal Anime from Kitsu */}
-      {/* <SectionComponentKitsu 
+   <AnimeSlider />
+     {/* Seasonal Anime from Kitsu  */}
+   <SectionComponentKitsu 
         title="Trending Now!" 
         fetchFunction={fetchTrendingAnime} 
       />
 
-      {/* Rom-Com Anime from Kitsu */}
-      {/* <SectionComponentKitsu 
+  {/* Rom-Com Anime from Kitsu  */}
+ <SectionComponentKitsu 
         title="Rom-Com Anime" 
-        fetchFunction={fetchRomComAnime} 
-      /> */}
-      {/* <AnimeSection fetchFunction={FetchUpcomingAnime} title='Upcoming Anime' />
+        fetchFunction={fetchSeasonalAnime} 
+      />  
+       {/* <AnimeSection fetchFunction={FetchUpcomingAnime} title='Upcoming Anime' /> */}
+<div className='flex items-center justify-center'>
 
-      <AnimeBanner /> */} \
+      <AnimeBanner /> 
+</div>
       <div className='flex items-center justify-center'>
 
       <SimpleAnimeBanner />

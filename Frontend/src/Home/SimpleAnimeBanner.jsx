@@ -1,15 +1,20 @@
-import cagliostro from '../assets/ghibli/cagliostro.jpg'
-import nausicaa from '../assets/ghibli/nausicaa.jpg'
-import castleInTheSky from '../assets/ghibli/castle_in_the_sky.jpg'
-import totoro from '../assets/ghibli/totoro.jpg'
-import kiki from '../assets/ghibli/kiki.jpg'
-import porcoRosso from '../assets/ghibli/porco_rosso.jpg'
-import mononoke from '../assets/ghibli/mononoke.jpg'
-import spiritedAway from '../assets/ghibli/spirited_away.jpg'
-import howl from '../assets/ghibli/howl.jpg'
-import ponyo from '../assets/ghibli/ponyo.jpg'
-import windRises from '../assets/ghibli/wind_rises.jpg'
-import boyAndHeron from '../assets/ghibli/boy_and_heron.jpg'
+import { useState, useEffect } from 'react'
+import { Sparkles,Sparkle, Play, Heart, Loader, Star } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+
+import cagliostro from '../assets/e78d6765-b044-4c06-b14c-7f255fcda4a3.jpeg'
+import nausicaa from "../assets/Nausicaä of the Valley of the Wind (Hayao….jpeg"
+import castleInTheSky from '../assets/castle in the sky scenery.jpeg'
+import totoro from '../assets/5f34f2c5-6c41-4468-bde6-89dd886515da.jpeg'
+import kiki from "../assets/Kiki's Delivery Service.jpeg"
+import porcoRosso from '../assets/064af148-cd26-41a6-b70f-a3aa1ac1c81a.jpeg'
+import mononoke from '../assets/☆ (1).jpeg'
+import spiritedAway from '../assets/Spirited Away.jpeg'
+import howl from "../assets/Howl's Moving Castle (1).jpeg"
+import ponyo from '../assets/ponyo and sosuke.jpeg'
+import windRises from '../assets/The Wind Rises.jpeg'
+import boyAndHeron from '../assets/The Wind Rises.jpeg' // No direct match, using Wind Rises as placeholder
 
 const fallbackFilms = [
   {
@@ -151,9 +156,9 @@ const GhibliMovieBanner = () => {
     setLoading(false)
 
     // Set interval for every 5 seconds
-    const interval = setInterval(() => {
-      pickRandomFilm()
-    }, 6000)
+    // const interval = setInterval(() => {
+    //   pickRandomFilm()
+    // }, 6000)
 
     // Cleanup
     return () => clearInterval(interval)
@@ -170,7 +175,7 @@ const GhibliMovieBanner = () => {
     )
   }
   return (
-    <div className="relative h-[70vh] w-full bg-black text-white overflow-hidden">
+    <div className="relative h-[70vh] w-[90%] bg-black text-white overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentFilm.title}
@@ -183,10 +188,10 @@ const GhibliMovieBanner = () => {
           onMouseLeave={() => setIsHovered(false)}
         >
           {/* Left Content Area - 40% */}
-          <div className="relative w-[40%] h-full flex flex-col justify-center px-8 md:px-12 z-20 bg-gradient-to-r from-black via-black to-transparent">
+          <div className="relative w-[35%] h-full flex flex-col justify-center px-8 md:px-12 z-20 bg-gradient-to-r from-black via-black to-transparent">
             {/* Studio Ghibli Badge */}
             <motion.div 
-              className="absolute top-8 left-8 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 shadow-lg border border-emerald-400/30"
+              className="absolute top-10 left-7   px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-lg "
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -199,7 +204,7 @@ const GhibliMovieBanner = () => {
 
             {/* Title */}
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-2xl"
+              className="text-4xl md:text-5xl font-bold ml-3 text-white mb-4 leading-tight drop-shadow-2xl"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -214,16 +219,17 @@ const GhibliMovieBanner = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
             >
-              <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-400 to-orange-500 px-3 py-1 rounded-full">
-                <Star className="w-4 h-4 text-black fill-black" />
-                <span className="text-black font-bold text-sm">{currentFilm.rt_score}%</span>
+              <div className="flex   ">
+                {/* <Star className="w-4 h-4 text-white fill-white" /> */}
+                {/* <span className="text-black font-bold text-sm">{currentFilm.rt_score}%</span> */}
               </div>
-              <span className="text-emerald-300 text-lg font-medium">{currentFilm.release_date}</span>
-              <span className="text-gray-300 text-sm">by {currentFilm.director}</span>
+              <span className="text-white text-lg font-medium"> | {currentFilm.release_date}</span>
+              <span className="text-gray-300 text-lg font-semibold">
+                by {currentFilm.director}</span>
             </motion.div>
 
             {/* Description */}
-            <motion.p 
+            {/* <motion.p 
               className="text-gray-200 text-lg leading-relaxed mb-8 max-w-lg drop-shadow-lg"
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -232,28 +238,28 @@ const GhibliMovieBanner = () => {
               {currentFilm.description?.length > 180 
                 ? `${currentFilm.description?.substring(0, 180)}...` 
                 : currentFilm.description}
-            </motion.p>
+            </motion.p> */}
 
             {/* Buttons */}
             <motion.div 
-              className="flex gap-4"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
+              // className="flex gap-4"
+              // initial={{ opacity: 0, x: -30 }}
+              // animate={{ opacity: 1, x: 0 }}
+              // transition={{ delay: 0.8, duration: 0.6 }}
             >
-              <button className="group bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-emerald-500/40">
+              <button className="group absolute bottom-8 mt-20 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-emerald-600 hover:to-teal-700 text-white px-8 py-4 rounded-[20px] font-bold text-lg flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-emerald-500/40">
                 <Play className="w-6 h-6 group-hover:scale-110 transition-transform" />
                 Watch Now
               </button>
               
-              <button className="bg-black/60 backdrop-blur-sm text-white px-8 py-4 rounded-full font-bold text-lg border border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/20 transition-all duration-300 transform hover:scale-105">
+              {/* <button className="bg-black/60 backdrop-blur-sm text-white px-8 py-4 rounded-full font-bold text-lg border border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/20 transition-all duration-300 transform hover:scale-105">
                 More Films
-              </button>
+              </button> */}
             </motion.div>
           </div>
 
           {/* Right Side Image - 60% */}
-          <div className="absolute right-0 w-[60%] h-full">
+          <div className="absolute right-0 w-[65%] h-full">
             <motion.img
               src={currentFilm.bannerImage}
               alt={currentFilm.title}
@@ -269,26 +275,26 @@ const GhibliMovieBanner = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30"></div>
 
             {/* Miyazaki Signature Badge */}
-            <motion.div 
-              className="absolute top-8 right-8 px-4 py-2 rounded-full backdrop-blur-md bg-gradient-to-r from-emerald-500/30 via-teal-500/30 to-green-500/30 border border-emerald-400/30 shadow-xl flex items-center gap-2"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.6 }}
-            >
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 3 }}
-                className="text-emerald-400"
+   
+            <motion.div className="absolute top-9 right-3 z-20 flex items-center cursor-text bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white font-bold text-sm rounded-full py-1 px-3 overflow-hidden">
+          <Heart className="w-4 mr-1" />
+          <AnimatePresence>
+            {isHovered && (
+              <motion.span
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.3 }}
+                className="whitespace-nowrap"
               >
-                <Heart className="w-5 h-5 fill-emerald-400" />
-              </motion.div>
-              <span className="text-sm font-semibold text-white">
-                Miyazaki Masterpiece
-              </span>
-            </motion.div>
+                Recommended for you
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
             {/* Floating magical elements */}
-            <motion.div
+            {/* <motion.div
               className="absolute bottom-12 right-12 text-emerald-300"
               animate={{ 
                 y: [0, -10, 0],
@@ -301,7 +307,7 @@ const GhibliMovieBanner = () => {
               }}
             >
               <Sparkles className="w-8 h-8 opacity-70" />
-            </motion.div>
+            </motion.div> */}
           </div>
         </motion.div>
       </AnimatePresence>
