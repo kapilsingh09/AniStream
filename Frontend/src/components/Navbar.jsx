@@ -79,7 +79,7 @@ export default function Navbar() {
            <img 
            
            className='h-10 w-10 rounded-xl'
-           src="/AnimeXlogo.jpg" alt="" />
+           src="/AnimeXlogo.jpg" alt="brand img" />
             
           </Link>
 
