@@ -96,7 +96,7 @@ export default function Navbar() {
             <div className="search-container relative">
               <button
                 onClick={() => setisOpen(!isOpen)}
-                className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"
+                className="relative px-4 py-2 rounded-md transition-all cursor-pointer duration-300 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"
               >
                 <Search size={16} />
                 Search
