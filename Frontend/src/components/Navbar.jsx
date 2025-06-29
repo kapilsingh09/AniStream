@@ -74,7 +74,13 @@ export default function Navbar() {
             to="/"
             className="text-xl font-bold bg-white bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
           >
-            Animex
+            {/* Anime-X
+             */}
+           <img 
+           
+           className='h-10 w-10 rounded-xl'
+           src="/AnimeXlogo.jpg" alt="" />
+            
           </Link>
 
           {/* Navigation Links */}
