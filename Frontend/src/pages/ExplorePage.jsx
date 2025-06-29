@@ -6,6 +6,7 @@ import {
   ChevronRight, Play, Eye, MessageCircle, ThumbsUp, Share2
 } from "lucide-react";
 import Spotlight from "../ExplorePage/Spotlight";
+import Trending from "../ExplorePage/Trending";
 
 export default function ExplorePage() {
   const [search, setSearch] = useState("");
@@ -82,7 +83,7 @@ export default function ExplorePage() {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-gray-950 via-gray-900 to-black min-h-screen text-white">
+    <div className="bg-zinc-900  min-h-screen text-white">
       {/* Hero Section */}
       {/* <div className="relative h-96 bg-gradient-to-r from-purple-900/50 to-pink-800/50 overflow-hidden">
         <div className="absolute inset-0 bg-black/40"></div>
@@ -106,35 +107,13 @@ export default function ExplorePage() {
 
       <div className="p-8 space-y-12">
         {/* Quick Filters */}
-        <Filter />
+        {/* <Filter /> */}
 
         {/* Featured Spotlight */}
-   <Spotlight />
+   {/* <Spotlight /> */}
 
         {/* Trending Now */}
-        <section className="space-y-6">
-          <h2 className="text-4xl font-bold flex items-center gap-3">
-            <TrendingUp className="text-green-400" /> Trending Now
-          </h2>
-          <div className="bg-gray-900 rounded-3xl p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {trendingAnime.map((anime, idx) => (
-                <div key={idx} className="flex flex-col items-center text-center group cursor-pointer">
-                  <div className="relative mb-4">
-                    <img src={anime.image} alt={anime.title} className="w-24 h-24 rounded-2xl object-cover group-hover:scale-110 transition-transform" />
-                    <div className="absolute -top-2 -right-2 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      #{idx + 1}
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{anime.title}</h3>
-                  <p className="text-gray-400 text-sm mb-1">{anime.views} views</p>
-                  <p className="text-green-400 text-sm font-bold">{anime.change}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
+        <Trending />
         {/* Genre Explorer */}
         <section className="space-y-6">
           <h2 className="text-4xl font-bold flex items-center gap-3">
