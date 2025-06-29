@@ -9,71 +9,11 @@ import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
 
 export default function ExplorePage() {
-  const [search, setSearch] = useState("");
-
-
-  const featuredAnime = [
-    {
-      title: "Demon Slayer: Hashira Training Arc",
-      image: "/images/demonslayer.jpg",
-      rating: 9.2,
-      year: 2024,
-      episodes: 12,
-      status: "Ongoing"
-    },
-    {
-      title: "My Hero Academia Season 7",
-      image: "/images/mha7.jpg",
-      rating: 8.8,
-      year: 2024,
-      episodes: 21,
-      status: "Completed"
-    },
-    {
-      title: "Solo Leveling",
-      image: "/images/sololeveling.jpg",
-      rating: 9.5,
-      year: 2024,
-      episodes: 12,
-      status: "Ongoing"
-    },
-    {
-      title: "Frieren: Beyond Journey's End",
-      image: "/images/frieren.jpg",
-      rating: 9.8,
-      year: 2024,
-      episodes: 28,
-      status: "Completed"
-    }
-  ];
-
-  const trendingAnime = [
-    { title: "Chainsaw Man", views: "2.5M", image: "/images/chainsaw.jpg", change: "+15%" },
-    { title: "Jujutsu Kaisen", views: "3.2M", image: "/images/jjk.jpg", change: "+22%" },
-    { title: "Attack on Titan", views: "4.1M", image: "/images/aot.jpg", change: "+8%" },
-    { title: "One Piece", views: "5.8M", image: "/images/onepiece.jpg", change: "+12%" },
-    { title: "Naruto", views: "3.7M", image: "/images/naruto.jpg", change: "+5%" }
-  ];
-
-  const genres = [
-    { name: "Action", count: 1247, color: "bg-red-600" },
-    { name: "Romance", count: 892, color: "bg-pink-600" },
-    { name: "Comedy", count: 1156, color: "bg-yellow-600" },
-    { name: "Horror", count: 543, color: "bg-purple-600" },
-    { name: "Isekai", count: 678, color: "bg-blue-600" },
-    { name: "Slice of Life", count: 789, color: "bg-green-600" },
-    { name: "Fantasy", count: 1023, color: "bg-indigo-600" },
-    { name: "Sci-Fi", count: 667, color: "bg-cyan-600" }
-  ];
 
   const seasons = ["Spring 2024", "Summer 2024", "Fall 2024", "Winter 2025"];
 ;
 
-  const upcomingAnime = [
-    { title: "Attack on Titan: Final Season", date: "2025-07-15", studio: "Wit Studio" },
-    { title: "Demon Slayer: Infinity Castle", date: "2025-08-20", studio: "Ufotable" },
-    { title: "Jujutsu Kaisen Season 3", date: "2025-09-10", studio: "MAPPA" }
-  ];
+ 
 
   const topStudios = [
     { name: "Studio Ghibli", shows: 23, rating: 9.1 },
@@ -113,7 +53,7 @@ export default function ExplorePage() {
    {/* <Spotlight /> */}
 
         {/* Trending Now */}
-        <Trending />
+        {/* <Trending /> */}
         {/* Genre Explorer */}
       
 
@@ -140,7 +80,7 @@ export default function ExplorePage() {
               </div>
             ))}
           </div>
-        </section>
+        </section>  
 
         {/* Community Section */}
       
