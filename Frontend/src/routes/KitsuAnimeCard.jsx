@@ -132,14 +132,14 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-blue-50 to-indigo-100">
+            <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="flex flex-col items-center space-y-6">
                     <div className="relative">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-rose-200 border-t-rose-500"></div>
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400 to-pink-400 opacity-20 animate-pulse"></div>
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-800 border-t-gray-400"></div>
+                        <div className="absolute inset-0 rounded-full bg-gray-900 opacity-20 animate-pulse"></div>
                     </div>
-                    <div className="text-gray-700 text-xl font-medium">Loading anime details...</div>
-                    <div className="text-gray-500 text-sm">Fetching from Kitsu API</div>
+                    <div className="text-gray-200 text-xl font-medium">Loading anime details...</div>
+                    <div className="text-gray-400 text-sm">Fetching from Kitsu API</div>
                 </div>
             </div>
         );
@@ -147,14 +147,14 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
     if (error || !anime) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
-                <div className="text-center max-w-md bg-white p-8 rounded-2xl shadow-lg border border-red-100">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-black">
+                <div className="text-center max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg border border-gray-800">
                     <div className="text-6xl mb-4">😔</div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops! Something went wrong</h2>
-                    <p className="text-red-600 mb-6">{error || 'Anime not found in Kitsu database'}</p>
+                    <h2 className="text-2xl font-bold text-gray-200 mb-2">Oops! Something went wrong</h2>
+                    <p className="text-red-400 mb-6">{error || 'Anime not found in Kitsu database'}</p>
                     <button
                         onClick={fetchAnimeDetails}
-                        className="px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
                         Try Again
                     </button>
@@ -167,22 +167,22 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     const truncatedDescription = attributes?.synopsis?.substring(0, 300) + '...';
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-blue-50 to-indigo-100 py-4 px-4">
+        <div className="min-h-screen bg-black py-4 px-4">
             <div className="max-w-none w-[70%] mx-auto">
                 
                 {/* API Source Badge */}
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 shadow-lg">
+                        <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 shadow-lg">
                             <Sparkles className="h-4 w-4" />
                             Kitsu API
                         </div>
-                        <span className="text-gray-600 text-sm">Beautiful Anime Database</span>
+                        <span className="text-gray-400 text-sm">Beautiful Anime Database</span>
                     </div>
                     
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-gray-200 hover:bg-white/80 shadow-sm"
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 bg-gray-900 px-4 py-2 rounded-xl border border-gray-800 hover:bg-gray-800 shadow-sm"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span className="text-sm font-medium">Back</span>
@@ -190,7 +190,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                 </div>
 
                 {/* Main Card */}
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/50">
+                <div className="bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                     
                     {/* Hero Banner */}
                     <div className="h-64 md:h-80 lg:h-96 w-full relative overflow-hidden">
@@ -199,18 +199,18 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                             alt={attributes?.canonicalTitle}
                             className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                         
                         {/* Play Button */}
                         <button
                             onClick={handleWatchClick}
-                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md hover:bg-white/30 hover:scale-110 transition-all duration-300 rounded-full p-6 shadow-2xl border border-white/30 group"
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md hover:bg-black/60 hover:scale-110 transition-all duration-300 rounded-full p-6 shadow-2xl border border-gray-800 group"
                         >
-                            <Play className="h-8 w-8 text-white ml-1 group-hover:text-rose-200" fill="white" />
+                            <Play className="h-8 w-8 text-white ml-1 group-hover:text-gray-300" fill="white" />
                         </button>
 
                         {/* Quick Stats Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
                             <div className="flex flex-wrap items-center gap-4 text-sm text-white">
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
@@ -240,16 +240,16 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                     <img
                                         src={getPosterImage()}
                                         alt={attributes?.canonicalTitle}
-                                        className="w-full max-w-sm mx-auto lg:mx-0 h-80 md:h-96 object-cover rounded-2xl shadow-lg border-2 border-white group-hover:shadow-2xl transition-all duration-300"
+                                        className="w-full max-w-sm mx-auto lg:mx-0 h-80 md:h-96 object-cover rounded-2xl shadow-lg border-2 border-gray-800 group-hover:shadow-2xl transition-all duration-300"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div className="absolute inset-0 bg-black/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
 
                                 {/* Action Buttons */}
                                 <div className="space-y-4">
                                     <button
                                         onClick={handleWatchClick}
-                                        className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl font-semibold text-lg transform hover:scale-105"
+                                        className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl font-semibold text-lg transform hover:scale-105"
                                     >
                                         <Play className="h-5 w-5" fill="white" />
                                         Watch Now
@@ -259,7 +259,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                     <div className="grid grid-cols-4 gap-3">
                                         <button
                                             onClick={() => setIsBookmarked(!isBookmarked)}
-                                            className={`${isBookmarked ? 'bg-gradient-to-br from-amber-400 to-orange-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                            className={`${isBookmarked ? 'bg-amber-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
                                         >
                                             <Bookmark className="h-4 w-4" fill={isBookmarked ? "white" : "none"} />
                                             <span className="text-xs font-medium">Save</span>
@@ -267,7 +267,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                                         <button
                                             onClick={() => setIsFavorited(!isFavorited)}
-                                            className={`${isFavorited ? 'bg-gradient-to-br from-red-400 to-pink-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                            className={`${isFavorited ? 'bg-pink-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
                                         >
                                             <Heart className="h-4 w-4" fill={isFavorited ? "white" : "none"} />
                                             <span className="text-xs font-medium">Love</span>
@@ -275,7 +275,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                                         <button
                                             onClick={() => setIsWatched(!isWatched)}
-                                            className={`${isWatched ? 'bg-gradient-to-br from-emerald-400 to-green-400 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
+                                            className={`${isWatched ? 'bg-emerald-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
                                         >
                                             <Eye className="h-4 w-4" />
                                             <span className="text-xs font-medium">Seen</span>
@@ -283,7 +283,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                                         <button
                                             onClick={handleShare}
-                                            className="bg-gray-100 hover:bg-gray-200 text-gray-600 py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm"
+                                            className="bg-gray-800 hover:bg-gray-700 text-gray-300 py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm"
                                         >
                                             <Share2 className="h-4 w-4" />
                                             <span className="text-xs font-medium">Share</span>
@@ -292,56 +292,56 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                 </div>
 
                                 {/* Rating Card */}
-                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-2xl border border-amber-100 shadow-sm">
+                                <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-sm">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <Award className="h-6 w-6 text-amber-500" />
-                                        <span className="text-lg font-bold text-gray-800">Community Score</span>
+                                        <Award className="h-6 w-6 text-amber-400" />
+                                        <span className="text-lg font-bold text-gray-200">Community Score</span>
                                     </div>
                                     <div className="flex items-center gap-4 mb-3">
                                         <div className="flex items-center gap-1">
                                             {renderStars(attributes?.averageRating)}
                                         </div>
-                                        <span className="text-gray-800 font-bold text-2xl">
+                                        <span className="text-gray-200 font-bold text-2xl">
                                             {Math.round(attributes?.averageRating)}%
                                         </span>
                                     </div>
-                                    <div className="text-gray-600 text-sm">
+                                    <div className="text-gray-400 text-sm">
                                         {attributes?.userCount?.toLocaleString()} users rated
                                     </div>
                                 </div>
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-100 shadow-sm">
+                                    <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Users className="h-4 w-4 text-purple-500" />
-                                            <span className="text-xs text-gray-600">Popularity</span>
+                                            <Users className="h-4 w-4 text-purple-400" />
+                                            <span className="text-xs text-gray-400">Popularity</span>
                                         </div>
-                                        <div className="text-gray-800 font-bold text-lg">#{attributes?.popularityRank}</div>
+                                        <div className="text-gray-200 font-bold text-lg">#{attributes?.popularityRank}</div>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Star className="h-4 w-4 text-blue-500" />
-                                            <span className="text-xs text-gray-600">Rank</span>
+                                            <Star className="h-4 w-4 text-blue-400" />
+                                            <span className="text-xs text-gray-400">Rank</span>
                                         </div>
-                                        <div className="text-gray-800 font-bold text-lg">#{attributes?.ratingRank}</div>
+                                        <div className="text-gray-200 font-bold text-lg">#{attributes?.ratingRank}</div>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                    <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Heart className="h-4 w-4 text-emerald-500" />
-                                            <span className="text-xs text-gray-600">Favorites</span>
+                                            <Heart className="h-4 w-4 text-emerald-400" />
+                                            <span className="text-xs text-gray-400">Favorites</span>
                                         </div>
-                                        <div className="text-gray-800 font-bold text-sm">{attributes?.favoritesCount?.toLocaleString()}</div>
+                                        <div className="text-gray-200 font-bold text-sm">{attributes?.favoritesCount?.toLocaleString()}</div>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-4 rounded-xl border border-rose-100 shadow-sm">
+                                    <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Globe className="h-4 w-4 text-rose-500" />
-                                            <span className="text-xs text-gray-600">Users</span>
+                                            <Globe className="h-4 w-4 text-rose-400" />
+                                            <span className="text-xs text-gray-400">Users</span>
                                         </div>
-                                        <div className="text-gray-800 font-bold text-sm">{Math.floor(attributes?.userCount / 1000)}K</div>
+                                        <div className="text-gray-200 font-bold text-sm">{Math.floor(attributes?.userCount / 1000)}K</div>
                                     </div>
                                 </div>
                             </div>
@@ -351,11 +351,11 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                 
                                 {/* Title Section */}
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-200 mb-4 leading-tight">
                                         {attributes?.canonicalTitle}
                                     </h1>
                                     {attributes?.titles?.ja_jp && (
-                                        <h2 className="text-xl md:text-2xl text-gray-600 mb-6">
+                                        <h2 className="text-xl md:text-2xl text-gray-400 mb-6">
                                             {attributes.titles.ja_jp}
                                         </h2>
                                     )}
@@ -366,14 +366,14 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                     </div>
 
                                     {/* Description */}
-                                    <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                        <p className="text-gray-700 text-base leading-relaxed">
+                                    <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                                        <p className="text-gray-300 text-base leading-relaxed">
                                             {showFullDescription ? attributes?.synopsis : truncatedDescription}
                                         </p>
                                         {attributes?.synopsis?.length > 300 && (
                                             <button
                                                 onClick={() => setShowFullDescription(!showFullDescription)}
-                                                className="mt-3 text-rose-600 hover:text-rose-700 font-medium text-sm flex items-center gap-1 transition-colors"
+                                                className="mt-3 text-pink-400 hover:text-pink-300 font-medium text-sm flex items-center gap-1 transition-colors"
                                             >
                                                 {showFullDescription ? 'Show Less' : 'Read More'}
                                                 <ChevronDown className={`h-4 w-4 transition-transform ${showFullDescription ? 'rotate-180' : ''}`} />
@@ -384,54 +384,54 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                                 {/* Information Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <Tv className="h-5 w-5 text-rose-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Format</span>
+                                            <Tv className="h-5 w-5 text-rose-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Format</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-lg">{attributes?.showType}</span>
+                                        <span className="font-bold text-gray-200 text-lg">{attributes?.showType}</span>
                                     </div>
 
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <Calendar className="h-5 w-5 text-blue-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Aired</span>
+                                            <Calendar className="h-5 w-5 text-blue-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Aired</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-sm">
+                                        <span className="font-bold text-gray-200 text-sm">
                                             {formatDate(attributes?.startDate)}
                                         </span>
                                     </div>
 
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <List className="h-5 w-5 text-purple-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Episodes</span>
+                                            <List className="h-5 w-5 text-purple-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Episodes</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-lg">{attributes?.episodeCount}</span>
+                                        <span className="font-bold text-gray-200 text-lg">{attributes?.episodeCount}</span>
                                     </div>
 
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <Clock className="h-5 w-5 text-emerald-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Duration</span>
+                                            <Clock className="h-5 w-5 text-emerald-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Duration</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-lg">{attributes?.episodeLength} min</span>
+                                        <span className="font-bold text-gray-200 text-lg">{attributes?.episodeLength} min</span>
                                     </div>
 
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <Info className="h-5 w-5 text-amber-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Age Rating</span>
+                                            <Info className="h-5 w-5 text-amber-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Age Rating</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-lg">{attributes?.ageRating}</span>
+                                        <span className="font-bold text-gray-200 text-lg">{attributes?.ageRating}</span>
                                     </div>
 
-                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
-                                            <Globe className="h-5 w-5 text-indigo-500" />
-                                            <span className="text-gray-600 font-medium text-sm">Status</span>
+                                            <Globe className="h-5 w-5 text-indigo-400" />
+                                            <span className="text-gray-400 font-medium text-sm">Status</span>
                                         </div>
-                                        <span className="font-bold text-gray-800 text-lg capitalize">{attributes?.status}</span>
+                                        <span className="font-bold text-gray-200 text-lg capitalize">{attributes?.status}</span>
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +441,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         <div className="mt-10 flex flex-col sm:flex-row gap-4">
                             <button
                                 onClick={handleEpisodesClick}
-                                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                             >
                                 <div className="flex items-center justify-center gap-3">
                                     <Film className="h-5 w-5" />
@@ -452,7 +452,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                             <button
                                 onClick={handleKitsuLink}
-                                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300 font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                                className="flex-1 bg-gray-900 hover:bg-gray-800 text-gray-200 border-2 border-gray-800 hover:border-gray-700 font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
                             >
                                 <div className="flex items-center justify-center gap-3">
                                     <ExternalLink className="h-5 w-5" />
