@@ -47,13 +47,13 @@ export default function ExplorePage() {
 
       <div className="p-8 space-y-12">
         {/* Quick Filters */}
-        {/* <Filter /> */}
+        <Filter />
 
         {/* Featured Spotlight */}
-   {/* <Spotlight /> */}
+   <Spotlight />
 
         {/* Trending Now */}
-        {/* <Trending /> */}
+        <Trending />
         {/* Genre Explorer */}
       
 
