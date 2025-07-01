@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Sparkles, Play, Heart, Loader, Star } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const GhibliMovieBanner = () => {
   const [films, setFilms] = useState([])
@@ -47,7 +48,7 @@ const GhibliMovieBanner = () => {
     }
 
     rotate()
-    const interval = setInterval(rotate, 6000)
+    const interval = setInterval(rotate, 20000) // Slower: 20 seconds
     return () => clearInterval(interval)
   }, [films])
 
@@ -77,44 +78,53 @@ const GhibliMovieBanner = () => {
       {/* Header badges */}
       <div className="absolute top-4 left-36 right-4 z-20 flex justify-between items-center">
         <Badge icon={<Sparkles className="w-3 h-3" />} text="Studio Ghibli" />
-        <Badge
-          icon={<Heart className="w-3 h-3" />}
-          text="Recommended"
-          show={isHovered}
-        />
+        <Badge icon={<Heart className="w-3 h-3" />} text="Recommended" show={isHovered} />
       </div>
 
-      {/* {/* Main layout: } */}
+      {/* Main layout */}
       <div className="flex h-full">
-        {/* Textual Content Section */}
+        {/* Left Content */}
         <div className="w-[30%] p-6 flex flex-col justify-center z-10">
-          <h1 className="text-3xl font-bold mb-3 animate-slideInUp">{currentFilm.title}</h1>
-          <div className="flex gap-3 text-xs mb-4 animate-slideInUp delay-200">
-            <Tag icon={<Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />} text={`${currentFilm.score}%`} />
-            <Tag text={currentFilm.release} />
-            <Tag text={currentFilm.director} className="text-gray-300 font-semibold" />
-          </div>
-          <p className="text-gray-300 text-base leading-relaxed mb-6  animate-slideInUp delay-400">
-            {currentFilm.description.length > 120
-              ? currentFilm.description.slice(0, 120) + '...'
-              : currentFilm.description}
-          </p>
-          <a
-            href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie watch online')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="animate-slideInUp delay-600"
-          >
-            <button
-              className={`group bg-gradient-to-r from-purple-500 to-pink-600 cursor-pointer hover:scale-[1.1] text-white px-10 py-3 rounded-full font-bold text-lg flex items-center gap-3 transition-all duration-300 shadow-lg`}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentFilm.id}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 1 }}
+              className="flex flex-col"
             >
-              <Play className="w-7 h- group-hover:scale-110 transition-transform" />
-              Watch Now
-            </button>
-          </a>
+              <h1 className="text-3xl font-bold mb-3">{currentFilm.title}</h1>
+              <div className="flex gap-3 text-xs mb-4">
+                <Tag
+                  icon={<Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
+                  text={`${currentFilm.score}%`}
+                />
+                <Tag text={currentFilm.release} />
+                <Tag text={currentFilm.director} className="text-gray-300 font-semibold" />
+              </div>
+              <p className="text-gray-300 text-base leading-relaxed mb-6">
+                {currentFilm.description.length > 120
+                  ? currentFilm.description.slice(0, 120) + '...'
+                  : currentFilm.description}
+              </p>
+              <a
+                href={`https://www.google.com/search?q=${encodeURIComponent(
+                  currentFilm.title + ' Studio Ghibli movie watch online'
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="group bg-gradient-to-r from-purple-500 to-pink-600 cursor-pointer hover:scale-[1.1] text-white px-10 py-3 rounded-full font-bold text-lg flex items-center gap-3 transition-all duration-300 shadow-lg">
+                  <Play className="w-7 h-7 group-hover:scale-110 transition-transform" />
+                  Watch Now
+                </button>
+              </a>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* === Image Section with Enhancements === */}
+        {/* Right Image */}
         <div className="w-[65%] relative overflow-hidden px-[30px]">
           <a
             href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie')}`}
@@ -122,54 +132,49 @@ const GhibliMovieBanner = () => {
             rel="noopener noreferrer"
             className="block w-full h-full"
           >
-            <div className="relative w-full h-full  overflow-hidden">
-              <img
-                src={currentFilm.image}
-                alt={currentFilm.title}
-                className="w-full h-[30rem] object-cover transition-all duration-1000 "
-              />
-              {/* Left-side black gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent"></div>
+            <div className="relative w-full h-full overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentFilm.id}
+                  src={currentFilm.image}
+                  alt={currentFilm.title}
+                  className="w-full h-full object-cover transition-all duration-1000"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2 }}
+                />
+              </AnimatePresence>
 
-              {/* Play button  */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent" />
+
               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
-                  <div className="border-4 h-20 w-20 rounded-full flex items-center justify-center ">
+                <div className="border-4 h-20 w-20 rounded-full flex items-center justify-center">
                   <Play className="w-7 h-9 text-white" fill="white" stroke="white" strokeWidth={2} />
                 </div>
               </div>
             </div>
           </a>
         </div>
-        {/* === End Image Section === */}
       </div>
-
-      {/* Animation Styles */}
-      <style jsx>{`
-        .animate-slideInUp {
-          animation: slideInUp 0.8s ease-out forwards;
-        }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-600 { animation-delay: 0.6s; }
-
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   )
 }
 
 // === Badge Component ===
-const Badge = ({ icon, text, show = true }) => (
-  <div className={`flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-md text-xs font-bold transition-all duration-300 ${show ? 'pr-4' : ''}`}>
-    {icon}
-    <span className={`transition-all duration-300 ${show ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
-      {text}
-    </span>
-  </div>
-)
+const Badge = ({ icon, text, show = true }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex items-center cursor-text bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white font-bold text-sm rounded-full py-1 px-3 overflow-hidden"
+    >
+      {icon}
+      <span className="ml-1">{text}</span>
+    </motion.div>
+  )
+}
 
 // === Tag Component ===
 const Tag = ({ icon, text, className = '' }) => (
