@@ -220,7 +220,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                     <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                                     <span>{attributes?.episodeCount} Episodes</span>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2"> 
                                     <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
                                     <span>{Math.round(attributes?.averageRating)}% Rating</span>
                                 </div>
