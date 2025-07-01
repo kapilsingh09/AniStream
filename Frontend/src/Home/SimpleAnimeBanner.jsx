@@ -2,189 +2,181 @@ import { useState, useEffect } from 'react'
 import { Sparkles, Play, Heart, Loader, Star } from 'lucide-react'
 
 const GhibliMovieBanner = () => {
-  const [currentFilm, setCurrentFilm] = useState(null)
   const [films, setFilms] = useState([])
+  const [currentFilm, setCurrentFilm] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [apiError, setApiError] = useState(false)
-
-  const fetchGhibliFilms = async () => {
-    try {
-      const response = await fetch('https://ghibliapi.vercel.app/films')
-      if (!response.ok) throw new Error('API Error')
-
-      const data = await response.json()
-      const formattedFilms = data.map(film => ({
-        id: film.id,
-        title: film.title,
-        release_date: film.release_date,
-        rt_score: film.rt_score,
-        director: film.director,
-        description: film.description,
-        image: film.image,
-      }))
-
-      setFilms(formattedFilms)
-      setApiError(false)
-    } catch (error) {
-      console.error('API error:', error)
-      setApiError(true)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
-    fetchGhibliFilms()
+    const fetchFilms = async () => {
+      try {
+        const res = await fetch('https://ghibliapi.vercel.app/films')
+        if (!res.ok) throw new Error('Failed to fetch films.')
+        const raw = await res.json()
+
+        const cleaned = raw.map(film => ({
+          id: film.id,
+          title: film.title,
+          description: film.description,
+          director: film.director,
+          release: film.release_date,
+          score: film.rt_score,
+          image: film.image,
+        }))
+
+        setFilms(cleaned)
+        setError(false)
+      } catch (err) {
+        console.error(err)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFilms()
   }, [])
 
   useEffect(() => {
-    if (films.length === 0) return
+    if (!films.length) return
 
-    const pickRandomFilm = () => {
-      const randomIndex = Math.floor(Math.random() * films.length)
-      setCurrentFilm(films[randomIndex])
+    const rotate = () => {
+      const random = Math.floor(Math.random() * films.length)
+      setCurrentFilm(films[random])
     }
 
-    pickRandomFilm()
-    const interval = setInterval(pickRandomFilm, 6000)
+    rotate()
+    const interval = setInterval(rotate, 6000)
     return () => clearInterval(interval)
   }, [films])
 
   if (loading) {
     return (
-      <div className="h-96 w-full flex items-center justify-center bg-gradient-to-br from-emerald-900 via-teal-800 to-green-900 text-white rounded-xl">
-        <div className="animate-spin">
-          <Loader className="w-8 h-8 text-emerald-300" />
-        </div>
-        <span className="ml-3 text-lg font-medium">Loading Studio Ghibli films...</span>
+      <div className="h-96 w-full flex items-center justify-center text-white rounded-xl">
+        <Loader className="w-6 h-6 animate-spin text-emerald-300" />
+        <span className="ml-3 text-base font-medium">Loading Studio Ghibli films...</span>
       </div>
     )
   }
 
-  if (apiError || !currentFilm) {
+  if (error || !currentFilm) {
     return (
       <div className="h-96 w-full flex items-center justify-center bg-black text-white rounded-xl">
-        <p className="text-lg">Failed to load films. Please try again later.</p>
+        <p className="text-lg font-semibold">Failed to load films. Please try again later.</p>
       </div>
     )
   }
 
   return (
-    <div 
-      className="relative h-96 w-full bg-black text-white overflow-hidden rounded-xl shadow-lg transition-all duration-700 hover:shadow-2xl hover:shadow-purple-500/20"
+    <div
+      className="relative h-96 w-full rounded-xl overflow-hidden bg-gradient-to-r from-gray-900 pl-30 pr-30 via-black to-gray-800 text-white shadow-lg transition duration-700 hover:shadow-2xl hover:shadow-purple-500/30"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header Badges */}
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-30">
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-md text-xs font-bold">
-          <Sparkles className="w-3 h-3" />
-          <span>Studio Ghibli</span>
-        </div>
-
-        <div className={`flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-md transition-all duration-300 ${isHovered ? 'pr-4' : ''}`}>
-          <Heart className="w-3 h-3" />
-          <span className={`text-xs font-bold transition-all duration-300 overflow-hidden ${isHovered ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
-            Recommended
-          </span>
-        </div>
+      {/* Header badges */}
+      <div className="absolute top-4 left-36 right-4 z-20 flex justify-between items-center">
+        <Badge icon={<Sparkles className="w-3 h-3" />} text="Studio Ghibli" />
+        <Badge
+          icon={<Heart className="w-3 h-3" />}
+          text="Recommended"
+          show={isHovered}
+        />
       </div>
 
-      {/* Main Content Area */}
+      {/* Main layout: Text on left, Image on right */}
       <div className="flex h-full">
-        {/* Image Side */}
-        <div className="w-2/5 relative overflow-hidden">
-          <img
-            key={currentFilm.title}
-            src={currentFilm.image}
-            alt={currentFilm.title}
-            className={`w-full h-full object-cover transition-all duration-1000 ${isHovered ? 'scale-110' : 'scale-100'}`}
-            style={{
-              animation: 'fadeIn 1s ease-in-out'
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40"></div>
-        </div>
-
-        {/* Content Side */}
-        <div className="w-3/5 p-6 flex flex-col justify-center relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-black/60 to-purple-900/40"></div>
-          
-          <div className="relative z-10">
-            <h1 
-              key={`${currentFilm.title}-title`}
-              className="text-2xl md:text-3xl font-bold mb-3 transition-all duration-700"
-              style={{
-                animation: 'slideInUp 0.8s ease-out'
-              }}
-            >
-              {currentFilm.title}
-            </h1>
-
-            <div 
-              className="flex items-center gap-3 mb-4"
-              style={{
-                animation: 'slideInUp 0.8s ease-out 0.2s both'
-              }}
-            >
-              <div className="flex items-center gap-1 bg-black/50 px-2 py-1 rounded-full">
-                <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                <span className="text-xs font-bold">{currentFilm.rt_score}%</span>
-              </div>
-              <div className="text-xs font-medium bg-black/50 px-2 py-1 rounded-full">
-                {currentFilm.release_date}
-              </div>
-              <div className="text-xs font-semibold bg-black/50 px-2 py-1 rounded-full text-gray-300">
-                {currentFilm.director}
-              </div>
-            </div>
-
-            <p 
-              key={`${currentFilm.title}-desc`}
-              className="text-gray-300 text-sm leading-relaxed mb-6"
-              style={{
-                animation: 'slideInUp 0.8s ease-out 0.4s both'
-              }}
-            >
-              {currentFilm.description?.length > 120 
-                ? `${currentFilm.description?.substring(0, 120)}...` 
-                : currentFilm.description}
-            </p>
-
-            <div 
-              style={{
-                animation: 'slideInUp 0.8s ease-out 0.6s both'
-              }}
-            >
-              <button className={`group bg-gradient-to-r from-purple-500 to-pink-600 hover:from-emerald-600 hover:to-teal-700 text-white px-6 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all duration-300 shadow-lg ${isHovered ? 'scale-105 shadow-emerald-500/30' : ''}`}>
-                <Play className="w-4 h-4 transition-transform group-hover:scale-110" />
-                Watch Now
-              </button>
-            </div>
+        {/* Textual Content Section */}
+        <div className="w-3/5 p-6 flex flex-col justify-center z-10">
+          <h1 className="text-3xl font-bold mb-3 animate-slideInUp">{currentFilm.title}</h1>
+          <div className="flex gap-3 text-xs mb-4 animate-slideInUp delay-200">
+            <Tag icon={<Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />} text={`${currentFilm.score}%`} />
+            <Tag text={currentFilm.release} />
+            <Tag text={currentFilm.director} className="text-gray-300 font-semibold" />
           </div>
+          <p className="text-gray-300 text-sm leading-relaxed mb-6 animate-slideInUp delay-400">
+            {currentFilm.description.length > 120
+              ? currentFilm.description.slice(0, 120) + '...'
+              : currentFilm.description}
+          </p>
+          <a
+            href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie watch online')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="animate-slideInUp delay-600"
+          >
+            <button
+              className={`group bg-gradient-to-r from-purple-500 to-pink-600 hover:from-emerald-600 hover:to-teal-700 text-white px-6 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all duration-300 shadow-lg ${isHovered ? 'scale-105 shadow-emerald-500/30' : ''}`}
+            >
+              <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Watch Now
+            </button>
+          </a>
         </div>
+
+        {/* === Image Section with Enhancements === */}
+        <div className="w-2/5 relative overflow-hidden px-[30px]"> {/* Added 30px horizontal padding */}
+          <a
+            href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full h-full"
+          >
+            <div className="relative w-full h-full rounded-lg overflow-hidden">
+              <img
+                src={currentFilm.image}
+                alt={currentFilm.title}
+                className={`w-full h-full object-cover rounded-lg transition-all duration-1000 blur-sm`} // Added blur
+              />
+              {/* Left-side black gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent rounded-lg"></div>
+
+              {/* Play button always visible */}
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                  <Play className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {/* === End Image Section === */}
       </div>
 
+      {/* Animation Styles */}
       <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+        .animate-slideInUp {
+          animation: slideInUp 0.8s ease-out forwards;
         }
-        
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-600 { animation-delay: 0.6s; }
+
         @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>
   )
 }
+
+// === Badge Component ===
+const Badge = ({ icon, text, show = true }) => (
+  <div className={`flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 shadow-md text-xs font-bold transition-all duration-300 ${show ? 'pr-4' : ''}`}>
+    {icon}
+    <span className={`transition-all duration-300 ${show ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
+      {text}
+    </span>
+  </div>
+)
+
+// === Tag Component ===
+const Tag = ({ icon, text, className = '' }) => (
+  <div className={`flex items-center gap-1 bg-black/50 px-2 py-1 rounded-full ${className}`}>
+    {icon}
+    <span>{text}</span>
+  </div>
+)
 
 export default GhibliMovieBanner
