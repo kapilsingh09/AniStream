@@ -70,7 +70,7 @@ const GhibliMovieBanner = () => {
 
   return (
     <div
-      className="relative h-[30rem] w-full rounded-xl overflow-hidden bg-gradient-to-r from-gray-900 pl-30 pr-30 via-black to-gray-800 text-white shadow-lg transition duration-700 hover:shadow-2xl hover:shadow-purple-500/30"
+      className="relative h-[30rem] w-full rounded-xl overflow-hidden bg-gradient-to-r from-gray-900 pl-30 via-black to-gray-800 text-white shadow-lg transition duration-700 hover:shadow-2xl hover:shadow-purple-500/30"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -84,17 +84,17 @@ const GhibliMovieBanner = () => {
         />
       </div>
 
-      {/* Main layout: Text on left, Image on right */}
+      {/* {/* Main layout: } */}
       <div className="flex h-full">
         {/* Textual Content Section */}
-        <div className="w-[45%] p-6 flex flex-col justify-center z-10">
+        <div className="w-[30%] p-6 flex flex-col justify-center z-10">
           <h1 className="text-3xl font-bold mb-3 animate-slideInUp">{currentFilm.title}</h1>
           <div className="flex gap-3 text-xs mb-4 animate-slideInUp delay-200">
             <Tag icon={<Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />} text={`${currentFilm.score}%`} />
             <Tag text={currentFilm.release} />
             <Tag text={currentFilm.director} className="text-gray-300 font-semibold" />
           </div>
-          <p className="text-gray-300 text-sm leading-relaxed mb-6 animate-slideInUp delay-400">
+          <p className="text-gray-300 text-base leading-relaxed mb-6  animate-slideInUp delay-400">
             {currentFilm.description.length > 120
               ? currentFilm.description.slice(0, 120) + '...'
               : currentFilm.description}
@@ -106,35 +106,35 @@ const GhibliMovieBanner = () => {
             className="animate-slideInUp delay-600"
           >
             <button
-              className={`group bg-gradient-to-r from-purple-500 to-pink-600 cursor-pointer hover:scale-[1.1]  text-white px-6 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all duration-300 shadow-lg`}
+              className={`group bg-gradient-to-r from-purple-500 to-pink-600 cursor-pointer hover:scale-[1.1] text-white px-10 py-3 rounded-full font-bold text-lg flex items-center gap-3 transition-all duration-300 shadow-lg`}
             >
-              <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <Play className="w-7 h- group-hover:scale-110 transition-transform" />
               Watch Now
             </button>
           </a>
         </div>
 
         {/* === Image Section with Enhancements === */}
-        <div className="w-[60%] relative overflow-hidden px-[30px]">
+        <div className="w-[65%] relative overflow-hidden px-[30px]">
           <a
             href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie')}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full h-full"
           >
-            <div className="relative w-full h-full rounded-lg overflow-hidden">
+            <div className="relative w-full h-full  overflow-hidden">
               <img
                 src={currentFilm.image}
                 alt={currentFilm.title}
-                className="w-[60vw] h-[30rem] object-cover  transition-all duration-1000 "
+                className="w-full h-[30rem] object-cover transition-all duration-1000 "
               />
               {/* Left-side black gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent rounded-lg"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent"></div>
 
               {/* Play button  */}
               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
-                <div className="border-2 backdrop-blur-sm rounded-full p-3">
-                  <Play className="w-6 h-6 text-white" />
+                  <div className="border-4 h-20 w-20 rounded-full flex items-center justify-center ">
+                  <Play className="w-7 h-9 text-white" fill="white" stroke="white" strokeWidth={2} />
                 </div>
               </div>
             </div>
