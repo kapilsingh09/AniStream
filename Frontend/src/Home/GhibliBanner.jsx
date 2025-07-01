@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { Sparkles, Play, Heart, Loader, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+/**
+ * GhibliMovieBanner component
+ * Fetches Studio Ghibli films and displays one with a rotating banner every 20 seconds.
+ */
 const GhibliMovieBanner = () => {
   const [films, setFilms] = useState([])
   const [currentFilm, setCurrentFilm] = useState(null)
@@ -9,13 +13,16 @@ const GhibliMovieBanner = () => {
   const [error, setError] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
+  // Fetch Ghibli films on component mount
   useEffect(() => {
     const fetchFilms = async () => {
       try {
         const res = await fetch('https://ghibliapi.vercel.app/films')
         if (!res.ok) throw new Error('Failed to fetch films.')
+
         const raw = await res.json()
 
+        // Clean and shape film data
         const cleaned = raw.map(film => ({
           id: film.id,
           title: film.title,
@@ -39,6 +46,7 @@ const GhibliMovieBanner = () => {
     fetchFilms()
   }, [])
 
+  // Rotate to a random film every 20 seconds
   useEffect(() => {
     if (!films.length) return
 
@@ -47,11 +55,12 @@ const GhibliMovieBanner = () => {
       setCurrentFilm(films[random])
     }
 
-    rotate()
-    const interval = setInterval(rotate, 20000) // Slower: 20 seconds
+    rotate() // Set initial film
+    const interval = setInterval(rotate, 20000) // Every 20s
     return () => clearInterval(interval)
   }, [films])
 
+  // === Loading State ===
   if (loading) {
     return (
       <div className="h-96 w-full flex items-center justify-center text-white rounded-xl">
@@ -61,6 +70,7 @@ const GhibliMovieBanner = () => {
     )
   }
 
+  // === Error State ===
   if (error || !currentFilm) {
     return (
       <div className="h-96 w-full flex items-center justify-center bg-black text-white rounded-xl">
@@ -69,21 +79,22 @@ const GhibliMovieBanner = () => {
     )
   }
 
+  // === Main Banner UI ===
   return (
     <div
       className="relative h-[30rem] w-full rounded-xl overflow-hidden bg-gradient-to-r from-gray-900 pl-30 via-black to-gray-800 text-white shadow-lg transition duration-700 hover:shadow-2xl hover:shadow-purple-500/30"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header badges */}
+      {/* Top Badge Section */}
       <div className="absolute top-4 left-36 right-4 z-20 flex justify-between items-center">
         <Badge icon={<Sparkles className="w-3 h-3" />} text="Studio Ghibli" />
         <Badge icon={<Heart className="w-3 h-3" />} text="Recommended" show={isHovered} />
       </div>
 
-      {/* Main layout */}
+      {/* Layout: Left (text) and Right (image) */}
       <div className="flex h-full">
-        {/* Left Content */}
+        {/* Left Panel: Film info */}
         <div className="w-[30%] p-6 flex flex-col justify-center z-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -95,6 +106,7 @@ const GhibliMovieBanner = () => {
               className="flex flex-col"
             >
               <h1 className="text-3xl font-bold mb-3">{currentFilm.title}</h1>
+
               <div className="flex gap-3 text-xs mb-4">
                 <Tag
                   icon={<Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
@@ -103,11 +115,13 @@ const GhibliMovieBanner = () => {
                 <Tag text={currentFilm.release} />
                 <Tag text={currentFilm.director} className="text-gray-300 font-semibold" />
               </div>
+
               <p className="text-gray-300 text-base leading-relaxed mb-6">
                 {currentFilm.description.length > 120
                   ? currentFilm.description.slice(0, 120) + '...'
                   : currentFilm.description}
               </p>
+
               <a
                 href={`https://www.google.com/search?q=${encodeURIComponent(
                   currentFilm.title + ' Studio Ghibli movie watch online'
@@ -124,7 +138,7 @@ const GhibliMovieBanner = () => {
           </AnimatePresence>
         </div>
 
-        {/* Right Image */}
+        {/* Right Panel: Film image */}
         <div className="w-[65%] relative overflow-hidden px-[30px]">
           <a
             href={`https://www.google.com/search?q=${encodeURIComponent(currentFilm.title + ' Studio Ghibli movie')}`}
@@ -146,8 +160,10 @@ const GhibliMovieBanner = () => {
                 />
               </AnimatePresence>
 
+              {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent" />
 
+              {/* Center Play Icon */}
               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
                 <div className="border-4 h-20 w-20 rounded-full flex items-center justify-center">
                   <Play className="w-7 h-9 text-white" fill="white" stroke="white" strokeWidth={2} />
@@ -161,27 +177,27 @@ const GhibliMovieBanner = () => {
   )
 }
 
+export default GhibliMovieBanner
+
 // === Badge Component ===
-const Badge = ({ icon, text, show = true }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: show ? 1 : 0 }}
-      transition={{ duration: 0.3 }}
-      className="flex items-center cursor-text bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white font-bold text-sm rounded-full py-1 px-3 overflow-hidden"
-    >
-      {icon}
-      <span className="ml-1">{text}</span>
-    </motion.div>
-  )
-}
+// Displays a styled label, optionally animated on hover
+const Badge = ({ icon, text, show = true }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: show ? 1 : 0 }}
+    transition={{ duration: 0.3 }}
+    className="flex items-center cursor-text bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white font-bold text-sm rounded-full py-1 px-3 overflow-hidden"
+  >
+    {icon}
+    <span className="ml-1">{text}</span>
+  </motion.div>
+)
 
 // === Tag Component ===
+// Renders a pill-style info tag
 const Tag = ({ icon, text, className = '' }) => (
   <div className={`flex items-center gap-1 bg-black/50 px-2 py-1 rounded-full ${className}`}>
     {icon}
     <span>{text}</span>
   </div>
 )
-
-export default GhibliMovieBanner
