@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
-/**
- * JikanAnimeCard Component
- * 
- * Professional anime details component using Jikan API (MyAnimeList)
- * Features optimized error handling and clean data presentation
- */
 const JikanAnimeCard = ({  }) => {
     const {id} = useParams();
     const [anime, setAnime] = useState(null);

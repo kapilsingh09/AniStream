@@ -30,7 +30,7 @@ const Homepage = () => {
       {/* Sections with meaningful titles */}
       <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
       
-      <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} />
+      {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
 
       <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
 
@@ -40,24 +40,24 @@ const Homepage = () => {
 
       <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} />
 
-      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} />
+      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
       <div className="flex items-center justify-center">
         <GhibliMovieBanner />
       </div>
 
-      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
+      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
 
-      <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} />
+      {/* <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
 
-      <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
+      {/* <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} /> */}
 
-      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} />
+      {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
       {/* Optional: More banners */}
-      <div className="flex items-center justify-center">
+      {/* <div className="flex items-center justify-center">
         <AnimeBanner />
-      </div>
+      </div> */}
     </div>
   );
 };

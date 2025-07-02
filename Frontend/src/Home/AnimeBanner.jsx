@@ -93,7 +93,6 @@ const AnimeBanner = () => {
       setShowSorry(true);
     }
   };
-
   // Alternative: If you want to use Kitsu ID instead of MAL ID
   const handleWatchClickKitsuId = () => {
     if (anime?.id) {
