@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useAsyncError } from 'react-router-dom';
 
 const KitsuAnimeCard = ({ onNavigate }) => {
     const { id } = useParams();
@@ -12,6 +12,8 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     const [isFavorited, setIsFavorited] = useState(false);
     const [isWatched, setIsWatched] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const [showEp,setShowEp] = useState([]);
+    const [isEpOpen,setIsEpOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
 
     // Fetch anime details from Kitsu API
@@ -27,6 +29,8 @@ const KitsuAnimeCard = ({ onNavigate }) => {
             }
 
             const data = await response.json();
+            console.log(data);
+            
 
             if (!data || !data.data) {
                 throw new Error('No anime data found');
@@ -101,17 +105,32 @@ const KitsuAnimeCard = ({ onNavigate }) => {
         window.open('https://www.crunchyroll.com', '_blank');
     };
 
-    const handleEpisodesClick = () => {
-        window.open('https://www.funimation.com', '_blank');
-    };
+    const handleEpisodesClick = async (id) => {
+        let allEpisodes = [];
+    let offset = 0;
+    const limit = 20;
 
-    const handleKitsuLink = () => {
-        if (anime?.id) {
-            window.open(`https://kitsu.io/anime/${anime.id}`, '_blank');
-        } else {
-            window.open('https://kitsu.io', '_blank');
-        }
-    };
+    while (true) {
+      const res = await fetch(
+        `https://kitsu.io/api/edge/anime/${id}/episodes?page[limit]=${limit}&page[offset]=${offset}`
+      );
+      const data = await res.json();
+      allEpisodes = allEpisodes.concat(data.data);
+
+      if (!data.links.next || data.data.length < limit) break;
+      offset += limit;
+    }
+        console.log('Here is your id ',id);
+        setShowEp(allEpisodes)
+    };  
+
+    // const handleKitsuLink = () => {
+    //     if (anime?.id) {
+    //         window.open(`https://kitsu.io/anime/${anime.id}`, '_blank');
+    //     } else {
+    //         window.open('https://kitsu.io', '_blank');
+    //     }
+    // };
 
     const handleShare = async () => {
         if (navigator.share) {
@@ -438,9 +457,9 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                        <div className="mt-10 flex  sm:flex-row gap-4">
                             <button
-                                onClick={handleEpisodesClick}
+                                onClick={()=> {handleEpisodesClick(id)}}
                                 className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                             >
                                 <div className="flex items-center justify-center gap-3">
@@ -450,18 +469,34 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                                 </div>
                             </button>
 
-                            <button
+                              
+                                    {/* i think i will make here or other things */}
+
+                            {/* <button
                                 onClick={handleKitsuLink}
                                 className="flex-1 bg-gray-900 hover:bg-gray-800 text-gray-200 border-2 border-gray-800 hover:border-gray-700 font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                            >
-                                <div className="flex items-center justify-center gap-3">
-                                    <ExternalLink className="h-5 w-5" />
-                                    <span>View on Kitsu</span>
-                                </div>
-                            </button>
+                                >
+                                {/* <div className="flex items-center justify-center gap-3">
+                                <ExternalLink className="h-5 w-5" />
+                                <span></span>
+                                </div> */}
+                            {/* </button>  */}
                         </div>
                     </div>
                 </div>
+                                <div className='epcontianer rounded w-full flex  overflow-hidden  bg-zinc-600 text-shadow-2xs text-white'>
+                                            <div>
+                                               
+    
+                                              {showEp.map((ep) => (
+                                                <div key={ep.id}>
+                                                   Episode {ep.attributes.number}: {ep.attributes.canonicalTitle || 'No Title'}
+                                                </div>
+                                              ))}
+    
+                                               
+                                            </div>
+                                </div>
             </div>
         </div>
     );
