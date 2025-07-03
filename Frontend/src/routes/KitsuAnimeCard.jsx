@@ -488,7 +488,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                 </div>
 
            {
-            isEpOpen && <Eploader />
+            isEpOpen && <Eploader animeId={id} animeTitle={attributes?.canonicalTitle} />
            } 
             </div>
         </div>
