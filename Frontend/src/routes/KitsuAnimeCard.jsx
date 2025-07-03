@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
 import { useParams, useNavigate, useAsyncError } from 'react-router-dom';
+import Eploader from '../utils/Eploader';
 
 const KitsuAnimeCard = ({ onNavigate }) => {
     const { id } = useParams();
@@ -460,8 +461,8 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         {/* Action Buttons */}
                         <div className="mt-10 flex  sm:flex-row gap-4">
                             <button
-                                // onClick={()=> }
-                                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                onClick={()=> setIsEpOpen(!isEpOpen) }
+                                className="flex-1 bg-gray-800 hover:bg-gray-700 cursor-pointer text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                             >
                                 <div className="flex items-center justify-center gap-3">
                                     <Film className="h-5 w-5" />
@@ -485,19 +486,10 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         </div>
                     </div>
                 </div>
-            <div className='epcontianer rounded w-full flex  overflow-hidden  bg-zinc-600 text-shadow-2xs text-white'>
-                        <div>
-                            
 
-                            {showEp.map((ep) => (
-                            <div key={ep.id}>
-                                Episode {ep.attributes.number}: {ep.attributes.canonicalTitle || 'No Title'}
-                            </div>
-                            ))}
-
-                            
-                        </div>
-            </div>
+           {
+            isEpOpen && <Eploader />
+           } 
             </div>
         </div>
     );
