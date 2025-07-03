@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-
-const Eploader = ({ animeId, animeTitle }) => {
+import { Calendar, Timer, X as LucideX } from 'lucide-react';
+import KitsuAnimeCard from '../routes/KitsuAnimeCard';
+const Eploader = ({ animeId, animeTitle, onClose }) => {
   const [episodes, setEpisodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,16 +40,24 @@ const Eploader = ({ animeId, animeTitle }) => {
   );
 
   return (
-    <div className="bg-gray-900 rounded-2xl border mt-10 border-gray-700 p-4 sm:p-6 text-white">
+    <div className="bg-gray-900 rounded-2xl border mt-10 border-gray-700 p-4 sm:p-6 text-white relative">
+      <button
+        className="absolute cursor-pointer top-3 right-3 rounded-full p-2 bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 border border-gray-600 shadow transition-colors duration-200 z-10 flex items-center justify-center"
+        onClick={onClose}
+        tabIndex={0}
+        
+        type="button"
+        aria-label="Close episode list"
+      >
+        <LucideX className="w-5 h-5 text-gray-300  hover:text-red-400 transition-colors duration-200" />
+      </button>
       <div className="text-center mb-4">
-        <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+        <h1 className="text-xl sm:text-2xl font-bold bg-white bg-clip-text text-transparent">
           {animeTitle ? `${animeTitle} Episodes` : 'Episode List'}
         </h1>
       </div>
-
-      <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+      <div className="flex flex-wrap gap-2 sm:gap-3 justify-start">
         {loading ? (
-          // Skeleton placeholders (simulate structure)
           Array.from({ length: 12 }).map((_, idx) => (
             <SkeletonCard key={idx} />
           ))
@@ -66,15 +75,15 @@ const Eploader = ({ animeId, animeTitle }) => {
                   {ep.attributes.number}
                 </div>
                 {/* Tooltip */}
-                <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-56 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-slate-800 text-white text-xs p-3 rounded-xl shadow-xl border border-purple-500/30">
+                <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-56 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
+                  <div className="bg-slate-800 text-white text-xs p-3 rounded-xl shadow-xl border border-purple-500/30 relative">
                     <h3 className="font-semibold text-center mb-1">{title}</h3>
                     <div className="flex justify-between text-slate-400 text-[12px]">
                       {ep.attributes.airdate && (
-                        <span>📅 {new Date(ep.attributes.airdate).toLocaleDateString()}</span>
+                        <span><Calendar className="inline w-3 h-3 mr-1" />{new Date(ep.attributes.airdate).toLocaleDateString()}</span>
                       )}
                       {ep.attributes.length && (
-                        <span>⏱️ {ep.attributes.length} min</span>
+                        <span><Timer className="inline w-3 h-3 mr-1" />{ep.attributes.length} min</span>
                       )}
                     </div>
                     {ep.attributes.synopsis && (
@@ -89,12 +98,6 @@ const Eploader = ({ animeId, animeTitle }) => {
           })
         )}
       </div>
-
-      {/* {!loading && !error && (
-        <div className="mt-4 text-center text-xs text-slate-400">
-          All {episodes.length} episodes loaded ✅
-        </div>
-      )} */}
     </div>
   );
 };
