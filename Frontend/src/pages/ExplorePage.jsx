@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
+import SeasonalAnime from "../ExplorePage/SeasonalAnime";
 
 export default function ExplorePage() {
 
@@ -56,7 +57,7 @@ export default function ExplorePage() {
         <Trending />
         {/* Genre Explorer */}
       
-
+        <SeasonalAnime />
         {/* Seasonal Anime */}
       
 

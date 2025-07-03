@@ -125,7 +125,7 @@ const Spotlight = () => {
   };
 
   return (
-    <section className="space-y-8">
+    <section className="space-y-8 ">
       <div className="flex items-center justify-between">
         <h2 className="text-5xl font-black text-white  flex items-center gap-4">
           <Flame className="text-orange-500 animate-pulse" size={48} /> 
@@ -166,11 +166,12 @@ const Spotlight = () => {
 
       {/* Anime Grid */}
       {!loading && !error && featuredAnime.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className='flex items-center justify-center'>
+ <div className="grid grid-cols-1 md:grid-cols-2  w-[90%] lg:grid-cols-3  xl:grid-cols-4 gap-6">
           {featuredAnime.map((anime, index) => (
             <div 
               key={anime.id} 
-              className="group relative bg-gray-900/30 cursor-pointer backdrop-blur-sm rounded-2xl overflow-hidden hover:border-transparent transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-500/20"
+              className="group relative  bg-gray-900/30 cursor-pointer  backdrop-blur-sm rounded-2xl overflow-hidden hover:border-transparent transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-500/20"
             >
               {/* Spotlight Number */}
               <div className={`absolute top-4 left-4 z-20 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg`}>
@@ -256,6 +257,8 @@ const Spotlight = () => {
             </div>
           ))}
         </div>
+        </div>
+       
       )}
 
       {/* Empty State */}
