@@ -14,6 +14,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [showEp,setShowEp] = useState([]);
     const [isEpOpen,setIsEpOpen] = useState(false);
+    const [isShown, setIsShown] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
 
     // Fetch anime details from Kitsu API
@@ -459,7 +460,7 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         {/* Action Buttons */}
                         <div className="mt-10 flex  sm:flex-row gap-4">
                             <button
-                                onClick={()=> {handleEpisodesClick(id)}}
+                                // onClick={()=> }
                                 className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                             >
                                 <div className="flex items-center justify-center gap-3">
@@ -484,19 +485,19 @@ const KitsuAnimeCard = ({ onNavigate }) => {
                         </div>
                     </div>
                 </div>
-                                <div className='epcontianer rounded w-full flex  overflow-hidden  bg-zinc-600 text-shadow-2xs text-white'>
-                                            <div>
-                                               
-    
-                                              {showEp.map((ep) => (
-                                                <div key={ep.id}>
-                                                   Episode {ep.attributes.number}: {ep.attributes.canonicalTitle || 'No Title'}
-                                                </div>
-                                              ))}
-    
-                                               
-                                            </div>
-                                </div>
+            <div className='epcontianer rounded w-full flex  overflow-hidden  bg-zinc-600 text-shadow-2xs text-white'>
+                        <div>
+                            
+
+                            {showEp.map((ep) => (
+                            <div key={ep.id}>
+                                Episode {ep.attributes.number}: {ep.attributes.canonicalTitle || 'No Title'}
+                            </div>
+                            ))}
+
+                            
+                        </div>
+            </div>
             </div>
         </div>
     );
