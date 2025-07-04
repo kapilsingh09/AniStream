@@ -8,6 +8,7 @@ import {
 import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
 import SeasonalAnime from "../ExplorePage/SeasonalAnime";
+import TrendingManga from "../ExplorePage/TrendingManga";
 
 
 export default function ExplorePage() {
@@ -58,8 +59,8 @@ export default function ExplorePage() {
       
 
         {/* Top Studios */}
-        <TopStudios />
-
+     
+        <TrendingManga />
         {/* Community Section */}
       
 
@@ -92,21 +93,7 @@ export default function ExplorePage() {
         </section>
 
         {/* Manga Corner */}
-        <section className="space-y-6">
-          <h2 className="text-4xl font-bold flex items-center gap-3">
-            <BookOpen className="text-purple-400" /> Manga Corner
-          </h2>
-          <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-3xl p-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6">
-              {["Jujutsu Kaisen", "Chainsaw Man", "Attack on Titan", "One Piece", "Naruto", "Dragon Ball", "Death Note", "Demon Slayer"].map((title, idx) => (
-                <div key={idx} className="text-center group cursor-pointer">
-                  <img src={`/images/manga${idx + 1}.jpg`} alt={title} className="w-full h-32 object-cover rounded-2xl mb-3 group-hover:scale-105 transition-transform" />
-                  <h3 className="font-bold text-sm">{title}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* <TrendingManga /> */}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import JikhanAnimeCard from './routes/JikhanAnimeCard';
 import KitsuAnimeCard from './routes/KitsuAnimeCard';
 import SorryCard from './utils/SorryCard'; // Used for 404 fallback
 
+
 const App = () => {
   return (
     <Routes>
