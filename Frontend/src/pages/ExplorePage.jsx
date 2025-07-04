@@ -9,6 +9,8 @@ import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
 import SeasonalAnime from "../ExplorePage/SeasonalAnime";
 import TrendingManga from "../ExplorePage/TrendingManga";
+import CharacterSpotlight from "../ExplorePage/CharacterSpotlight";
+
 
 
 export default function ExplorePage() {
@@ -45,7 +47,7 @@ export default function ExplorePage() {
         <Filter />
 
         {/* Featured Spotlight */}
-   <Spotlight />
+   {/* <Spotlight /> */}
 
         {/* Trending Now */}
         <Trending />
@@ -54,7 +56,7 @@ export default function ExplorePage() {
         {/* Seasonal Anime */}
         <SeasonalAnime />
       
-
+        <CharacterSpotlight />
         {/* Upcoming Releases */}
       
 
@@ -63,7 +65,7 @@ export default function ExplorePage() {
         <TrendingManga />
         {/* Community Section */}
       
-
+        {/* <Community /> */}
         {/* Watch Parties */}
         <section className="space-y-6">
           <h2 className="text-4xl font-bold flex items-center gap-3">
