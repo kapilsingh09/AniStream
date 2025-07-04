@@ -29,7 +29,7 @@ const TrendingManga = () => {
       <div className="
       h-[90vh] overflow-hidden  flex flex-nowrap 
       bg-gradient-to-r  from-purple-900/30 to-pink-900/30 rounded-3xl p-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
           {loading ? (
             Array.from({ length: 13 }).map((_, i) => (
               <div key={i} className="h-32  border-2 border-pink-500 w-full bg-purple-500/10 rounded-2xl animate-pulse" />
