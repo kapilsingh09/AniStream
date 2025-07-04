@@ -9,19 +9,12 @@ import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
 import SeasonalAnime from "../ExplorePage/SeasonalAnime";
 
+
 export default function ExplorePage() {
 
   const seasons = ["Spring 2024", "Summer 2024", "Fall 2024", "Winter 2025"];
 ;
 
- 
-
-  const topStudios = [
-    { name: "Studio Ghibli", shows: 23, rating: 9.1 },
-    { name: "MAPPA", shows: 45, rating: 8.9 },
-    { name: "Ufotable", shows: 18, rating: 9.0 },
-    { name: "Wit Studio", shows: 32, rating: 8.7 }
-  ];
 
   return (
     <div className="bg-zinc-900  min-h-screen text-white">
@@ -57,31 +50,15 @@ export default function ExplorePage() {
         <Trending />
         {/* Genre Explorer */}
       
-        <SeasonalAnime />
         {/* Seasonal Anime */}
+        <SeasonalAnime />
       
 
         {/* Upcoming Releases */}
       
 
         {/* Top Studios */}
-        <section className="space-y-6">
-          <h2 className="text-4xl font-bold flex items-center gap-3">
-            <Award className="text-yellow-400" /> Top Studios
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {topStudios.map((studio, idx) => (
-              <div key={idx} className="bg-gray-900 rounded-3xl p-6 text-center hover:bg-gray-800 transition-colors">
-                <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center text-black font-bold text-xl">
-                  {studio.name.charAt(0)}
-                </div>
-                <h3 className="text-xl font-bold mb-2">{studio.name}</h3>
-                <p className="text-gray-400 mb-1">{studio.shows} shows</p>
-                <p className="text-yellow-400 font-bold">★ {studio.rating}</p>
-              </div>
-            ))}
-          </div>
-        </section>  
+        <TopStudios />
 
         {/* Community Section */}
       

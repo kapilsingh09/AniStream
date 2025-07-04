@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Eye, ThumbsUp } from 'lucide-react';
+import { Calendar, Eye, ThumbsUp, Flower,
+  Sun,
+  Leaf,
+  Snowflake, } from 'lucide-react';
 import { FetchSeasonalAnime } from '../services/JikhanAnimeApi';
 
 const seasons = [
-  { label: 'Spring', value: 'spring' },
-  { label: 'Summer', value: 'summer' },
-  { label: 'Fall', value: 'fall' },
-  { label: 'Winter', value: 'winter' },
+  { label: 'Spring', value: 'spring', icon: Flower },
+  { label: 'Summer', value: 'summer', icon: Sun },
+  { label: 'Fall', value: 'fall', icon: Leaf },
+  { label: 'Winter', value: 'winter', icon: Snowflake },
 ];
 
 const currentYear = new Date().getFullYear();
@@ -23,7 +26,16 @@ const SeasonalAnime = () => {
       setError(null);
       try {
         const data = await FetchSeasonalAnime(currentYear, selectedSeason, 12);
-        setAnimeList(data);
+  
+        const uniqueAnimeMap = new Map();
+        data.forEach((anime) => {
+          if (!uniqueAnimeMap.has(anime.mal_id)) {
+            uniqueAnimeMap.set(anime.mal_id, anime);
+          }
+        });
+        const uniqueAnime = Array.from(uniqueAnimeMap.values());
+    
+        setAnimeList(uniqueAnime);
       } catch (err) {
         setError('Failed to load seasonal anime.');
       } finally {
@@ -34,60 +46,73 @@ const SeasonalAnime = () => {
   }, [selectedSeason]);
 
   return (
-    <div className="w-[90%] mx-auto py-12">
+    <div className="w-full mx-auto py-12 bg-slate-900  border-2 border-slate-800 rounded-2xl p-7">
       <section className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-4xl font-bold flex items-center gap-3 text-white">
             <Calendar className="text-purple-400" />
-            Seasonal Anime
+            Seasonal Anime {currentYear}
+          {/* <p className="text-lg text-purple-300 text-center font-semibold">
+            <span className="text-white">{currentYear}</span>
+          </p> */}
           </h2>
-          <p className="text-lg text-purple-300 font-semibold">
-            Year: <span className="text-white">{currentYear}</span>
-          </p>
         </div>
 
         {/* Season Buttons */}
-        <div className="flex gap-4 flex-wrap mb-6">
+        <div className="flex gap-4 flex-wrap cursor-pointer mb-6">
           {seasons.map((season) => (
             <button
               key={season.value}
-              className={`px-6 py-3 rounded-xl transition-colors font-semibold ${
+              className={`px-6 py-3 cursor-pointer rounded-xl transition-colors font-semibold ${
                 selectedSeason === season.value
                   ? 'bg-purple-600 text-white'
                   : 'bg-gray-800 hover:bg-purple-600 text-gray-200'
               }`}
               onClick={() => setSelectedSeason(season.value)}
             >
+              <div className='flex items-center justify-between gap-2'>
+                <season.icon className='' />
+                
               {season.label}
+                </div>
+              {/* {season.icon} */}
             </button>
           ))}
         </div>
 
         {/* Anime Cards */}
         {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-gray-800 rounded-2xl p-4 animate-pulse space-y-3"
-                >
-                  <div className="w-full h-40 bg-gray-700 rounded-xl" />
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mx-auto" />
-                  <div className="h-3 bg-gray-700 rounded w-1/2 mx-auto" />
-                  <div className="h-3 bg-gray-700 rounded w-2/3 mx-auto" />
-                </div>
-              ))}
-            </div>
-          
+  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+    {Array.from({ length: 12 }).map((_, idx) => (
+      <div
+        key={idx}
+        className="bg-gray-800 rounded-2xl animate-pulse overflow-hidden"
+      >
+        {/* Image Skeleton */}
+        <div className="h-[200px] bg-gray-700 w-full"></div>
+        
+        {/* Info Skeleton */}
+        <div className="p-4 space-y-2">
+          <div className="h-4 bg-gray-600 rounded w-3/4"></div>
+          <div className="h-3 bg-gray-600 rounded w-1/2"></div>
+          <div className="h-3 bg-gray-600 rounded w-2/3"></div>
+          <div className="flex gap-2 mt-2">
+            <div className="h-3 w-10 bg-gray-600 rounded"></div>
+            <div className="h-3 w-10 bg-gray-600 rounded"></div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
         ) : error ? (
           <div className="text-center text-red-400 py-10">{error}</div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-6">
             {animeList.map((anime) => (
               <div
                 key={anime.mal_id}
-                className="bg-gray-900 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
+                className="bg-gray-900 rounded-2xl cursor-pointer overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
               >
                 {/* 90% Height Image */}
                 <div className="h-[90%] overflow-hidden">
