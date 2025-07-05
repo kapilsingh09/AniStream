@@ -6,7 +6,7 @@ import HomePage from './Home/Homepage';
 import ExplorePage from './pages/ExplorePage';
 import JikhanAnimeCard from './routes/JikhanAnimeCard';
 import KitsuAnimeCard from './routes/KitsuAnimeCard';
-import SorryCard from './utils/SorryCard'; // Used for 404 fallback
+import SorryCard from './utils/SorryCard'; 
 
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
         <Route index element={<HomePage />} />
 
         {/* Nested routes (relative paths) */}
-        <Route path="explore" element={<ExplorePage />} />
+        <Route path="/explore" element={<ExplorePage />} />
         <Route path="play/:id" element={<JikhanAnimeCard />} />
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
 

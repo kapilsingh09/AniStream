@@ -9,14 +9,14 @@ import Spotlight from "../ExplorePage/Spotlight";
 import Trending from "../ExplorePage/Trending";
 import SeasonalAnime from "../ExplorePage/SeasonalAnime";
 import TrendingManga from "../ExplorePage/TrendingManga";
-import CharacterSpotlight from "../ExplorePage/CharacterSpotlight";
+// import FunFacts from "../ExplorePage/FunFacts";
+import FactsSlider from "../ExplorePage/FactsSlider";
+
 
 
 
 export default function ExplorePage() {
 
-  const seasons = ["Spring 2024", "Summer 2024", "Fall 2024", "Winter 2025"];
-;
 
 
   return (
@@ -43,31 +43,25 @@ export default function ExplorePage() {
       </div> */}
 
       <div className="p-8 space-y-12">
-        {/* Quick Filters */}
-        <Filter />
+    
+        {/* <Filter /> */}
+        {/* <Spotlight /> */}
+        {/* <Trending /> */}
+        {/* <SeasonalAnime /> */}
 
-        {/* Featured Spotlight */}
-   {/* <Spotlight /> */}
-
-        {/* Trending Now */}
-        <Trending />
-        {/* Genre Explorer */}
-      
-        {/* Seasonal Anime */}
-        <SeasonalAnime />
-      
-        <CharacterSpotlight />
-        {/* Upcoming Releases */}
+    
       
 
-        {/* Top Studios */}
+
      
-        <TrendingManga />
-        {/* Community Section */}
-      
+        {/* <TrendingManga /> */}
+
+        {/* <FunFacts /> */}
+        <FactsSlider /> 
+
         {/* <Community /> */}
         {/* Watch Parties */}
-        <section className="space-y-6">
+        {/* <section className="space-y-6">
           <h2 className="text-4xl font-bold flex items-center gap-3">
             <PlayCircle className="text-green-400" /> Watch Parties
           </h2>
@@ -92,7 +86,7 @@ export default function ExplorePage() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* Manga Corner */}
         {/* <TrendingManga /> */}
