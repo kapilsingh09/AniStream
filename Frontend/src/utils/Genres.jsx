@@ -15,13 +15,11 @@ const GenreList = () => {
   const displayedGenres = showAll ? genres : genres.slice(0, 18);
 
   return (
-    <div className="flex justify-center items-start text-white h-full">
-      <div className="w-80 bg-gradient-to-br from-purple-500/80 via-purple-600/30 to-purple-500/40 rounded-xl p-4 backdrop-blur-sm border border-white/10 h-full flex flex-col">
-        <h2 className="text-white text-xl font-bold mb-4 text-center">
-          Anime Genres
-        </h2>
+    <div className="flex justify-center items-center  text-white">
+      <div className="w-80 bg-gradient-to-br from-purple-500/80 via-purple-600/30 to-purple-500/40 rounded-xl p-4 backdrop-blur-sm border border-white/10 h-fit">
+        <h2 className="text-white text-xl font-bold mb-4 text-center">Anime Genres</h2>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className={`transition-all duration-300 ${!showAll ? 'max-h-80 overflow-hidden' : 'max-h-96 overflow-y-auto'}`}>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {displayedGenres.map((genre) => (
               <button
@@ -39,7 +37,7 @@ const GenreList = () => {
             onClick={() => setShowAll(!showAll)}
             className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
           >
-            {showAll ? "Show Less" : `Show All (${genres.length - 18} more)`}
+            {showAll ? 'Show Less' : `Show All (${genres.length - 18} more)`}
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchRomanceAnime } from "../services/kitsuAnimeApi";
+import { FetchTrendingRomanceComedyAnime } from "../services/JikhanAnimeApi";
 import Genres from '../utils/Genres'
 const AnimeGrid = () => {
   const [animeData, setAnimeData] = useState([]);
@@ -14,7 +14,7 @@ const AnimeGrid = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchRomanceAnime(12);
+        const data = await FetchTrendingRomanceComedyAnime(6);
         setAnimeData(data);
       } catch (err) {
         console.error('Error fetching anime:', err);
@@ -76,51 +76,51 @@ const AnimeGrid = () => {
   }
 
   return (
-    <div className="px-4 py-8 bg-black min-h-screen">
+    <div className="px-4  bg-black min-h-screen">
       <div className="flex gap-6 h-full">
         {/* Left Side - Anime Cards */}
         <div className="flex-1">
           <h2 className="text-white text-2xl font-bold mb-6">Romance Anime</h2>
           <div className="flex flex-wrap gap-3">
-            {animeData.map((anime, i) => {
-              const attributes = anime.attributes;
-              const title = attributes?.canonicalTitle || attributes?.titles?.en_jp || attributes?.titles?.en || "Unknown Title";
-              const image = attributes?.posterImage?.original || attributes?.posterImage?.large || attributes?.coverImage?.original;
-              const episodeCount = attributes?.episodeCount || "?";
-              const status = attributes?.status || "Unknown";
-              
-              return (
-                <div
-                  key={anime.id || i}
-                  className="w-40 bg-zinc-900 rounded-xl overflow-hidden shadow-md border border-white/10 hover:scale-[1.02] transition-all duration-300 hover:shadow-purple-500/20 cursor-pointer"
-                >
-                  <div className="relative w-full h-52">
-                    <img
-                      src={image}
-                      alt={title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/160x208/1f2937/6b7280?text=No+Image";
-                      }}
-                    />
-                    <span className="absolute top-2 right-2 px-2 py-1 bg-purple-600 rounded-full text-xs text-white font-semibold capitalize">
-                      {status === "current" ? "Airing" : status === "finished" ? "Complete" : status}
-                    </span>
-                  </div>
-                  <div className="p-3 text-white">
-                    <h3 className="text-sm font-bold line-clamp-2 mb-2 leading-tight" title={title}>
-                      {title}
-                    </h3>
-                    <div className="flex items-center justify-between text-xs text-zinc-400">
-                      <span>
-                        {episodeCount > 0 ? `Ep ${episodeCount}` : "Unknown"}
-                      </span>
-                      <span className="text-purple-400 font-medium">Romance</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          {animeData.map((anime, i) => {
+  const title = anime.title;
+  const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
+  const episodeCount = anime.episodes ?? '?';
+  const status = anime.status ?? 'Unknown';
+  const score = anime.score ?? '-';
+  const airedFrom = anime.aired?.from?.split('T')[0] ?? 'N/A';
+
+  return (
+    <div
+      key={anime.mal_id || i}
+      className="w-44 bg-zinc-900 rounded-xl overflow-hidden shadow-md border border-white/10 hover:scale-[1.02] transition-all duration-300 hover:shadow-purple-500/30 cursor-pointer"
+    >
+      <div className="relative w-full h-[240px]">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover rounded-t-xl"
+          onError={(e) => {
+            e.target.src = "https://via.placeholder.com/176x240/1f2937/6b7280?text=No+Image";
+          }}
+        />
+        <span className="absolute top-2 right-2 px-2 py-1 bg-purple-600 rounded-full text-xs text-white font-semibold capitalize">
+          {status === "Currently Airing" ? "Airing" : status}
+        </span>
+      </div>
+      <div className="p-3 text-white">
+        <h3 className="text-sm font-bold line-clamp-2 mb-2 leading-tight" title={title}>
+          {title}
+        </h3>
+        <div className="flex items-center justify-between text-xs text-zinc-400">
+          <span>{episodeCount > 0 ? `Ep ${episodeCount}` : "Unknown"}</span>
+          <span className="text-purple-400 font-medium">⭐ {score}</span>
+        </div>
+      </div>
+    </div>
+  );
+})}
+
           </div>
         </div>
         

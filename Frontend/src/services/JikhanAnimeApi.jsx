@@ -73,9 +73,16 @@ export const FetchCurrentSeasonAnime = async (limit = 15) => {
   return res.data.data;
 };
 
-// ✅ 10. Upcoming Anime
+// 10. Upcoming Anime
 export const FetchUpcomingAnime = async (limit = 15) => {
   const res = await axios.get(`${BASE_URL}/top/anime?filter=upcoming&limit=${limit}`);
   return res.data.data;
 };
 
+// rom com
+
+export const FetchRomcomAnime = async () => {
+  const response = await fetch('https://api.jikan.moe/v4/anime?genres=22,4&order_by=popularity&sort=desc');
+  const data = await response.json();
+  return data.data; // anime list
+};

@@ -8,6 +8,7 @@ import {
   FetchSeasonalAnime,//done
   FetchCurrentSeasonAnime,//done
   FetchTrendingRomanceComedyAnime,
+  FetchRomcomAnime
 } from '../services/JikhanAnimeApi';
 
 import {
@@ -33,7 +34,7 @@ const AnimeContext = ({ children }) => {
   const [seasonalAnime, setSeasonalAnime] = useState([]);
   const [currentSeasonAnime, setCurrentSeasonAnime] = useState([]);
   const [trendingRomanceComedyAnime, setTrendingRomanceComedyAnime] = useState([]);
-
+  const [romcom, setRomcom] = useState([])
   // ===== KITSU STATES =====
   const [allAnime,setAllanime] = useState([]);
   const [kitsuSeasonalAnime, setKitsuSeasonalAnime] = useState([]);
@@ -120,6 +121,7 @@ const AnimeContext = ({ children }) => {
         fetchSeasonalData(),
         fetchCurrentSeasonData(),
         fetchTrendingRomanceComedyData(),
+        FetchRomcomAnime(),
         // kisthuapi
         fetchKitsuTrendingData(),
         fetchRomanceData(),
@@ -152,6 +154,7 @@ const AnimeContext = ({ children }) => {
         seasonalAnime,
         currentSeasonAnime,
         trendingRomanceComedyAnime,
+        romcom,
 
         // Kitsu States
         kitsuSeasonalAnime,
@@ -182,6 +185,7 @@ const AnimeContext = ({ children }) => {
         fetchCurrentSeasonData,
         fetchTrendingRomanceComedyData,
         fetchTopAnimeData,
+        setRomcom,
 
         // Kitsu Functions
         fetchKitsuSeasonalData,
