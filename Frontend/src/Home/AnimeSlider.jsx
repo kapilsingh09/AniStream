@@ -381,7 +381,7 @@ export default function Slider() {
                   Watch Now
                 </motion.button>
                 <motion.button
-                  className="bg-transparent border-2 border-white/20 text-white p-2 px-4 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all duration-300 hover:bg-zinc-900/70 hover:border-white/30 cursor-pointer backdrop-blur-sm"
+                  className="bg-transparent border-2 border-white/20 text-white p-2 px-4 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-zinc-900/70 hover:via-gray-900/70 hover:to-black/70 hover:border-white/30 cursor-pointer backdrop-blur-sm"
                   variants={buttonVariants}
                   whileHover="hover"
                   whileTap="tap"

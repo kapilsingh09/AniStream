@@ -151,7 +151,7 @@ const FeaturedSection = () => {
   });
 
   return (
-    <div className="min-h-screen mt-10 bg-zinc-900 text-white">
+    <div className="min-h-screen mt-10 bg-gradient-to-br from-zinc-900 via-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold">Anime Collection</h1>

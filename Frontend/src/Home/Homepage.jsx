@@ -5,6 +5,7 @@ import AnimeBanner from './AnimeBanner';
 import SectionComponentKitsu from './SectionComponentKitsu';
 import GhibliMovieBanner from './GhibliBanner';
 
+import AnimeGrid from '../Home/AnimeGrid';
 import { 
   FetchUpcomingAnime,
   FetchTopRatedAnime,
@@ -24,11 +25,10 @@ import FactsSlider from '../ExplorePage/FactsSlider';
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen mt-15 bg-zinc-900">
+    <div className="min-h-screen mt-15  bg-gradient-to-br from-zinc-900 via-gray-900 to-black">
       {/* Hero Slider */}
       <AnimeSlider />
 
-      {/* Sections with meaningful titles */}
       <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
       
       {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
@@ -44,9 +44,9 @@ const Homepage = () => {
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
       <div className="flex items-center justify-center">
-        <GhibliMovieBanner />
+        {/* <GhibliMovieBanner /> */}
       </div>
-
+      <AnimeGrid />
       {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
 
       {/* <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
@@ -59,7 +59,9 @@ const Homepage = () => {
       {/* <div className="flex items-center justify-center">
         <AnimeBanner />
       </div> */}
-      <FactsSlider />
+      <footer>
+        <FactsSlider />
+      </footer>
     </div>
   );
 };

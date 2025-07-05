@@ -42,7 +42,7 @@ const EploaderJikhan = ({ animeId, animeTitle, onClose }) => {
   );
 
   return (
-    <div className="bg-gray-900 rounded-2xl border mt-10 border-gray-700 p-4 sm:p-6 text-white relative">
+    <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black rounded-2xl border mt-10 border-gray-700 p-4 sm:p-6 text-white relative">
       <button
         className="absolute top-3 right-3 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-full shadow z-10"
         onClick={onClose}

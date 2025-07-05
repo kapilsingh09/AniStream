@@ -33,13 +33,13 @@ const dummyFunFacts = {
 };
 
 const cardColors = [
-  'bg-gradient-to-br from-pink-500/40 via-purple-600/40 to-indigo-500/40',
-  'bg-gradient-to-br from-red-400/40 via-pink-500/40 to-orange-400/40',
-  'bg-gradient-to-br from-emerald-400/40 via-green-600/40 to-cyan-500/40',
-  'bg-gradient-to-br from-yellow-400/40 via-orange-500/40 to-red-500/40',
-  'bg-gradient-to-br from-blue-400/40 via-indigo-500/40 to-purple-500/40',
-  'bg-gradient-to-br from-cyan-400/40 via-sky-500/40 to-blue-500/40',
-  'bg-gradient-to-br from-fuchsia-400/40 via-pink-500/40 to-rose-500/40',
+  'bg-gradient-to-b from-pink-500/40 via-purple-600/70 to-transparent',
+  'bg-gradient-to-b from-red-400/40 via-pink-500/30 to-transparent',
+  'bg-gradient-to-b from-emerald-400/40 via-green-600/30 to-transparent',
+  'bg-gradient-to-b from-yellow-400/40 via-orange-500/30 to-transparent',
+  'bg-gradient-to-b from-blue-400/40 via-indigo-500/30 to-transparent',
+  'bg-gradient-to-b from-cyan-400/40 via-sky-500/30 to-transparent',
+  'bg-gradient-to-b from-fuchsia-400/40 via-pink-500/30 to-transparent',
 ];
 
 const FactsSlider = () => {
@@ -116,84 +116,70 @@ const FactsSlider = () => {
   const handleTouchEnd = () => setIsDragging(false);
 
   return (
-    <div className="py-12 px-6 bg-gradient-to-br from-zinc-900 via-gray-900 to-black h-full">
-      <section className="bg-gradient-to-br from-zinc-800/90 to-zinc-900/90 backdrop-blur-sm rounded-3xl flex h-full w-full overflow-hidden shadow-2xl border border-zinc-700/50">
+    <div className="py-12   h-[60vh]">
+      <section className="bg-gradient-to-br from-zinc-800/90 to-zinc-900/90  flex h-full w-full overflow-hidden ">
         {/* Left Side Image */}
         <div className="flex items-end justify-center w-[33%] relative overflow-hidden rounded-l-3xl bg-gradient-to-t from-purple-900/30 to-transparent">
-          <img className="object-cover h-fit w-fit" src={discussion} alt="Discussion" />
+          <img className="object-cover h-[45vh] w-fit" src={discussion} alt="Discussion" />
         </div>
 
-        {/* Scrollable Cards */}
-        <div
-          ref={scrollRef}
-          className={`scroll-container w-[67%] mt-15  bg-gradient-to-t from-purple-900/30 to-transparent overflow-x-auto flex gap-6 px-6 py-6 items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {animeTitles.map((title, i) => (
-            <div
-              key={title}
-              className={`min-w-[300px] max-w-[320px] h-[38vh] ${cardColors[i % cardColors.length]} rounded-3xl p-5 text-white shadow-xl backdrop-blur-xl flex-shrink-0 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 relative overflow-hidden`}
-            >
-              <div className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-              <div className="absolute bottom-6 left-6 w-6 h-6 bg-white/5 rounded-full blur-lg animate-pulse delay-500"></div>
+        {/* Right Side (Title + Scroll Cards) */}
+        <div className="w-[67%] flex flex-col pr-4 pt-4">
+          <h2 className="text-white text-2xl font-semibold  ">Fun Facts About Anime </h2>
 
-              <div className="relative  z-10">
-                <h2 className="text-xl  font-bold mb-3 mr-6 flex items-center justify-between gap-3">
-                  {animeImages[title] && (
-                    <img
-                      src={animeImages[title]}
-                      alt={title}
-                      className="w-15 h-15 rounded-full object-cover ring-2 ring-white/20"
-                    />
-                  )}
-                  {title}
-                </h2>
-                <div className="space-y-2 text-sm font-medium leading-snug">
-                  {dummyFunFacts[title].map((fact, index) => (
-                    <p key={index} className="text-white drop-shadow-sm">
-                      {fact}
-                    </p>
-                  ))}
+          <div
+            ref={scrollRef}
+            className={`scroll-container w-full bg-gradient-to-t from-purple-900/30 to-transparent overflow-x-auto flex gap-6 px-6 py-6 items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {animeTitles.map((title, i) => (
+              <div
+                key={title}
+                className={`min-w-[300px] max-w-[320px]  h-[32vh] ${cardColors[i % cardColors.length]} rounded-3xl p-5 text-white shadow-xl backdrop-blur-xl flex-shrink-0 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 relative overflow-hidden`}
+              >
+                <div className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute bottom-6 left-6 w-6 h-6 bg-white/5 rounded-full blur-lg animate-pulse delay-500"></div>
+                <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black/20 to-transparent z-0 pointer-events-none" />
+
+                <div className="relative z-10">
+                  <h2 className="text-xl font-bold mb-3 mr-6 flex items-center justify-between gap-3">
+                    {animeImages[title] && (
+                      <img
+                        src={animeImages[title]}
+                        alt={title}
+                        className="w-15 h-15 rounded-full object-cover ring-2 ring-white/20"
+                      />
+                    )}
+                    {title}
+                  </h2>
+                  <div className="space-y-2 text-sm font-medium leading-snug">
+                    {dummyFunFacts[title].map((fact, index) => (
+                      <p key={index} className="text-white drop-shadow-sm">
+                        {fact}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Stylish Scrollbar on Top */}
+      {/* Stylish Scrollbar */}
       <style jsx>{`
-        .scroll-container {
-          scrollbar-width: thin;
-          scrollbar-color: #a78bfa rgba(255, 255, 255, 0.05);
-        }
-
         .scroll-container::-webkit-scrollbar {
-          height: 6px;
-          position: absolute;
-          top: 0;
+          height: 4px;
         }
-
         .scroll-container::-webkit-scrollbar-thumb {
-          background: linear-gradient(90deg, #a78bfa, #ec4899, #8b5cf6);
-          border-radius: 10px;
-          border: 1px solid transparent;
-          background-clip: padding-box;
-        }
-
-        .scroll-container::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(90deg, #8b5cf6, #ec4899, #a78bfa);
-        }
-
-        .scroll-container::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 20px;
+          background: #a78bfa;
+          border-radius: 9999px;
         }
       `}</style>
     </div>
