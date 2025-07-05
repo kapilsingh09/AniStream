@@ -20,6 +20,7 @@ import {
   fetchActionAnime,
   fetchHorrorAnime,
 } from '../services/kitsuAnimeApi';
+import FactsSlider from '../ExplorePage/FactsSlider';
 
 const Homepage = () => {
   return (
@@ -58,6 +59,7 @@ const Homepage = () => {
       {/* <div className="flex items-center justify-center">
         <AnimeBanner />
       </div> */}
+      <FactsSlider />
     </div>
   );
 };

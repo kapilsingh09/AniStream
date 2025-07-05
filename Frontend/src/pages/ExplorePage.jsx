@@ -11,6 +11,7 @@ import SeasonalAnime from "../ExplorePage/SeasonalAnime";
 import TrendingManga from "../ExplorePage/TrendingManga";
 // import FunFacts from "../ExplorePage/FunFacts";
 import FactsSlider from "../ExplorePage/FactsSlider";
+import Community from "../Home/Community";
 
 
 
@@ -21,7 +22,6 @@ export default function ExplorePage() {
 
   return (
     <div className="bg-zinc-900  min-h-screen text-white">
-      {/* Hero Section */}
       {/* <div className="relative h-96 bg-gradient-to-r from-purple-900/50 to-pink-800/50 overflow-hidden">
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 p-8 h-full flex flex-col justify-center">
@@ -41,26 +41,15 @@ export default function ExplorePage() {
           </div>
         </div>
       </div> */}
-
       <div className="p-8 space-y-12">
-    
-        {/* <Filter /> */}
-        {/* <Spotlight /> */}
-        {/* <Trending /> */}
-        {/* <SeasonalAnime /> */}
-
-    
-      
-
-
-     
-        {/* <TrendingManga /> */}
-
-        {/* <FunFacts /> */}
+        <Community />
+        <Filter />
+        <Spotlight />
+        <Trending />
+        <SeasonalAnime />
+        <TrendingManga />
         <FactsSlider /> 
-
-        {/* <Community /> */}
-        {/* Watch Parties */}
+        {/* Wah Parties */}
         {/* <section className="space-y-6">
           <h2 className="text-4xl font-bold flex items-center gap-3">
             <PlayCircle className="text-green-400" /> Watch Parties
