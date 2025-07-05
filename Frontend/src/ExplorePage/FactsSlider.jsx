@@ -3,43 +3,44 @@ import discussion from '../assets/discussion.png';
 
 const dummyFunFacts = {
   'One Piece': [
-    '🧠 Oda can draw with both hands at the same time! That’s some next-level multitasking!',
-    '📚 Over 500 million copies sold—record-shattering! Fans just can’t get enough!',
+    'Oda can draw with both hands at the same time! That\'s some next-level multitasking! 😊',
+    'Over 500 million copies sold—record-shattering! Fans just can\'t get enough! 🤩',
   ],
   'Naruto': [
-    '😲 Naruto was almost named "Kumomaru"! Imagine that timeline!',
-    '🍜 Ichiraku Ramen is a real place! Bet it’s as delicious as it looks 😋',
+    'Naruto was almost named "Kumomaru"! Imagine that timeline! 😮',
+    'Ichiraku Ramen is a real place! Bet it\'s as delicious as it looks 😋',
   ],
   'Attack on Titan': [
-    '🍻 Titan movements are modeled after drunk people. Creepy... yet fascinating.',
-    '🙏 "Eren" means "saint" in Turkish. A name with weight!',
+    'Titan movements are modeled after drunk people. Creepy... yet fascinating. 😰',
+    '"Eren" means "saint" in Turkish. A name with weight! 🤔',
   ],
   'My Hero Academia': [
-    '🦸‍♂️ All Might = Japanese Superman! Truly the Symbol of Peace.',
-    '👻 The author wanted to make horror manga first. Talk about plot twist!',
+    'All Might = Japanese Superman! Truly the Symbol of Peace. 😄',
+    'The author wanted to make horror manga first. Talk about plot twist! 😱',
   ],
   'Demon Slayer': [
-    '🐤 Zenitsu’s bird is a sparrow, not a crow. Aww! So tiny and brave!',
-    '✍️ The whole manga was hand-drawn. That’s dedication!',
+    'Zenitsu\'s bird is a sparrow, not a crow. So tiny and brave! 🥰',
+    'The whole manga was hand-drawn. That\'s dedication! 😤',
   ],
   'Death Note': [
-    '🪑 L crouches to conserve energy. Weird? Genius? Maybe both.',
-    '💡 Light’s name isn’t the Japanese word for "light"—clever detail!',
+    'L crouches to conserve energy. Weird? Genius? Maybe both. 🤨',
+    'Light\'s name isn\'t the Japanese word for "light"—clever detail! 😏',
   ],
   'Dragon Ball': [
-    '👵 Goku’s voice is done by an 80+ year-old woman. Legendary!',
-    '🐒 Inspired by "Journey to the West"—an epic story reborn.',
+    'Goku\'s voice is done by an 80+ year-old woman. Legendary! 🤯',
+    'Inspired by "Journey to the West"—an epic story reborn. 😌',
   ],
 };
 
+
 const cardColors = [
-  'bg-gradient-to-b from-pink-500/40 via-purple-600/70 to-transparent',
-  'bg-gradient-to-b from-red-400/40 via-pink-500/30 to-transparent',
-  'bg-gradient-to-b from-emerald-400/40 via-green-600/30 to-transparent',
-  'bg-gradient-to-b from-yellow-400/40 via-orange-500/30 to-transparent',
-  'bg-gradient-to-b from-blue-400/40 via-indigo-500/30 to-transparent',
-  'bg-gradient-to-b from-cyan-400/40 via-sky-500/30 to-transparent',
-  'bg-gradient-to-b from-fuchsia-400/40 via-pink-500/30 to-transparent',
+  'bg-gradient-to-br from-purple-400/50 via-violet-500/40 to-purple-600/30',
+  'bg-gradient-to-br from-indigo-400/50 via-purple-500/40 to-pink-500/30',
+  'bg-gradient-to-br from-purple-300/50 via-purple-500/40 to-purple-700/30',
+  'bg-gradient-to-br from-violet-400/50 via-purple-600/40 to-indigo-600/30',
+  'bg-gradient-to-br from-purple-500/50 via-violet-600/40 to-purple-800/30',
+  'bg-gradient-to-br from-fuchsia-400/50 via-purple-500/40 to-violet-600/30',
+  'bg-gradient-to-br from-purple-400/50 via-indigo-500/40 to-purple-700/30',
 ];
 
 const FactsSlider = () => {
@@ -124,8 +125,8 @@ const FactsSlider = () => {
         </div>
 
         {/* Right Side (Title + Scroll Cards) */}
-        <div className="w-[67%] flex flex-col pr-4 pt-4">
-          <h2 className="text-white text-2xl font-semibold  ">Fun Facts About Anime </h2>
+        <div className="w-[67%] flex flex-col  pt-4">
+          <h2 className="text-white text-3xl font-semibold ml-6 ">Fun Facts About Anime </h2>
 
           <div
             ref={scrollRef}
@@ -147,7 +148,7 @@ const FactsSlider = () => {
                 <div className="absolute bottom-6 left-6 w-6 h-6 bg-white/5 rounded-full blur-lg animate-pulse delay-500"></div>
                 <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black/20 to-transparent z-0 pointer-events-none" />
 
-                <div className="relative z-10">
+                <div className="relative z-44">
                   <h2 className="text-xl font-bold mb-3 mr-6 flex items-center justify-between gap-3">
                     {animeImages[title] && (
                       <img
