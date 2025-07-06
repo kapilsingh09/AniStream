@@ -26,11 +26,11 @@ export default function ExplorePage() {
       <div className="p-8 space-y-12">
         {/* <Community /> */}
         <TrendingKitsuAnime />
-        <Filter />
-        <Spotlight />
-        <Trending />
-        <SeasonalAnime />
-        <TrendingManga />
+        {/* <Filter /> */}
+        {/* <Spotlight /> */}
+        {/* <Trending /> */}
+        {/* <SeasonalAnime /> */}
+        {/* <TrendingManga /> */}
         {/* <FactsSlider />  */}
 
       </div>
