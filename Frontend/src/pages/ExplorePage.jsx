@@ -12,6 +12,7 @@ import TrendingManga from "../ExplorePage/TrendingManga";
 // import FunFacts from "../ExplorePage/FunFacts";
 import FactsSlider from "../ExplorePage/FactsSlider";
 import Community from "../Home/Community";
+import TrendingKitsuAnime from "../ExplorePage/FilterComponents/TrendingKitsuAnime";
 
 
 
@@ -24,6 +25,7 @@ export default function ExplorePage() {
     <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black  min-h-screen text-white">
       <div className="p-8 space-y-12">
         {/* <Community /> */}
+        <TrendingKitsuAnime />
         <Filter />
         <Spotlight />
         <Trending />
