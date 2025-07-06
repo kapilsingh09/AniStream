@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Timer, X as LucideX } from 'lucide-react';
-import KitsuAnimeCard from '../routes/KitsuAnimeCard';
+
 const Eploader = ({ animeId, animeTitle, onClose }) => {
   const [episodes, setEpisodes] = useState([]);
   const [loading, setLoading] = useState(true);

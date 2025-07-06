@@ -117,7 +117,7 @@ const FactsSlider = () => {
   const handleTouchEnd = () => setIsDragging(false);
 
   return (
-    <div className="py-12   h-[60vh]">
+    <div className="py-12 bg-black   h-[60vh]">
       <section className="bg-gradient-to-br from-zinc-800/90 to-zinc-900/90  flex h-full w-full overflow-hidden ">
         {/* Left Side Image */}
         <div className="flex items-end justify-center w-[33%] relative overflow-hidden rounded-l-3xl bg-gradient-to-t from-purple-900/30 to-transparent">

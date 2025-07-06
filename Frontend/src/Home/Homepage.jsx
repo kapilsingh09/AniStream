@@ -35,9 +35,9 @@ const Homepage = () => {
 
       {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
-      {/* <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <AnimeBanner />
-      </div> */}
+      </div>
 
       {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
 

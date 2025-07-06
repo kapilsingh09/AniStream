@@ -140,7 +140,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
                 <div className="flex flex-col items-center space-y-6">
                     <div className="relative">
                         <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-800 border-t-gray-400"></div>
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zinc-900 via-gray-900 to-black opacity-20 animate-pulse"></div>
+                        <div className="absolute inset-0 rounded-full bg-gray-900 opacity-20 animate-pulse"></div>
                     </div>
                     <div className="text-gray-200 text-xl font-medium">Loading anime details...</div>
                     <div className="text-gray-400 text-sm">Fetching from Jikan API</div>
@@ -152,7 +152,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
     if (error || !anime) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-black">
-                <div className="text-center max-w-md bg-gradient-to-br from-zinc-900 via-gray-900 to-black p-8 rounded-2xl shadow-lg border border-gray-800">
+                <div className="text-center max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg border border-gray-800">
                     <div className="text-6xl mb-4">😔</div>
                     <h2 className="text-2xl font-bold text-gray-200 mb-2">Oops! Something went wrong</h2>
                     <p className="text-red-400 mb-6">{error || 'Anime not found in MyAnimeList database'}</p>
@@ -185,7 +185,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
                     
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 bg-gradient-to-br from-zinc-900 via-gray-900 to-black px-4 py-2 rounded-xl border border-gray-800 hover:bg-gray-800 shadow-sm"
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 bg-gray-900 px-4 py-2 rounded-xl border border-gray-800 hover:bg-gray-800 shadow-sm"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span className="text-sm font-medium">Back</span>
@@ -193,7 +193,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
                 </div>
 
                 {/* Main Card */}
-                <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+                <div className="bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                     
                     {/* Hero Banner */}
                     <div className="h-64 md:h-80 lg:h-96 w-full relative overflow-hidden">
@@ -387,7 +387,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
 
                                 {/* Information Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
                                             <Tv className="h-5 w-5 text-rose-400" />
                                             <span className="text-gray-400 font-medium text-sm">Format</span>
@@ -395,7 +395,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
                                         <span className="font-bold text-gray-200 text-lg">{anime?.type}</span>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
                                             <Calendar className="h-5 w-5 text-blue-400" />
                                             <span className="text-gray-400 font-medium text-sm">Aired</span>
@@ -405,7 +405,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
                                         </span>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
                                         <div className="flex items-center gap-3 mb-3">
                                             <List className="h-5 w-5 text-purple-400" />
                                             <span className="text-gray-400 font-medium text-sm">Episodes</span>
