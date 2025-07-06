@@ -44,7 +44,7 @@ const Homepage = () => {
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
       <div className="flex items-center justify-center">
-        {/* <GhibliMovieBanner /> */}
+        <GhibliMovieBanner />
       </div>
       <AnimeGrid />
       {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}

@@ -89,6 +89,18 @@ export const fetchRandomRomcomAnime = async () => {
   };
 };
 
+// 5.1. Fetch Multiple Romance Comedy Anime
+export const fetchRomanceComedyAnime = async (limit = 20) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[categories]': 'romance,comedy',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};
+
 // 6. Get Random Highly Rated Anime
 // export const getRandomAnime = async () => {
 //   const randomOffset = Math.floor(Math.random() * 100);
