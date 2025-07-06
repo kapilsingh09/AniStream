@@ -15,7 +15,7 @@ const fetchSpotlightAnime = async (limit = 12) => {
         const attrs = anime.attributes;
         return {
           id: anime.id,
-          title: attrs.canonicalTitle || attrs.titles?.en_jp || attrs.titles?.en || "Unknown Title",
+          title: attrs.titles?.en || attrs.titles?.en_jp || attrs.titles?.en || "Unknown Title",
           image: attrs.posterImage?.original || attrs.posterImage?.large,
           rating: attrs.averageRating ? `${(attrs.averageRating / 10).toFixed(1)}/10` : 'N/A',
           status: attrs.status,

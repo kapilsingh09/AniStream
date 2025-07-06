@@ -22,12 +22,12 @@ const TrendingManga = () => {
   }, []);
 
   return (
-    <section className="space-y-6 mt-10">
+    <section className="space-y-6 ">
       <h2 className="text-4xl font-bold flex items-center gap-3">
         <BookOpen className="text-purple-400" /> Manga Corner
       </h2>
       <div className="
-      h-[90vh] overflow-hidden  flex flex-nowrap 
+      h-[90vh] min-h-screen overflow-hidden  flex flex-nowrap 
       bg-gradient-to-r  from-purple-900/30 to-pink-900/30 rounded-3xl p-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
           {loading ? (

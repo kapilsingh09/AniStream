@@ -29,7 +29,7 @@ export default function ExplorePage() {
         <Trending />
         <SeasonalAnime />
         <TrendingManga />
-        <FactsSlider /> 
+        {/* <FactsSlider />  */}
 
       </div>
     </div>
