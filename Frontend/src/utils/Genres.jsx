@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+// import {navigate} from 'react-router-dom'
 const genres = [
   "Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama",
   "Ecchi", "Fantasy", "Game", "Harem", "Historical", "Horror", "Isekai",
@@ -10,20 +10,30 @@ const genres = [
   "Supernatural", "Thriller", "Vampire"
 ];
 
-// Color palette for text colors (looped)
 const textColors = [
-  "text-pink-400", "text-purple-400", "text-blue-400", "text-yellow-400",
-  "text-green-400", "text-rose-400", "text-indigo-400", "text-teal-400",
-  "text-emerald-400", "text-orange-400"
+  "text-gray-800", "text-blue-700", "text-green-700", "text-red-700",
+  "text-yellow-700", "text-purple-700", "text-teal-700"
 ];
 
 const GenreList = () => {
   const [showAll, setShowAll] = useState(false);
+  const [shrink, setShrink] = useState(false);
+
   const initialCount = 24;
   const displayedGenres = showAll ? genres : genres.slice(0, initialCount);
 
+  const handleClick = (geners) => {
+    setShrink(true);
+    // navigate(`/{geners}`)
+    setTimeout(() => setShrink(false), 300); // Restore height after 300ms
+  };
+
   return (
-    <div className="rounded-xl p-4 h-[80vh] max-h-screen flex flex-col bg-gradient-to-br from-[#1f103f] via-[#2a0845] to-[#000] shadow-lg">
+    <div
+      className={`rounded-xl p-4 max-h-screen flex flex-col bg-gradient-to-r from-violet-300/20 to-purple-500  shadow-md border border-gray-700 transition-all duration-300 ease-in-out ${
+        shrink ? "h-[75vh]" : "h-[85vh]"
+      }`}
+    >
       {/* Genre Grid */}
       <div
         className={`overflow-hidden ${
@@ -35,9 +45,10 @@ const GenreList = () => {
             <button
               key={genre}
               onClick={() => {
+                handleClick(genre);
                 console.log(`Navigate to /${genre}`);
               }}
-              className={`hover:bg-purple-700 border border-zinc-700 hover:border-purple-500 text-xs px-2 py-2 rounded-lg transition-all duration-200 hover:scale-105 h-8 flex items-center justify-center cursor-pointer font-semibold ${textColors[idx % textColors.length]} bg-zinc-900/80`}
+              className={`hover:bg-transparent border border-gray-300 text-xs px-2 py-2 rounded-md cursor-pointer transition-all duration-200 h-8 flex items-center justify-center hover:underline font-medium bg-gray-800/70 text-white`}
             >
               <span className="truncate">{genre}</span>
             </button>
@@ -48,8 +59,11 @@ const GenreList = () => {
       {/* Show More/Less */}
       <div className="mt-4">
         <button
-          onClick={() => setShowAll(!showAll)}
-          className="bg-gradient-to-r from-purple-600 via-pink-500 to-violet-700 hover:from-purple-500 hover:to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 w-full"
+          onClick={() => {
+            setShowAll(!showAll);
+            handleClick();
+          }}
+          className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 w-full transition"
         >
           {showAll ? "Show Less" : `Show All (${genres.length - initialCount} more)`}
         </button>

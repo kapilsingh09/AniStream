@@ -36,6 +36,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
     
     try {
       const data = await fetchFunction();
+      // console.log(data);
       
       const validData = Array.isArray(data)
         ? data.filter(item =>
@@ -355,7 +356,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
                 
                 <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
                   <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={attr?.titles?.en_jp || attr?.titles?.en}>
-                    {attr?.titles?.en_jp || attr?.titles?.en || 'Unknown Title'}
+                    {attr?.titles?.en_us || attr?.titles?.en || 'Unknown Title'}
                   </div>
                 </div>
               </motion.div>

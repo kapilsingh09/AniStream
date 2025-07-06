@@ -100,13 +100,13 @@ const AnimeGrid = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Heart className="w-8 h-8 text-pink-400" />
+            {/* <Heart className="w-8 h-8 text-pink-400" /> */}
             <h1 className="text-4xl font-bold text-white">Romance Anime</h1>
           </div>
-          <h2 className="text-white text-2xl font-bold">Genres</h2>
+          <h2 className="text-white text-3xl mr-65 font-bold">Genres</h2>
         </div>
 
         <div className="flex gap-6">
@@ -146,8 +146,8 @@ const AnimeGrid = () => {
                         {score}
                       </div>
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className=" rounded-full p-3 border-4 border-white/30 transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                          <Play className="w-6 h-6 text-white fill-white" />
+                        <div className=" rounded-full p-3 border-4 border-white/30 transform scale-75 px-6 py-6 group-hover:scale-100 transition-transform duration-300">
+                          <Play className="w-9 h-9  text-white fill-white" />
                         </div>
                       </div>
                     </div>
@@ -190,7 +190,7 @@ const AnimeGrid = () => {
             </div>
           </div>
 
-          <div className="w-80">
+          <div className="w-[25%]">
             <Genres />
           </div>
         </div>

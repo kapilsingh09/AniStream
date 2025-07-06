@@ -233,7 +233,7 @@ export default function Slider() {
 
   if (loading) {
     return (
-      <div className="w-full h-[60vh] bg-gray-900 flex items-center justify-center">
+      <div className="w-full h-[70vh] bg-gray-900 flex items-center justify-center">
         <motion.div
           className="text-white text-xl flex items-center gap-3"
           initial={{ opacity: 0 }}

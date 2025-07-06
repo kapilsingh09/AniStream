@@ -38,6 +38,7 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
     
     try {
       const data = await fetchFunction();
+      // console.log(data);
       
       const validData = Array.isArray(data)
         ? data.filter(anime =>
@@ -349,8 +350,8 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
               </div>
               
               <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
-                <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={anime.title}>
-                  {anime.title}
+                <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={anime.title_english}>
+                  {anime.title_english || anime.title}
                 </div>
               </div>
             </motion.div>
