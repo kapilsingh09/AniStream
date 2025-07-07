@@ -1,31 +1,34 @@
 import React, { createContext, useEffect, useState } from 'react';
+
+// ===== JIKAN API IMPORTS =====
 import {
-  FetchTrendingAnime,//done
-  FetchTopRatedAnime,//done
-  FetchPopularAnime,//done
-  FetchUpcomingAnime,//done
-  FetchTopAnime,//done
-  FetchSeasonalAnime,//done
-  FetchCurrentSeasonAnime,//done
+  FetchTrendingAnime,
+  FetchTopRatedAnime,
+  FetchPopularAnime,
+  FetchUpcomingAnime,
+  FetchTopAnime,
+  FetchSeasonalAnime,
+  FetchCurrentSeasonAnime,
   FetchTrendingRomanceComedyAnime,
   FetchRomcomAnime
 } from '../services/JikhanAnimeApi';
 
+// ===== KITSU API IMPORTS =====
 import {
-  fetchSeasonalAnime,//
-  fetchTrendingAnime,//useing
-  getRandomAnime,//imp 
+  fetchSeasonalAnime,
+  fetchTrendingAnime,
+  getRandomAnime,
   searchAnime,
-  fetchRomanceAnime,//using
-  fetchActionAnime,//working
-  fetchHorrorAnime,//working
-  fetchAllAnime,//for filter page all option
+  fetchRomanceAnime,
+  fetchActionAnime,
+  fetchHorrorAnime,
+  fetchAllAnime
 } from '../services/kitsuAnimeApi';
 
 export const DataContext = createContext();
 
 const AnimeContext = ({ children }) => {
-  // ===== JIKAN STATES =====
+  // ===== STATE: Jikan Anime =====
   const [trendingAnime, setTrendingAnime] = useState([]);
   const [topRatedAnime, setTopRatedAnime] = useState([]);
   const [popularAnime, setPopularAnime] = useState([]);
@@ -34,71 +37,94 @@ const AnimeContext = ({ children }) => {
   const [seasonalAnime, setSeasonalAnime] = useState([]);
   const [currentSeasonAnime, setCurrentSeasonAnime] = useState([]);
   const [trendingRomanceComedyAnime, setTrendingRomanceComedyAnime] = useState([]);
-  const [romcom, setRomcom] = useState([])
-  // ===== KITSU STATES =====
-  const [allAnime,setAllanime] = useState([]);
+  const [romcom, setRomcom] = useState([]);
+
+  // ===== STATE: Kitsu Anime =====
+  const [allAnime, setAllanime] = useState([]);
   const [kitsuSeasonalAnime, setKitsuSeasonalAnime] = useState([]);
   const [kitsuTrendingAnime, setKitsuTrendingAnime] = useState([]);
   const [kitsuRandomAnime, setKitsuRandomAnime] = useState([]);
   const [kitsuRomcomAnime, setKitsuRomcomAnime] = useState([]);
-  const [kitsuCategories, setKitsuCategories] = useState([]);
-  const [kitsuGenres, setKitsuGenres] = useState([]);
-  const [kitsuTopManga, setKitsuTopManga] = useState([]);
 
-  // ===== GHIBLI STATES =====
+  // ===== STATE: Ghibli API =====
   const [ghibliFilms, setGhibliFilms] = useState([]);
   const [ghibliLoading, setGhibliLoading] = useState(false);
   const [ghibliError, setGhibliError] = useState(null);
 
-  // ===== UI STATES =====
+  // ===== STATE: UI/Errors =====
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
   const [errors, setErrors] = useState({});
 
-  // ===== UNIVERSAL FETCHER =====
+  // ===== HELPER: Universal Error Handler =====
   const fetchWithErrorHandling = async (fetchFunc, setFunc, loadingKey, errorKey) => {
     try {
-      setLoadingStates((prev) => ({ ...prev, [loadingKey]: true }));
-      setErrors((prev) => ({ ...prev, [errorKey]: null }));
+      setLoadingStates(prev => ({ ...prev, [loadingKey]: true }));
+      setErrors(prev => ({ ...prev, [errorKey]: null }));
       const data = await fetchFunc();
       setFunc(data);
     } catch (err) {
       console.error(`${errorKey} error:`, err);
-      setErrors((prev) => ({ ...prev, [errorKey]: err.message }));
+      setErrors(prev => ({ ...prev, [errorKey]: err.message }));
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [loadingKey]: false }));
+      setLoadingStates(prev => ({ ...prev, [loadingKey]: false }));
     }
   };
 
   // ===== JIKAN FETCH FUNCTIONS =====
-  const fetchTrendingData = (limit = 18) => fetchWithErrorHandling(() => FetchTrendingAnime(limit), setTrendingAnime, 'trending', 'trendingError');
-  const fetchTopRatedData = (limit = 18) => fetchWithErrorHandling(() => FetchTopRatedAnime(limit), setTopRatedAnime, 'topRated', 'topRatedError');
-  const fetchPopularData = (limit = 18) => fetchWithErrorHandling(() => FetchPopularAnime(limit), setPopularAnime, 'popular', 'popularError');
-  const fetchUpcomingData = (limit = 15) => fetchWithErrorHandling(() => FetchUpcomingAnime(limit), setUpcomingAnime, 'upcoming', 'upcomingError');
-  const fetchSeasonalData = (year = 2024, season = 'spring', limit = 15) => fetchWithErrorHandling(() => FetchSeasonalAnime(year, season, limit), setSeasonalAnime, 'seasonal', 'seasonalError');
-  const fetchCurrentSeasonData = (limit = 15) => fetchWithErrorHandling(() => FetchCurrentSeasonAnime(limit), setCurrentSeasonAnime, 'currentSeason', 'currentSeasonError');
-  const fetchTrendingRomanceComedyData = (limit = 18) => fetchWithErrorHandling(() => FetchTrendingRomanceComedyAnime(limit), setTrendingRomanceComedyAnime, 'trendingRomanceComedy', 'trendingRomanceComedyError');
-  const fetchTopAnimeData = (limit = 18) => fetchWithErrorHandling(() => FetchTopAnime(limit), setTopAnime, 'topAnime', 'topAnimeError');
+  const fetchTrendingData = (limit = 18) =>
+    fetchWithErrorHandling(() => FetchTrendingAnime(limit), setTrendingAnime, 'trending', 'trendingError');
+
+  const fetchTopRatedData = (limit = 18) =>
+    fetchWithErrorHandling(() => FetchTopRatedAnime(limit), setTopRatedAnime, 'topRated', 'topRatedError');
+
+  const fetchPopularData = (limit = 18) =>
+    fetchWithErrorHandling(() => FetchPopularAnime(limit), setPopularAnime, 'popular', 'popularError');
+
+  const fetchUpcomingData = (limit = 15) =>
+    fetchWithErrorHandling(() => FetchUpcomingAnime(limit), setUpcomingAnime, 'upcoming', 'upcomingError');
+
+  const fetchSeasonalData = (year = 2024, season = 'spring', limit = 15) =>
+    fetchWithErrorHandling(() => FetchSeasonalAnime(year, season, limit), setSeasonalAnime, 'seasonal', 'seasonalError');
+
+  const fetchCurrentSeasonData = (limit = 15) =>
+    fetchWithErrorHandling(() => FetchCurrentSeasonAnime(limit), setCurrentSeasonAnime, 'currentSeason', 'currentSeasonError');
+
+  const fetchTrendingRomanceComedyData = (limit = 18) =>
+    fetchWithErrorHandling(() => FetchTrendingRomanceComedyAnime(limit), setTrendingRomanceComedyAnime, 'trendingRomanceComedy', 'trendingRomanceComedyError');
+
+  const fetchTopAnimeData = (limit = 18) =>
+    fetchWithErrorHandling(() => FetchTopAnime(limit), setTopAnime, 'topAnime', 'topAnimeError');
 
   // ===== KITSU FETCH FUNCTIONS =====
-  const fetchKitsuSeasonalData = (season = 'summer', year = 2024, limit = 20) => fetchWithErrorHandling(() => fetchSeasonalAnime(season, year, limit), setKitsuSeasonalAnime, 'kitsuSeasonal', 'kitsuSeasonalError');
-  const fetchKitsuTrendingData = (limit = 20) => fetchWithErrorHandling(() => fetchTrendingAnime(limit), setKitsuTrendingAnime, 'kitsuTrending', 'kitsuTrendingError');
-  const fetchKitsuRandomData = () => fetchWithErrorHandling(getRandomAnime, setKitsuRandomAnime, 'kitsuRandom', 'kitsuRandomError');
-  const searchKitsuAnime = (query, limit = 20) => fetchWithErrorHandling(() => searchAnime(query, limit), setKitsuTrendingAnime, 'search', 'searchError');
-  
-  // ===== ADDITIONAL KITSU FUNCTIONS =====
-  const fetchRomanceData = (limit = 20) => fetchWithErrorHandling(() => fetchRomanceAnime(limit), setKitsuRomcomAnime, 'romance', 'romanceError');
-  const fetchActionData = (limit = 20) => fetchWithErrorHandling(() => fetchActionAnime(limit), setKitsuTrendingAnime, 'action', 'actionError');
-  const fetchHorrorData = (limit = 20) => fetchWithErrorHandling(() => fetchHorrorAnime(limit), setKitsuTrendingAnime, 'horror', 'horrorError');
+  const fetchKitsuSeasonalData = (season = 'summer', year = 2024, limit = 20) =>
+    fetchWithErrorHandling(() => fetchSeasonalAnime(season, year, limit), setKitsuSeasonalAnime, 'kitsuSeasonal', 'kitsuSeasonalError');
 
-  // ===== GHIBLI API FETCHER =====
+  const fetchKitsuTrendingData = (limit = 20) =>
+    fetchWithErrorHandling(() => fetchTrendingAnime(limit), setKitsuTrendingAnime, 'kitsuTrending', 'kitsuTrendingError');
+
+  const fetchKitsuRandomData = () =>
+    fetchWithErrorHandling(getRandomAnime, setKitsuRandomAnime, 'kitsuRandom', 'kitsuRandomError');
+
+  const searchKitsuAnime = (query, limit = 20) =>
+    fetchWithErrorHandling(() => searchAnime(query, limit), setKitsuTrendingAnime, 'search', 'searchError');
+
+  const fetchRomanceData = (limit = 20) =>
+    fetchWithErrorHandling(() => fetchRomanceAnime(limit), setKitsuRomcomAnime, 'romance', 'romanceError');
+
+  const fetchActionData = (limit = 20) =>
+    fetchWithErrorHandling(() => fetchActionAnime(limit), setKitsuTrendingAnime, 'action', 'actionError');
+
+  const fetchHorrorData = (limit = 20) =>
+    fetchWithErrorHandling(() => fetchHorrorAnime(limit), setKitsuTrendingAnime, 'horror', 'horrorError');
+
+  // ===== GHIBLI FETCH FUNCTION =====
   const fetchGhibliFilms = async () => {
     setGhibliLoading(true);
     setGhibliError(null);
     try {
       const response = await fetch('https://ghibliapi.herokuapp.com/films');
       if (!response.ok) throw new Error('Ghibli API Error');
-      
       const data = await response.json();
       setGhibliFilms(data);
     } catch (error) {
@@ -109,11 +135,12 @@ const AnimeContext = ({ children }) => {
     }
   };
 
-  // ===== ALL DATA LOADER =====
+  // ===== FETCH EVERYTHING ON STARTUP =====
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
       await Promise.allSettled([
+        // Jikan
         fetchTrendingData(),
         fetchUpcomingData(),
         fetchTopRatedData(),
@@ -122,14 +149,16 @@ const AnimeContext = ({ children }) => {
         fetchCurrentSeasonData(),
         fetchTrendingRomanceComedyData(),
         FetchRomcomAnime(),
-        // kisthuapi
+
+        // Kitsu
         fetchKitsuTrendingData(),
         fetchRomanceData(),
         fetchKitsuRandomData(),
         fetchHorrorData(),
-        // Ghibli API
-        fetchGhibliFilms(),
-        fetchAllAnime()
+        fetchAllAnime(),
+
+        // Ghibli
+        fetchGhibliFilms()
       ]);
     } catch (e) {
       console.error('Error in fetchAllData:', e);
@@ -145,7 +174,7 @@ const AnimeContext = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
-        // Jikan States
+        // === Jikan State & Functions ===
         trendingAnime,
         topRatedAnime,
         popularAnime,
@@ -155,28 +184,6 @@ const AnimeContext = ({ children }) => {
         currentSeasonAnime,
         trendingRomanceComedyAnime,
         romcom,
-
-        // Kitsu States
-        kitsuSeasonalAnime,
-        allAnime,
-        kitsuTrendingAnime,
-        kitsuRandomAnime,
-        kitsuRomcomAnime,
-        kitsuCategories,
-        kitsuGenres,
-        kitsuTopManga,
-
-        // Ghibli States
-        ghibliFilms,
-        ghibliLoading,
-        ghibliError,
-
-        // Loading & Errors
-        isLoading,
-        loadingStates,
-        errors,
-
-        // Jikan Functions
         fetchTrendingData,
         fetchTopRatedData,
         fetchPopularData,
@@ -187,7 +194,12 @@ const AnimeContext = ({ children }) => {
         fetchTopAnimeData,
         setRomcom,
 
-        // Kitsu Functions
+        // === Kitsu State & Functions ===
+        allAnime,
+        kitsuSeasonalAnime,
+        kitsuTrendingAnime,
+        kitsuRandomAnime,
+        kitsuRomcomAnime,
         fetchKitsuSeasonalData,
         fetchKitsuTrendingData,
         fetchKitsuRandomData,
@@ -196,12 +208,18 @@ const AnimeContext = ({ children }) => {
         fetchActionData,
         fetchHorrorData,
 
-        // Ghibli Functions
+        // === Ghibli ===
+        ghibliFilms,
+        ghibliLoading,
+        ghibliError,
         fetchGhibliFilms,
 
-        // Re-fetch all
+        // === Utility ===
+        isLoading,
+        loadingStates,
+        errors,
         fetchAllData,
-        refetch: fetchAllData,
+        refetch: fetchAllData
       }}
     >
       {children}
