@@ -44,6 +44,8 @@ const TrendingAnime = () => {
         subtype: anime.attributes.subtype
       }));
       setAnimeList(formattedAnime);
+      // Save to localStorage
+      localStorage.setItem('trendingAnime', JSON.stringify(formattedAnime));
     } catch (err) {
       setError('Failed to fetch trending anime');
     } finally {
@@ -53,7 +55,19 @@ const TrendingAnime = () => {
 
   // When the page loads, get the anime
   useEffect(() => {
-    fetchTrendingAnime();
+    // Try to load from localStorage first
+    const cached = localStorage.getItem('trendingAnime');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setAnimeList(parsed);
+      } catch (e) {
+        // If parsing fails, fetch from API
+        fetchTrendingAnime();
+      }
+    } else {
+      fetchTrendingAnime();
+    }
   }, []);
 
   // Go to the next group of anime cards
@@ -87,7 +101,7 @@ const TrendingAnime = () => {
   
   return (
     // This is the big box that holds everything
-    <div className="w-full mx-auto mt-10 bg-gradient-to-br from-slate-900 via-black to-slate-800 rounded-2xl p-6 shadow-2xl">
+    <div className="w-full rounded-2xl p-6 mt-10">
       {/* The top part with the title and button */}
       <div className="flex items-center justify-between ">
         <h2 className="text-3xl font-bold flex items-center gap-3 text-white">
@@ -95,8 +109,7 @@ const TrendingAnime = () => {
           Trending Anime
           {/* <span className="text-sm text-gray-400 font-normal">({animeList.length})</span> */}
         </h2>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-          <ExternalLink size={16} />
+        <button className="flex items-center gap-2  text-white rounded-lg hover:from-pink-600 hover:to-purple-700 tra2nsition-all duration-300 text-sm border-2 border-gray-700 px-4 py-2 transform hover:scale-105 shadow-lg hover:cursor-pointer">
           View All
         </button>
       </div>
@@ -120,7 +133,7 @@ const TrendingAnime = () => {
         </div>
       ) : (
         // This is the slider with all the anime cards
-        <div className="relative overflow-hidden h-[60vh] flex items-center justify-center-safe  border border-white rounded-xl bg-pink-400">
+        <div className="relative overflow-hidden h-[60vh] border-white  rounded-xl">
           <div
             className="flex transition-all duration-700 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -212,8 +225,7 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
   return (
     // This is the card box
     <div
-      className="relative rounded-xl overflow-hidden transition-all h-[50vh] duration-600 transform hover:scale-110  border-2
-       border-gray-700/30 bg-gradient-to-l  from-violet-500/40 via-pink-500/70 to-purple-500  shadow-lg cursor-pointer"
+      className="relative rounded-xl overflow-hidden border border-gray-700 transition-all h-[51.2vh]  mt-8 duration-600 transform hover:scale-105 m-2 shadow-lg cursor-pointer"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

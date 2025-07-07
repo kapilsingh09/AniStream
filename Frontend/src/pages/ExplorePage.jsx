@@ -22,7 +22,7 @@ export default function ExplorePage() {
   
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 via-gray-900 to-black  min-h-screen text-white">
+    <div className="bg-gradient-to-br from-black  to-black  min-h-screen text-white">
       <div className="p-8 space-y-12">
         {/* <Community /> */}
         <TrendingKitsuAnime />
