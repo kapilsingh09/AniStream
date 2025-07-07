@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-// import {navigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+
 const genres = [
   "Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama",
   "Ecchi", "Fantasy", "Game", "Harem", "Historical", "Horror", "Isekai",
@@ -10,28 +11,25 @@ const genres = [
   "Supernatural", "Thriller", "Vampire"
 ];
 
-const textColors = [
-  "text-gray-800", "text-blue-700", "text-green-700", "text-red-700",
-  "text-yellow-700", "text-purple-700", "text-teal-700"
-];
-
 const GenreList = () => {
   const [showAll, setShowAll] = useState(false);
   const [shrink, setShrink] = useState(false);
+  const navigate = useNavigate(); //Initialize navigate here
 
-  const initialCount = 24;
+  const initialCount = 26;
   const displayedGenres = showAll ? genres : genres.slice(0, initialCount);
 
-  const handleClick = (geners) => {
+  const handleClick = (genre) => {
     setShrink(true);
-    // navigate(`/{geners}`)
-    setTimeout(() => setShrink(false), 300); // Restore height after 300ms
+    navigate(`/genres/${genre}`); // ✅ Correct route
+    console.log("Navigating to genre:", genre);
+    setTimeout(() => setShrink(false), 300);
   };
 
   return (
     <div
-      className={`rounded-xl p-4 max-h-screen flex flex-col bg-gradient-to-r from-violet-300/20 to-purple-500  shadow-md border border-gray-700 transition-all duration-300 ease-in-out ${
-        shrink ? "h-[75vh]" : "h-[85vh]"
+      className={`rounded-2xl p-6 max-h-screen flex flex-col bg-gradient-to-br from-orange-100 via-rose-200 to-pink-300 shadow-lg border border-gray-200 transition-all duration-300 ease-in-out ${
+        shrink ? "h-[99vh]" : "h-[100vh]"
       }`}
     >
       {/* Genre Grid */}
@@ -40,15 +38,12 @@ const GenreList = () => {
           showAll ? "overflow-y-auto" : ""
         } genre-scroll transition-all duration-300 flex-1`}
       >
-        <div className="grid grid-cols-2 gap-2 pr-1">
-          {displayedGenres.map((genre, idx) => (
+        <div className="grid grid-cols-2 gap-3 pr-1">
+          {displayedGenres.map((genre) => (
             <button
               key={genre}
-              onClick={() => {
-                handleClick(genre);
-                console.log(`Navigate to /${genre}`);
-              }}
-              className={`hover:bg-transparent border border-gray-300 text-xs px-2 py-2 rounded-md cursor-pointer transition-all duration-200 h-8 flex items-center justify-center hover:underline font-medium bg-gray-800/70 text-white`}
+              onClick={() => handleClick(genre)}
+              className="bg-white/50 text-gray-800 cursor-pointer hover:underline font-medium text-xs px-3 py-2 rounded-lg backdrop-blur-sm shadow-sm border border-gray-300 hover:bg-white hover:text-indigo-700 hover:shadow-md transition-all duration-200"
             >
               <span className="truncate">{genre}</span>
             </button>
@@ -57,19 +52,16 @@ const GenreList = () => {
       </div>
 
       {/* Show More/Less */}
-      <div className="mt-4">
+      <div className="mt-5">
         <button
-          onClick={() => {
-            setShowAll(!showAll);
-            handleClick();
-          }}
-          className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 w-full transition"
+          onClick={() => setShowAll(!showAll)}
+          className="bg-indigo-200 hover:bg-indigo-300 text-indigo-900 px-4 py-2 rounded-lg text-sm font-semibold w-full shadow-sm transition-all"
         >
           {showAll ? "Show Less" : `Show All (${genres.length - initialCount} more)`}
         </button>
       </div>
 
-      {/* Hide scrollbar */}
+      {/* Hide Scrollbar */}
       <style jsx>{`
         .genre-scroll::-webkit-scrollbar {
           display: none;
