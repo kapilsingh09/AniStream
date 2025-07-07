@@ -81,7 +81,7 @@ const TrendingAnime = () => {
     return num.toString();
   };
 
-  // How many groups of cards do we need?
+
   const slidesToShow = Math.ceil(animeList.length / 5);
 
   
@@ -89,7 +89,7 @@ const TrendingAnime = () => {
     // This is the big box that holds everything
     <div className="w-full mx-auto mt-10 bg-gradient-to-br from-slate-900 via-black to-slate-800 rounded-2xl p-6 shadow-2xl">
       {/* The top part with the title and button */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between ">
         <h2 className="text-3xl font-bold flex items-center gap-3 text-white">
           {/* <TrendingUp className="text-pink-400 animate-pulse" /> */}
           Trending Anime
@@ -177,6 +177,7 @@ const TrendingAnime = () => {
 const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, onMouseLeave }) => {
   // If the image doesn't load, we show a placeholder
   const [imageError, setImageError] = useState(false);
+
   const getTypeColor = (type) => {
     switch (type?.toLowerCase()) {
       case 'tv':
@@ -203,15 +204,16 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
       case 'upcoming':
       case 'tba':
         return 'text-blue-400 bg-blue-500/10 border border-blue-400/40';
-      default:
-        return 'text-gray-300 bg-slate-600/20 border border-slate-400/20';
-    }
-  };
+        default:
+          return 'text-gray-300 bg-slate-600/20 border border-slate-400/20';
+        }
+      };
   
   return (
     // This is the card box
     <div
-      className="relative rounded-xl overflow-hidden transition-all h-[50vh] duration-600 transform hover:scale-110 border  border-purple-700/30 bg-gradient-to-br from-slate-800 via-black to-slate-900 shadow-lg cursor-pointer"
+      className="relative rounded-xl overflow-hidden transition-all h-[50vh] duration-600 transform hover:scale-110  border-2
+       border-gray-700/30 bg-gradient-to-l  from-violet-500/40 via-pink-500/70 to-purple-500  shadow-lg cursor-pointer"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -242,9 +244,9 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
       <div className="p-3 space-y-1 text-sm text-white">
         <h3 className="font-bold line-clamp-2">{anime.title}</h3>
         <div className="flex justify-between text-xs text-gray-400">
-        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(anime.status)}`}>
-  {anime.status}
-</span>
+         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(anime.status)}`}>
+            {anime.status}
+          </span>
 
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getTypeColor(anime.showType)}`}>
               {anime.showType}
@@ -252,10 +254,9 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
 
         </div>
       </div>
-
-      {/* When you hover, show more info in a nice box */}
+      {/* hovered card */}
       {isHovered && (
-        <div className="absolute inset-0 bg-black/90 p-4 z-20 flex flex-col justify-between animate-slide-in-left">
+        <div className="absolute inset-0 bg-black/80 p-4 z-20 flex flex-col justify-between animate-slide-in-left">
           <div className="text-white space-y-2 text-xs">
             <div className="font-bold text-sm">{anime.title}</div>
             <p className="line-clamp-3 text-gray-300">{anime.synopsis || 'No synopsis available.'}</p>
