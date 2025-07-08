@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Heart, Star, Calendar, Play, Users } from "lucide-react";
-import Genres from '../utils/Genres';
+import Genres from '../utils/Geners';
 
 const dummyAnimeData = [
   {

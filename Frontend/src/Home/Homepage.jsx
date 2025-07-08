@@ -29,7 +29,7 @@ const Homepage = () => {
       {/* Hero Slider */}
       {/* <AnimeSlider /> */}
 
-      {/* <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} /> */}
+      <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
       
       <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} />
 
@@ -43,22 +43,22 @@ const Homepage = () => {
 
       <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} />
 
-      {/* <div className="flex items-center justify-center">
+       <div className="flex items-center justify-center">
         <GhibliMovieBanner />
-      </div> */}
+      </div>
       <AnimeGrid />
-      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
+      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
 
-      {/* <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
+      <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} />
 
-      {/* <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} /> */}
+      <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
 
-      {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
+      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} />
 
       {/* Optional: More banners */}
-      {/* <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <AnimeBanner />
-      </div> */}
+      </div>
       <footer>
         <FactsSlider />
       </footer>

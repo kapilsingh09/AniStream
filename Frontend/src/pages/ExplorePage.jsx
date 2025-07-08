@@ -13,6 +13,7 @@ import TrendingManga from "../ExplorePage/TrendingManga";
 import FactsSlider from "../ExplorePage/FactsSlider";
 import Community from "../Home/Community";
 import TrendingKitsuAnime from "../ExplorePage/FilterComponents/TrendingKitsuAnime";
+import Genres from '../utils/Geners';
 
 
 
@@ -20,20 +21,20 @@ import TrendingKitsuAnime from "../ExplorePage/FilterComponents/TrendingKitsuAni
 export default function ExplorePage() {
 
   
-
   return (
-    <div className="bg-gradient-to-br from-black  to-black  min-h-screen text-white">
-      <div className="p-8 space-y-12">
+    <div className=" min-h-screen text-white">
+  
         {/* <Community /> */}
-        <TrendingKitsuAnime />
-        {/* <Filter /> */}
-        {/* <Spotlight /> */}
-        {/* <Trending /> */}
-        {/* <SeasonalAnime /> */}
-        {/* <TrendingManga /> */}
-        {/* <FactsSlider />  */}
-
-      </div>
+         <TrendingKitsuAnime />
+        <SeasonalAnime />
+        <TrendingManga />
+        {/* <Filter />
+         */}
+      
+        <Spotlight />
+        <Trending />
+        {/* <FactsSlider /> */}
+ 
     </div>
   );
 }

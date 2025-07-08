@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Star, Calendar, Play, Users } from "lucide-react";
-import Genres from "../utils/Genres";
+import Genres from "../utils/Geners";
 
 const AnimeGrid = () => {
   const [animeData, setAnimeData] = useState([]);

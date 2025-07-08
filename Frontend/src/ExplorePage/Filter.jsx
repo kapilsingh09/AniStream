@@ -151,11 +151,10 @@ const FeaturedSection = () => {
   });
 
   return (
-    <div className="min-h-screen mt-10 bg-gradient-to-br from-zinc-900 via-gray-900 to-black text-white">
+    <div className="min-h-screen  bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold">Anime Collection</h1>
-          <p className="text-gray-400">Discover anime from Kitsu & Jikan APIs</p>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6 bg-gray-800 p-4 rounded-lg">
@@ -190,7 +189,7 @@ const FeaturedSection = () => {
           </button>
         </div> */}
 
-        <div className="bg-gray-800 rounded-lg p-6">
+        {/* <div className="bg-gray-800 rounded-lg p-6">
           {loading && (
             <div className="text-center py-12">
               <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500 mb-2" />
@@ -272,10 +271,10 @@ const FeaturedSection = () => {
 
             </>
           )}
-        </div>
+        </div> */}
 
         {/* Modal */}
-        {selectedAnime && (
+        {/* {selectedAnime && (
           <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setSelectedAnime(null)}>
             <div className="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="p-6">
@@ -313,7 +312,7 @@ const FeaturedSection = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

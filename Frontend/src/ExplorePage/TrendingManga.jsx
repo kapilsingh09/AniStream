@@ -2,59 +2,54 @@
 import { useEffect, useState } from "react";
 import { BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import {fetchTrendingManga} from '../services/anilistApi'
 const TrendingManga = () => {
   const [manga, setManga] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      try {
-        const res = await fetch(`https://kitsu.io/api/edge/trending/manga`);
-        const data = await res.json();
-        setManga(data.data || []);
-      } catch (err) {
-        console.error("Failed to fetch trending manga from Kitsu:", err);
-      } finally {
-        setLoading(false);
-      }
+      const data = await fetchTrendingManga();
+      setManga(data);
+      setLoading(false);
     })();
   }, []);
+  
+
 
   return (
-    <section className="space-y-6 ">
-      <h2 className="text-4xl font-bold flex items-center gap-3">
-        <BookOpen className="text-purple-400" /> Manga Corner
+    <section className="space-y-6 mx-auto pt-4 min-h-screen bg-slate-900">
+      <h2 className="text-4xl font-bold flex items-center pl-9">
+        Manga Corner
       </h2>
-      <div className="
-      h-[90vh] min-h-screen overflow-hidden  flex flex-nowrap 
-      bg-gradient-to-r  from-purple-900/30 to-pink-900/30 rounded-3xl p-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+      <div className=" min-h-screen overflow-hidden flex flex-nowrap rounded-3xl pl-10 pr-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 h-full  gap-6">
           {loading ? (
-            Array.from({ length: 13 }).map((_, i) => (
-              <div key={i} className="h-32  border-2 border-pink-500 w-full bg-purple-500/10 rounded-2xl animate-pulse" />
+            Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-32 border-2 border-gray-800 w-full bg-purple-500/10 rounded-2xl animate-pulse"
+              />
             ))
           ) : (
-            manga.map((mangaItem) => {
-              const title = mangaItem.attributes.titles.en_jp || mangaItem.attributes.slug;
-              const image = mangaItem.attributes.posterImage?.small;
+            manga.map((item) => {
+              const title = item.title.english || item.title.romaji;
+              const image = item.coverImage.large;
 
               return (
-                <div className="">
-                <Link
-                  to={`/manga/${mangaItem.id}`}
-                  key={mangaItem.id}
-                  className="text-center group cursor-pointer"
-                >
-                  <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-[35vh]  object-cover rounded-xl mb-3 group-hover:scale-105 transition-transform"
-                  />
-                  <h3 className="font-bold text-sm line-clamp-2">{title}</h3>
-                </Link>
+                <div key={item.id}>
+                  <Link
+                    to={`/manga/${item.id}`}
+                    className="text-left group cursor-pointer"
+                  >
+                    <img
+                      src={image}
+                      alt={title}
+                      className="w-full h-[35vh] object-cover rounded-xl mb-3 group-hover:scale-105 transition-transform"
+                    />
+                    <h3 className="font-semibold text-sm line-clamp-2">{title}</h3>
+                  </Link>
                 </div>
-
               );
             })
           )}

@@ -51,7 +51,7 @@ const SeasonalAnime = () => {
   }, [selectedSeason]);
 
   return (
-    <div className="w-full mx-auto py-12 bg-slate-900  border-2 border-slate-800 rounded-2xl p-7">
+    <div className="w-full mx-auto py-12 bg-slate-900  border-b border-slate-800  p-7">
       <section className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

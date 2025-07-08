@@ -464,3 +464,38 @@ export const fetchAnimeDetails = async (id) => {
     throw error;
   }
 }; 
+
+export const fetchTrendingManga = async () => {
+  const query = `
+    query {
+      Page(page: 1, perPage: 20) {
+        media(type: MANGA, sort: TRENDING_DESC) {
+          id
+          title {
+            romaji
+            english
+          }
+          coverImage {
+            large
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch("https://graphql.anilist.co", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    const json = await response.json();
+    return json.data.Page.media;
+  } catch (error) {
+    console.error("AniList API error:", error);
+    return [];
+  }
+};
