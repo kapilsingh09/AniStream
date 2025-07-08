@@ -1,33 +1,42 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { fetchTrendingAnime } from '../services/anilistApi';
+import { 
+  fetchTrendingAnime, 
+  fetchNewlyAddedAnime
+
+} from '../services/anilistApi';
 
 export const ApiDataContext = createContext();
 
 const ApiContext = ({ children }) => {
   const [featuredAnime, setFeaturedAnime] = useState([]);
+  const [newlyAddedAnime, setNewlyAddedAnime] = useState([])
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadTrendingAnime = async () => {
+    (async () => {
       setLoading(true);
       try {
-        const data = await fetchTrendingAnime(12);
-        setFeaturedAnime(data);
-      } catch (err) {
-        console.error('Error fetching trending anime:', err);
-        setError('Failed to load trending anime.');
+        const [trending, newlyAdded] = await Promise.all([
+          fetchTrendingAnime(12),
+          fetchNewlyAddedAnime(10)
+        ]);
+        setFeaturedAnime(trending);
+        setNewlyAddedAnime(newlyAdded);
+        setError(null);
+      } catch (error) {
+        setError(error);
+        alert("Fetching anime data have error apicontext checkit!!", error);
       } finally {
         setLoading(false);
       }
-    };
-
-    loadTrendingAnime();
+    })();
   }, []);
 
   return (
     <ApiDataContext.Provider
-      value={{ featuredAnime, loading, error }}
+      value={{ featuredAnime ,newlyAddedAnime, loading, error, fetchTrendingAnime }}
     >
       {children}
     </ApiDataContext.Provider>

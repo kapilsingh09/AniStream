@@ -1,13 +1,14 @@
 import { MonitorPlay, RefreshCcw } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   ChevronLeft, ChevronRight, Star, Calendar, Heart, Eye
 } from 'lucide-react';
-
+import { ApiDataContext } from '../context/ApiContext';
 const TrendingAnime = () => {
+  const { newlyAddedAnime, loading, error } = useContext(ApiDataContext);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
-
+  
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'releasing':
@@ -15,7 +16,7 @@ const TrendingAnime = () => {
       case 'not_yet_released':
         return 'from-sky-300 to-blue-400';
       case 'finished':
-        return 'bg-purple-600';
+        return 'from-fuchsia-400 to-violet-500';
       case 'cancelled':
         return 'from-red-400 to-rose-500';
       case 'hiatus':
@@ -49,204 +50,7 @@ const TrendingAnime = () => {
     'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
   ];
 
-  // Fake anime data
-  const animeList = [
-    {
-      id: 1,
-      title: "Attack on Titan: Final Season",
-      synopsis: "As the truth behind the walls comes to light, Eren and his friends face their greatest challenge yet. The final battle for humanity's survival begins.",
-      rating: 92,
-      popularityRank: 1,
-      ratingRank: 1,
-      status: "finished",
-      episodeCount: 24,
-      startDate: "2023-03-03",
-      posterImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
-      userCount: 2500000,
-      favoritesCount: 180000,
-      showType: "TV",
-      ageRating: "R",
-      subtype: "TV",
-      rank: 1,
-      year: 2023
-    },
-    {
-      id: 2,
-      title: "Demon Slayer: Infinity Castle",
-      synopsis: "Tanjiro and his companions infiltrate the mysterious Infinity Castle for the final confrontation against Muzan and the Upper Moons.",
-      rating: 90,
-      popularityRank: 2,
-      ratingRank: 2,
-      status: "releasing",
-      episodeCount: 12,
-      startDate: "2024-02-10",
-      posterImage: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=600&fit=crop",
-      userCount: 2200000,
-      favoritesCount: 165000,
-      showType: "TV",
-      ageRating: "R",
-      subtype: "TV",
-      rank: 2,
-      year: 2024
-    },
-    {
-      id: 3,
-      title: "Jujutsu Kaisen: Hidden Inventory",
-      synopsis: "A prequel arc focusing on Gojo and Geto's past, revealing the events that shaped their relationship and the jujutsu world.",
-      rating: 89,
-      popularityRank: 3,
-      ratingRank: 3,
-      status: "finished",
-      episodeCount: 5,
-      startDate: "2023-07-06",
-      posterImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
-      userCount: 1800000,
-      favoritesCount: 145000,
-      showType: "TV",
-      ageRating: "R",
-      subtype: "TV",
-      rank: 3,
-      year: 2023
-    },
-    {
-      id: 4,
-      title: "One Piece: Egghead Island",
-      synopsis: "The Straw Hat Pirates arrive at Egghead Island, the island of the future, where they encounter Dr. Vegapunk and face new challenges.",
-      rating: 88,
-      popularityRank: 4,
-      ratingRank: 4,
-      status: "releasing",
-      episodeCount: 20,
-      startDate: "2024-01-07",
-      posterImage: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=600&fit=crop",
-      userCount: 1900000,
-      favoritesCount: 135000,
-      showType: "TV",
-      ageRating: "PG",
-      subtype: "TV",
-      rank: 4,
-      year: 2024
-    },
-    {
-      id: 5,
-      title: "Chainsaw Man Movie: Reze Arc",
-      synopsis: "Denji encounters a mysterious girl named Reze who may not be what she seems. A story of young love and devastating revelations.",
-      rating: 87,
-      popularityRank: 5,
-      ratingRank: 5,
-      status: "not_yet_released",
-      episodeCount: 1,
-      startDate: "2024-12-13",
-      posterImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
-      userCount: 1500000,
-      favoritesCount: 120000,
-      showType: "Movie",
-      ageRating: "R",
-      subtype: "Movie",
-      rank: 5,
-      year: 2024
-    },
-    {
-      id: 6,
-      title: "My Hero Academia: Final Act",
-      synopsis: "The final battle between heroes and villains reaches its climax as Deku faces All For One in the ultimate confrontation.",
-      rating: 86,
-      popularityRank: 6,
-      ratingRank: 6,
-      status: "hiatus",
-      episodeCount: 13,
-      startDate: "2024-04-06",
-      posterImage: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=600&fit=crop",
-      userCount: 1700000,
-      favoritesCount: 110000,
-      showType: "TV",
-      ageRating: "PG",
-      subtype: "TV",
-      rank: 6,
-      year: 2024
-    },
-    {
-      id: 7,
-      title: "Frieren: Beyond Journey's End",
-      synopsis: "An elf mage reflects on her long life and the fleeting nature of human relationships after the death of her companions.",
-      rating: 91,
-      popularityRank: 7,
-      ratingRank: 7,
-      status: "finished",
-      episodeCount: 28,
-      startDate: "2023-09-29",
-      posterImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
-      userCount: 1400000,
-      favoritesCount: 95000,
-      showType: "TV",
-      ageRating: "PG",
-      subtype: "TV",
-      rank: 7,
-      year: 2023
-    },
-    {
-      id: 8,
-      title: "Spy x Family Code: White",
-      synopsis: "The Forger family goes on their first family vacation, but their trip takes an unexpected turn when they get caught up in a conspiracy.",
-      rating: 85,
-      popularityRank: 8,
-      ratingRank: 8,
-      status: "finished",
-      episodeCount: 1,
-      startDate: "2023-12-22",
-      posterImage: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=600&fit=crop",
-      userCount: 1300000,
-      favoritesCount: 88000,
-      showType: "Movie",
-      ageRating: "PG",
-      subtype: "Movie",
-      rank: 8,
-      year: 2023
-    },
-    {
-      id: 9,
-      title: "Tokyo Revengers: Tenjiku Arc",
-      synopsis: "Takemichi faces his most dangerous mission yet as he attempts to prevent the tragic fate of his friends in the Tenjiku arc.",
-      rating: 84,
-      popularityRank: 9,
-      ratingRank: 9,
-      status: "cancelled",
-      episodeCount: 13,
-      startDate: "2024-01-09",
-      posterImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
-      userCount: 1200000,
-      favoritesCount: 75000,
-      showType: "TV",
-      ageRating: "R",
-      subtype: "TV",
-      rank: 9,
-      year: 2024
-    },
-    {
-      id: 10,
-      title: "Vinland Saga: Return to Iceland",
-      synopsis: "Thorfinn returns to Iceland with his family, seeking to establish a peaceful settlement away from the violence of war.",
-      rating: 89,
-      popularityRank: 10,
-      ratingRank: 10,
-      status: "not_yet_released",
-      episodeCount: 24,
-      startDate: "2025-01-10",
-      posterImage: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=600&fit=crop",
-      userCount: 1100000,
-      favoritesCount: 82000,
-      showType: "TV",
-      ageRating: "R",
-      subtype: "TV",
-      rank: 10,
-      year: 2025
-    }
-  ];
-
-  const loading = false;
-  const error = null;
-
-  const slidesToShow = Math.ceil(animeList.length / 5);
+  const slidesToShow = Math.ceil((newlyAddedAnime?.length || 0) / 5) || 1;
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slidesToShow);
@@ -264,18 +68,11 @@ const TrendingAnime = () => {
     });
   };
 
-  const formatNumber = (num) => {
-    if (!num) return '0';
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toString();
-  };
-
   return (
-    <div className="w-full rounded-2xl p-6 mt-10 bg-slate-900 border-2 border-slate-800 ">
+    <div className="w-full  p-6  bg-slate-900 border-2 border-slate-800 ">
       <div className="flex items-center justify-between ml-4">
-        <h2 className="text-4xl  font-bold flex items-center gap-3 text-white ml-2">
-          Popular Anime
+        <h2 className="text-4xl font-bold flex items-center gap-3 text-white ml-2">
+        OVAReleases
         </h2>
         <button className="flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg">
           View All
@@ -307,6 +104,12 @@ const TrendingAnime = () => {
               Try Again
             </button>
           </div>
+        ) : (newlyAddedAnime && newlyAddedAnime.length === 0) ? (
+          <div className="text-center py-10">
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg inline-block" role="alert">
+              <span className="font-bold">Alert:</span> No anime found.
+            </div>
+          </div>
         ) : (
           <div className="relative">
             <div className="overflow-hidden">
@@ -317,12 +120,11 @@ const TrendingAnime = () => {
                 {Array.from({ length: slidesToShow }).map((_, slideIndex) => (
                   <div key={slideIndex} className="w-full flex-shrink-0">
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6">
-                      {animeList.slice(slideIndex * 5, (slideIndex + 1) * 5).map((anime) => (
+                      {newlyAddedAnime.slice(slideIndex * 5, (slideIndex + 1) * 5).map((anime) => (
                         <AnimeCard
                           key={anime.id}
                           anime={anime}
                           formatDate={formatDate}
-                          formatNumber={formatNumber}
                           getStatusColor={getStatusColor}
                           getStatusText={getStatusText}
                           genreColors={genreColors}
@@ -356,7 +158,7 @@ const TrendingAnime = () => {
   );
 };
 
-const AnimeCard = ({ anime, formatDate, formatNumber, getStatusColor, getStatusText, genreColors, isHovered, onMouseEnter, onMouseLeave }) => {
+const AnimeCard = ({ anime, formatDate, getStatusColor, getStatusText, genreColors, isHovered, onMouseEnter, onMouseLeave }) => {
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -367,25 +169,20 @@ const AnimeCard = ({ anime, formatDate, formatNumber, getStatusColor, getStatusT
     >
       <div className="h-full overflow-hidden relative">
         <img
-          src={imageError ? '/images/seasonal1.jpg' : anime.posterImage}
+          src={imageError ? '/images/seasonal1.jpg' : anime.image}
           alt={anime.title}
           className="w-full h-full  object-cover"
           onError={() => setImageError(true)}
         />
-        {anime.rank && anime.rank <= 10 && (
-          <div className="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-            #{anime.rank}
-          </div>
-        )}
       </div>
 
       <div className="p-1 flex-grow flex flex-col justify-between">
         <h3 className="font-bold text-sm mb-2 text-white line-clamp-2">{anime.title}</h3>
         <div className="text-xs text-gray-400  flex flex-wrap gap-2">
-          {anime.showType && (
+          {anime.format && (
             <span className="px-3 py-1 rounded-full bg-blue-800/30 text-blue-400 flex items-center gap-1">
               <MonitorPlay size={12} className="text-blue-400" />
-              <span className="font-medium">{anime.showType}</span>
+              <span className="font-medium">{anime.format}</span>
             </span>
           )}
           {anime.status && (
@@ -395,27 +192,34 @@ const AnimeCard = ({ anime, formatDate, formatNumber, getStatusColor, getStatusT
             </span>
           )}
         </div>
+        <div className="text-xs text-gray-400 mt-1">
+          Episodes: {anime.episodes}
+        </div>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {anime.genres && anime.genres.slice(0, 2).map((genre, idx) => (
+            <span
+              key={idx}
+              className={`${genreColors[idx % genreColors.length]} text-white px-1.5 py-1 text-[10px] rounded-full`}
+            >
+              {genre}
+            </span>
+          ))}
+        </div>
       </div>
 
       {isHovered && (
         <div className="absolute inset-0 bg-black/70 p-4 z-20 flex flex-col justify-between backdrop-blur-sm rounded-2xl">
           <div className="text-white space-y-2 text-xs">
             <div className="font-bold text-sm">{anime.title}</div>
-            <p className="line-clamp-4 text-gray-200">
-              {anime.synopsis || 'No synopsis available.'}
-            </p>
             <div className="grid grid-cols-2 gap-2 mt-2">
               <div className="flex items-center gap-1 text-yellow-400">
-                <Star size={12} /> {anime.rating ? `${parseFloat(anime.rating).toFixed(1)}/10` : 'N/A'}
+                <Star size={12} /> {anime.rating}
               </div>
               <div className="flex items-center gap-1 text-green-400">
                 <Eye size={12} /> {getStatusText(anime.status)}
               </div>
               <div className="flex items-center gap-1 text-blue-300">
-                <Calendar size={12} /> {formatDate(anime.startDate)}
-              </div>
-              <div className="flex items-center gap-1 text-pink-300">
-                <Heart size={12} /> {formatNumber(anime.favoritesCount)}
+                <Calendar size={12} /> {anime.season && anime.seasonYear ? `${anime.season} ${anime.seasonYear}` : 'TBA'}
               </div>
             </div>
           </div>

@@ -519,3 +519,74 @@ export const fetchTrendingAnime = async (limit = 12) => {
     return [];
   }
 };
+
+export const fetchNewlyAddedAnime = async (limit) => {
+  const query = `
+    query ($page: Int, $perPage: Int) {
+      Page(page: $page, perPage: $perPage) {
+        media(type: ANIME, format: OVA, sort: POPULARITY_DESC) {
+          id
+          title {
+            romaji
+            english
+            native
+          }
+          coverImage {
+            large
+            medium
+          }
+          bannerImage
+          description
+          episodes
+          duration
+          genres
+          averageScore
+          popularity
+          status
+          startDate {
+            year
+            month
+            day
+          }
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    page: 1,
+    perPage: limit,
+  };
+
+  try {
+    const response = await fetch('https://graphql.anilist.co', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const json = await response.json();
+    const animeList = json.data.Page.media;
+
+    return animeList.map(anime => ({
+      id: anime.id,
+      title: anime.title.english || anime.title.romaji || anime.title.native,
+      image: anime.coverImage.large,
+      bannerImage: anime.bannerImage,
+      description: anime.description,
+      episodes: anime.episodes,
+      duration: anime.duration,
+      genres: anime.genres,
+      rating: anime.averageScore ? `${(anime.averageScore / 10).toFixed(1)}/10` : 'N/A',
+      popularity: anime.popularity,
+      status: anime.status,
+      year: anime.startDate?.year,
+    }));
+  } catch (error) {
+    console.error('Failed to fetch OVA anime:', error);
+    return [];
+  }
+};

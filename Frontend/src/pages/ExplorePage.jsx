@@ -26,11 +26,11 @@ export default function ExplorePage() {
   <div className="space-x-6 bg-slate-900">
 
         {/* <Community /> */}
-         <TrendingKitsuAnime />
-        <SeasonalAnime />
+         {/* <TrendingKitsuAnime /> */}
+        {/* <SeasonalAnime /> */}
         {/* <Filter /> */}
         
-        <TrendingManga />
+        {/* <TrendingManga /> */}
       
         <Spotlight />
         <Trending />
