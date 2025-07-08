@@ -23,18 +23,20 @@ export default function ExplorePage() {
   
   return (
     <div className=" min-h-screen text-white">
-  
+  <div className="space-x-6 bg-slate-900">
+
         {/* <Community /> */}
-         {/* <TrendingKitsuAnime /> */}
-        {/* <SeasonalAnime /> */}
-        {/* <Filter />
-         */}
-        {/* <TrendingManga /> */}
+         <TrendingKitsuAnime />
+        <SeasonalAnime />
+        {/* <Filter /> */}
+        
+        <TrendingManga />
       
         <Spotlight />
         <Trending />
         {/* <FactsSlider /> */}
  
+  </div>
     </div>
   );
 }

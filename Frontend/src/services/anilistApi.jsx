@@ -268,33 +268,6 @@ export const fetchTopRatedAnime = async (limit = 20) => {
   }
 };
 
-export const fetchSeasonalAnime = async (season = 'WINTER', year = new Date().getFullYear(), limit = 20) => {
-  try {
-    const perPage = Math.min(limit, 50);
-    const anime = await makeGraphQLRequest(SEASONAL_ANIME_QUERY, {
-      page: 1,
-      perPage,
-      season,
-      seasonYear: year
-    });
-    return anime.slice(0, limit).map(formatAnimeData);
-  } catch (error) {
-    console.error('Error fetching seasonal anime:', error);
-    return [];
-  }
-};
-
-export const fetchCurrentSeasonAnime = async (limit = 20) => {
-  const currentDate = new Date();
-  const month = currentDate.getMonth() + 1;
-  let season = 'WINTER';
-  
-  if (month >= 3 && month <= 5) season = 'SPRING';
-  else if (month >= 6 && month <= 8) season = 'SUMMER';
-  else if (month >= 9 && month <= 11) season = 'FALL';
-  
-  return fetchSeasonalAnime(season, currentDate.getFullYear(), limit);
-};
 
 export const searchAnime = async (query, limit = 20) => {
   const SEARCH_QUERY = `

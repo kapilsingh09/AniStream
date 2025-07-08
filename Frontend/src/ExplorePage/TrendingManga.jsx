@@ -9,7 +9,7 @@ const TrendingManga = () => {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchTrendingManga(20);
+      const data = await fetchTrendingManga(14);
       setManga(data);
       setLoading(false);
     })();
@@ -18,7 +18,7 @@ const TrendingManga = () => {
 
 
   return (
-    <section className="space-y-6 mx-auto pt-4 min-h-screen bg-slate-900">
+    <section className="space-y-6 mx-auto pt-4  border-b-2 border-gray-700 bg-slate-900">
       <div className="flex items-center justify-between pl-9 pr-9">
         <h2 className="text-4xl font-bold">
           Manga Corner
