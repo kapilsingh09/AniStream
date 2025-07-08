@@ -465,10 +465,10 @@ export const fetchAnimeDetails = async (id) => {
   }
 }; 
 
-export const fetchTrendingManga = async () => {
+export const fetchTrendingManga = async (limit) => {
   const query = `
-    query {
-      Page(page: 1, perPage: 20) {
+    query ($limit: Int) {
+      Page(page: 1, perPage: $limit) {
         media(type: MANGA, sort: TRENDING_DESC) {
           id
           title {
@@ -483,13 +483,17 @@ export const fetchTrendingManga = async () => {
     }
   `;
 
+  const variables = {
+    limit,
+  };
+
   try {
     const response = await fetch("https://graphql.anilist.co", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables }),
     });
 
     const json = await response.json();
@@ -499,3 +503,4 @@ export const fetchTrendingManga = async () => {
     return [];
   }
 };
+
