@@ -63,7 +63,7 @@ const TrendingAnime = () => {
     <div className="w-full rounded-2xl p-6 mt-10 bg-slate-900 border-2 border-slate-800 ">
       <div className="flex items-center justify-between p-4">
         <h2 className="text-3xl font-bold flex items-center gap-3 text-white ml-2">
-          Trending Anime
+          Popular Anime
         </h2>
         <button className="flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg">
           View All

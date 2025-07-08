@@ -240,21 +240,6 @@ const formatAnimeData = (anime) => {
   };
 };
 
-// API Functions
-export const fetchTrendingAnime = async (limit = 20) => {
-  try {
-    const perPage = Math.min(limit, 50); // AniList max per page is 50
-    const anime = await makeGraphQLRequest(TRENDING_ANIME_QUERY, {
-      page: 1,
-      perPage
-    });
-    return anime.slice(0, limit).map(formatAnimeData);
-  } catch (error) {
-    console.error('Error fetching trending anime:', error);
-    return [];
-  }
-};
-
 export const fetchPopularAnime = async (limit = 20) => {
   try {
     const perPage = Math.min(limit, 50);
@@ -464,7 +449,7 @@ export const fetchAnimeDetails = async (id) => {
     throw error;
   }
 }; 
-
+// onwork
 export const fetchTrendingManga = async (limit) => {
   const query = `
     query ($limit: Int) {
@@ -503,4 +488,61 @@ export const fetchTrendingManga = async (limit) => {
     return [];
   }
 };
+// onwork
+export const fetchTrendingAnime = async (limit = 12) => {
+  const query = `
+    query ($page: Int, $perPage: Int) {
+      Page(page: $page, perPage: $perPage) {
+        media(type: ANIME, sort: TRENDING_DESC) {
+          id
+          title {
+            romaji
+            english
+          }
+          coverImage {
+            large
+          }
+          averageScore
+          status
+          startDate {
+            year
+          }
+          episodes
+          genres
+        }
+      }
+    }
+  `;
 
+  const variables = {
+    page: 1,
+    perPage: limit,
+  };
+
+  try {
+    const response = await fetch("https://graphql.anilist.co", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const json = await response.json();
+    const animeList = json?.data?.Page?.media || [];
+
+    return animeList.map((anime) => ({
+      id: anime.id,
+      title: anime.title.english || anime.title.romaji || 'Unknown Title',
+      image: anime.coverImage.large,
+      rating: anime.averageScore ? `${(anime.averageScore / 10).toFixed(1)}/10` : 'N/A',
+      status: anime.status || 'TBA',
+      year: anime.startDate?.year?.toString() || 'TBA',
+      episodes: anime.episodes || '?',
+      genres: anime.genres || [],
+    }));
+  } catch (error) {
+    console.error("AniList API error:", error);
+    return [];
+  }
+};

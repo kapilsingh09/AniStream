@@ -25,11 +25,11 @@ export default function ExplorePage() {
     <div className=" min-h-screen text-white">
   
         {/* <Community /> */}
-         <TrendingKitsuAnime />
-        <SeasonalAnime />
-        <TrendingManga />
+         {/* <TrendingKitsuAnime /> */}
+        {/* <SeasonalAnime /> */}
         {/* <Filter />
          */}
+        {/* <TrendingManga /> */}
       
         <Spotlight />
         <Trending />
