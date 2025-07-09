@@ -86,3 +86,14 @@ export const FetchRomcomAnime = async () => {
   const data = await response.json();
   return data.data; // anime list
 };
+// src/api/fetchJikanActionAnime.js
+
+export const FetchRomanceAnime = async () => {
+  try {
+    const res = await axios.get(`https://api.jikan.moe/v4/anime?genres=22&order_by=score&sort=desc&limit=8`);
+    return res.data.data;
+  } catch (error) {
+    console.error("Failed to fetch romance anime:", error);
+    return [];
+  }
+};

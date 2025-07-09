@@ -61,6 +61,46 @@ const dummyAnimeData = [
   },
 ];
 
+const getStatusColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'releasing':
+      return 'from-green-400 to-emerald-500';
+    case 'not_yet_released':
+      return 'from-sky-300 to-blue-400';
+    case 'finished':
+      return 'from-fuchsia-400 to-violet-500';
+    case 'cancelled':
+      return 'from-red-400 to-rose-500';
+    case 'hiatus':
+      return 'from-yellow-300 to-amber-400';
+    default:
+      return 'from-slate-400 to-gray-500';
+  }
+};
+
+const getStatusText = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'releasing':
+      return 'Airing Now';
+    case 'not_yet_released':
+      return 'Coming Soon';
+    case 'finished':
+      return 'Completed';
+    case 'cancelled':
+      return 'Cancelled';
+    case 'hiatus':
+      return 'On Hiatus';
+    default:
+      return status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
+  }
+};
+
+const genreColors = [
+  'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
+  'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
+  'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
+  'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
+];
 const AnimeGridPage = () => {
   const [animeData, setAnimeData] = useState([]);
 
@@ -137,14 +177,10 @@ const AnimeGridPage = () => {
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                          status === 'Finished Airing'
-                            ? 'bg-green-500/20 text-green-400'
-                            : status === 'Currently Airing'
-                            ? 'bg-blue-500/20 text-blue-400'
-                            : 'bg-gray-500/20 text-gray-400'
-                        }`}>
-                          {status}
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r ${getStatusColor(status)} text-white`}
+                        >
+                          {getStatusText(status)}
                         </span>
                         <div className="flex items-center gap-1 text-[10px] text-white/70">
                           <Calendar className="w-3 h-3" />

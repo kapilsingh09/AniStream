@@ -1,40 +1,13 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { Star, Calendar, Play, Users } from "lucide-react";
 import Genres from "../utils/Geners";
+import { ApiDataContext } from "../context/ApiContext";
 
 const AnimeGrid = () => {
-  const [animeData, setAnimeData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [hasTriedOnce, setHasTriedOnce] = useState(false); // track if initial load attempted
-
-  const fetchRomanceAnime = async () => {
-    try {
-      const response = await fetch(
-        `https://api.jikan.moe/v4/anime?genres=22&order_by=score&sort=desc&limit=8`
-      );
-      if (!response.ok) throw new Error("Failed to fetch anime data");
-      const data = await response.json();
-      setAnimeData(data.data || []);
-    } catch (err) {
-      console.error("Error fetching anime:", err);
-    } finally {
-      setLoading(false);
-      setHasTriedOnce(true);
-    }
-  };
-
-  useEffect(() => {
-    fetchRomanceAnime();
-    // Optional: retry every 15 seconds in background until data loads
-    const retryInterval = setInterval(() => {
-      if (animeData.length === 0) {
-        fetchRomanceAnime();
-      } else {
-        clearInterval(retryInterval);
-      }
-    }, 15000);
-    return () => clearInterval(retryInterval);
-  }, []);
+  // Get romance anime data from ApiDataContext
+  const { loading, error, romanceAnime } = useContext(ApiDataContext);
+  const animeData = romanceAnime || [];
+console.log(animeData);
 
   const renderSkeletonCard = () => (
     <div className="animate-pulse">
@@ -52,6 +25,7 @@ const AnimeGrid = () => {
     </div>
   );
 
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-8xl mx-auto">
@@ -68,17 +42,10 @@ const AnimeGrid = () => {
               {loading || animeData.length === 0
                 ? [...Array(8)].map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
                 : animeData.map((anime, i) => {
-                  const title =
-                    anime.title_english || anime.title || "Unknown Title";
-                  const image =
-                    anime.images?.jpg?.large_image_url ||
-                    anime.images?.jpg?.image_url;
+                  const title = anime.title_english || anime.title || "Unknown Title";
+                  const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
                   const score = anime.score?.toFixed(1) || "N/A";
-                  const year =
-                    anime.year ||
-                    (anime.aired?.from
-                      ? new Date(anime.aired.from).getFullYear()
-                      : null);
+                  const year = anime.year || (anime.aired?.from ? new Date(anime.aired.from).getFullYear() : null);
                   const episodes = anime.episodes || "?";
                   const status = anime.status || "Unknown";
                   const members = anime.members || 0;

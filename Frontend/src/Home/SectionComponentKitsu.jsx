@@ -1,481 +1,241 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Info, RefreshCw } from 'lucide-react';
+import { MonitorPlay, RefreshCcw, ChevronLeft, ChevronRight, Star, Play, Calendar, Heart, Eye } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 
-const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetchFunction, className = "" }) => {
-  const [animeData, setAnimeData] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-  const [canScrollLeft, setCanScrollLeft] = useState(false); 
-  const [canScrollRight, setCanScrollRight] = useState(false); 
-  const [retrying, setRetrying] = useState(false);
-  const [retryDelay, setRetryDelay] = useState(1000); // Start with 1 second for Kitsu
-  
-  // Simplified overlay state
-  const [hoveredAnime, setHoveredAnime] = useState(null);
-  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 }); 
-  
-  const sliderRef = useRef(); 
-  const showOverlayTimer = useRef(null);
-  const hideOverlayTimer = useRef(null);
-  const isMouseOverCard = useRef(false);
-  const isMouseOverOverlay = useRef(false);
-
+const TrendingAnime = ({ exFun, loading, error, refetch }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [activeAnimeId, setActiveAnimeId] = useState(null);
   const navigate = useNavigate();
 
-  const fetchData = useCallback(async () => {
-    if (!fetchFunction) {
-      setError('No fetch function provided');
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true); 
-    setError(null); 
-    
-    try {
-      const data = await fetchFunction();
-      // console.log(data);
-      
-      const validData = Array.isArray(data)
-        ? data.filter(item =>
-            item?.id && 
-            item?.attributes?.titles?.en_jp && 
-            item?.attributes?.posterImage?.large
-          )
-        : [];
-
-      // Remove duplicate entries
-      const seen = new Set();
-      const unique = validData.filter(item => {
-        if (seen.has(item.id)) return false; 
-        seen.add(item.id); 
-        return true;
-      });
-
-      setAnimeData(unique); 
-    } catch (err) {
-      console.error('Error fetching Kitsu anime data:', err);
-      setError(err?.response?.status === 429 ? 'Rate limit exceeded (429). Retrying...' : 'Failed to load anime data'); 
-    } finally {
-      setLoading(false);
-      setRetrying(false);
-    }
-  }, [fetchFunction]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  // Auto-retry if error or no data - 1 second retry for Kitsu
-  useEffect(() => {
-    if ((error || !animeData || animeData.length === 0) && !loading) {
-      // If error is 429, increase delay (exponential backoff)
-      let nextDelay = retryDelay;
-      if (error && error.toString().includes('429')) {
-        nextDelay = Math.min(retryDelay * 2, 30000); // Max 30 seconds
-        setRetryDelay(nextDelay);
-      } else {
-        setRetryDelay(1000); // Reset to 1 second for other errors
-      }
-      const retryTimeout = setTimeout(() => {
-        fetchData();
-      }, nextDelay);
-      return () => clearTimeout(retryTimeout);
+    if (error && typeof refetch === 'function') {
+      refetch();
     }
-  }, [error, animeData, loading, fetchData, retryDelay]);
+  }, [error, refetch]);
 
-  const handleRetry = async () => {
-    setRetrying(true);
-    await fetchData();
-  };
-
-  const checkScrollPosition = useCallback(() => {
-    if (sliderRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-      setCanScrollLeft(scrollLeft > 0); 
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (animeData.length > 0) {
-      setTimeout(checkScrollPosition, 100); 
-    }
-  }, [animeData, checkScrollPosition]);
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (slider) {
-      slider.addEventListener('scroll', checkScrollPosition); 
-      return () => slider.removeEventListener('scroll', checkScrollPosition); 
-    }
-  }, [checkScrollPosition]);
-
-  const scrollLeft = () => {
-    sliderRef.current?.scrollBy({ left: -300, behavior: 'smooth' }); 
-    setTimeout(checkScrollPosition, 300); 
+  const handleMore = (id) => {
+    navigate(`/kitsu/${id}`);
   };
 
-  const scrollRight = () => {
-    sliderRef.current?.scrollBy({ left: 300, behavior: 'smooth' }); 
-    setTimeout(checkScrollPosition, 300); 
+  const animeList = (exFun || []).slice(0, 10).map((anime, index) => ({
+    id: anime.id,
+    title: anime.attributes.en_us || anime.attributes.en_jp || anime.attributes.titles?.en || anime.attributes.titles?.en_jp,
+    synopsis: anime.attributes.synopsis,
+    rating: anime.attributes.averageRating,
+    popularityRank: anime.attributes.popularityRank || index + 1,
+    ratingRank: anime.attributes.ratingRank,
+    status: anime.attributes.status,
+    episodeCount: anime.attributes.episodeCount,
+    startDate: anime.attributes.startDate,
+    posterImage: anime.attributes.posterImage?.large || anime.attributes.posterImage?.medium,
+    userCount: anime.attributes.userCount,
+    favoritesCount: anime.attributes.favoritesCount,
+    showType: anime.attributes.showType,
+    ageRating: anime.attributes.ageRating,
+    subtype: anime.attributes.subtype,
+    rank: index + 1,
+    year: anime.attributes.startDate ? new Date(anime.attributes.startDate).getFullYear() : null
+  }));
+
+  const slidesToShow = Math.ceil(animeList.length / 5);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slidesToShow);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slidesToShow) % slidesToShow);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'TBA';
+    return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
   };
 
-  const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/300x400/374151/ffffff?text=No+Image';
+  const formatNumber = (num) => {
+    if (!num) return '0';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
   };
-
-  const handleMoreInfo = (anime, e) => {
-    e.stopPropagation(); 
-    navigate(`/anime/${anime.id}`); 
-  };
-
-  const handlepage = (anime) =>{
-    navigate(`kitsu/${id}`)
-  }
-  
-  const calculateHoverPosition = (rect) => {
-    const hoverCardWidth = 320; 
-    const hoverCardHeight = 400; 
-    const screenWidth = window.innerWidth; 
-    const screenHeight = window.innerHeight;
-    const padding = 20; 
-    
-    let x = rect.right + 15; 
-    let y = rect.top; 
-    
-    if (x + hoverCardWidth > screenWidth - padding) {
-      x = rect.left - hoverCardWidth - 15;
-    }
-    
-    if (y + hoverCardHeight > screenHeight - padding) {
-      y = screenHeight - hoverCardHeight - padding;
-    }
-    
-    if (y < padding) {
-      y = padding;
-    }
-    
-    return { x, y };
-  };
-  
-  // Clear all timers
-  const clearAllTimers = () => {
-    if (showOverlayTimer.current) {
-      clearTimeout(showOverlayTimer.current);
-      showOverlayTimer.current = null;
-    }
-    if (hideOverlayTimer.current) {
-      clearTimeout(hideOverlayTimer.current);
-      hideOverlayTimer.current = null;
-    }
-  };
-  
-  // Show overlay with delay
-  const showOverlay = (anime, rect) => {
-    clearAllTimers();
-    
-    showOverlayTimer.current = setTimeout(() => {
-      const position = calculateHoverPosition(rect);
-      setHoverPosition(position);
-      setHoveredAnime(anime);
-      
-      // Auto-hide after 2 seconds
-      hideOverlayTimer.current = setTimeout(() => {
-        if (!isMouseOverOverlay.current) {
-          setHoveredAnime(null);
-        }
-      }, 2000);
-    }, 300); // Show after 300ms
-  };
-  
-  // Hide overlay immediately
-  const hideOverlay = () => {
-    clearAllTimers();
-    
-    // Small delay to allow mouse to move to overlay
-    setTimeout(() => {
-      if (!isMouseOverCard.current && !isMouseOverOverlay.current) {
-        setHoveredAnime(null);
-      }
-    }, 100);
-  };
-  
-  const handleCardMouseEnter = (anime, e) => {
-    isMouseOverCard.current = true;
-    const rect = e.currentTarget.getBoundingClientRect();
-    showOverlay(anime, rect);
-  };
-  
-  const handleCardMouseLeave = () => {
-    isMouseOverCard.current = false;
-    hideOverlay();
-  };
-  
-  const handleOverlayMouseEnter = () => {
-    isMouseOverOverlay.current = true;
-    clearAllTimers(); // Cancel auto-hide when hovering overlay
-  };
-  
-  const handleOverlayMouseLeave = () => {
-    isMouseOverOverlay.current = false;
-    setHoveredAnime(null); // Hide immediately when leaving overlay
-  };
-  
-  // Clean up timers on unmount
-  useEffect(() => {
-    return () => {
-      clearAllTimers();
-    };
-  }, []);
-  
-  const handleCardClick = (anime) => {
-    navigate(`/kitsu/${anime.id}`);
-  };
-
-  if (loading) {
-    return (
-      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
-        <div className="flex flex-col items-center space-y-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <div className="text-white text-lg">
-            {retrying ? `Retrying ${title.toLowerCase()}...` : `Loading ${title.toLowerCase()}...`}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`h-[60vh] bg-gradient-to-br from-zinc-900 via-gray-900 to-black py-3 flex items-center justify-center ${className}`}>
-        <div className="text-white text-center">
-          {/* <div className="text-4xl mb-4">❌</div> */}
-          <div className="text-lg mb-4">{error}</div>
-          <motion.button
-            onClick={handleRetry}
-            disabled={retrying}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
-          >
-            <RefreshCw 
-              size={18} 
-              className={retrying ? 'animate-spin' : ''} 
-            />
-            {retrying ? 'Retrying...' : 'Try Again'}
-          </motion.button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!animeData || animeData.length === 0) {
-    return (
-      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
-        <div className="text-white text-center">
-          <div className="text-4xl mb-4">📺</div>
-          <div className="text-lg mb-4">No anime found</div>
-          <motion.button
-            onClick={handleRetry}
-            disabled={retrying}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
-          >
-            <RefreshCw 
-              size={18} 
-              className={retrying ? 'animate-spin' : ''} 
-            />
-            {retrying ? 'Retrying...' : 'Retry'}
-          </motion.button>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className={`h-[60vh]  bg-gradient-to-br from-zinc-900 via-gray-900 to-black py-3 ${className} relative text-white`}>
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-black/60 to-transparent z-10 pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-black/60 to-transparent z-10 pointer-events-none"></div>
-
-      <div className="flex items-center px-10 mb-2">
-        <h1 className="text-white text-2xl font-bold drop-shadow-lg">{title}</h1>
-        <br />
-        <div className="flex-1 h-px bg-white/30 ml-4"></div>
-        <div className="text-white/80 text-sm ml-4 drop-shadow">{animeData.length} items</div>
+    <div className="w-full rounded-2xl p-6 mt-10 bg-slate-900 border-2 border-slate-800">
+      <div className="flex items-center justify-between ml-4">
+        <h2 className="text-4xl font-bold flex items-center gap-3 text-white ml-2">Popular Anime</h2>
+        <button className="flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg">
+          View All
+        </button>
       </div>
 
-        <h3 className= " ml-10 text-red-300 text-sm  font-bold drop-shadow-lg">{subtitle}</h3>
-      <div className="relative px-10">
-        <div
-          ref={sliderRef}
-
-          className="w-full h-[50vh]  flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {/* maincard component  parent of cards*/}
-          {animeData.map((anime, index) => {
-            const attr = anime.attributes;
-            return (
-              <motion.div
-                key={anime.id}
-                // onClick={() => handleCardClick(anime)}
-                onClick={()=> {handleCardClick(anime)}}
-                onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
-                onMouseLeave={handleCardMouseLeave}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="min-w-[13vw] max-w-[13vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
-              >
-                <div className="relative h-[40vh] w-full">
-                  <img
-                    src={attr?.posterImage?.large || attr?.posterImage?.medium}
-                    alt={attr?.titles?.en_jp || attr?.titles?.en || 'Anime'}
-                    onError={handleImageError}
-                    className="w-full h-full object-cover rounded group-hover:brightness-110 transition-all duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
-                  
-                  {attr?.averageRating && (
-                    <motion.div className="absolute top-2 right-2 bg-red-600 text-xs px-2 py-1 rounded backdrop-blur-sm">
-                      ⭐ {Math.round(attr.averageRating / 10 * 10) / 10}
-                    </motion.div>
-                  )}
-                  
-                  {attr?.popularityRank && (
-                    <div className="absolute top-2 left-2 bg-purple-600 text-xs px-3 py-1 rounded backdrop-blur-sm">
-                      #{attr.popularityRank}
+      <div className="relative rounded-xl overflow-hidden">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <div key={idx} className="bg-gray-800 rounded-2xl animate-pulse overflow-hidden">
+                <div className="h-[280px] bg-gray-700 w-full"></div>
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-gray-600 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-600 rounded w-1/2"></div>
+                  <div className="h-3 bg-gray-600 rounded w-2/3"></div>
+                  <div className="flex gap-2 mt-2">
+                    <div className="h-3 w-10 bg-gray-600 rounded"></div>
+                    <div className="h-3 w-10 bg-gray-600 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-400 py-10 bg-slate-800/50 rounded-xl border border-slate-700/30 m-6">
+            <p className="text-lg font-semibold">{error}</p>
+          </div>
+        ) : (
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div className="flex transition-all duration-700 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                {Array.from({ length: slidesToShow }).map((_, slideIndex) => (
+                  <div key={slideIndex} className="w-full flex-shrink-0">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6">
+                      {animeList.slice(slideIndex * 5, (slideIndex + 1) * 5).map((anime) => (
+                        <AnimeCard
+                          key={anime.id}
+                          anime={anime}
+                          formatDate={formatDate}
+                          formatNumber={formatNumber}
+                          isHovered={hoveredCard === anime.id}
+                          onMouseEnter={() => setHoveredCard(anime.id)}
+                          onMouseLeave={() => setHoveredCard(null)}
+                          onPlayClick={(id) => {
+                            setActiveAnimeId(id);
+                            setTimeout(() => setActiveAnimeId(null), 500);
+                            navigate(`/anime/${id}`);
+                          }}
+                          activeAnimeId={activeAnimeId}
+                          handleMore={handleMore}
+                        />
+                      ))}
                     </div>
-                  )}
-                </div>
-                
-                <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
-                  <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={attr?.titles?.en_jp || attr?.titles?.en}>
-                    {attr?.titles?.en_us || attr?.titles?.en || 'Unknown Title'}
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Simplified Overlay */}
-        <AnimatePresence>
-          {hoveredAnime && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              onMouseEnter={handleOverlayMouseEnter}
-              onMouseLeave={handleOverlayMouseLeave}
-              className="fixed z-[60] w-80 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-auto"
-              style={{
-                left: `${hoverPosition.x}px`,
-                top: `${hoverPosition.y}px`,
-              }}
-            >
-              <div className="relative h-40">
-                <img
-                  src={hoveredAnime.attributes?.posterImage?.large || hoveredAnime.attributes?.posterImage?.medium}
-                  alt={hoveredAnime.attributes?.titles?.en_jp || hoveredAnime.attributes?.titles?.en}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-                
-                {/* Auto-hide indicator */}
-                <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-                  Auto-hide: 2s
-                </div>
-                
-                <div className="absolute bottom-2 left-3 right-3">
-                  <h3 className="text-white font-bold text-lg mb-1 drop-shadow-lg">
-                    {hoveredAnime.attributes?.titles?.en_jp || hoveredAnime.attributes?.titles?.en}
-                  </h3>
-                  <div className="flex items-center gap-2 text-sm">
-                    {hoveredAnime.attributes?.averageRating && (
-                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-2 py-1 rounded-full text-xs font-bold">
-                        ⭐ {Math.round(hoveredAnime.attributes.averageRating / 10 * 10) / 10}
-                      </span>
-                    )}
-                    {hoveredAnime.attributes?.startDate && (
-                      <span className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs">
-                        {new Date(hoveredAnime.attributes.startDate).getFullYear()}
-                      </span>
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
-              
-              <div className="p-4">
-                {hoveredAnime.attributes?.synopsis && (
-                  <p className="text-gray-300 text-sm mb-3 line-clamp-3">
-                    {hoveredAnime.attributes.synopsis}
-                  </p>
-                )}
-                
-                <div className="grid grid-cols-2 gap-2 text-xs text-gray-400 mb-3">
-                  {hoveredAnime.attributes?.episodeCount && (
-                    <div>Episodes: <span className="text-white">{hoveredAnime.attributes.episodeCount}</span></div>
-                  )}
-                  {hoveredAnime.attributes?.status && (
-                    <div>Status: <span className="text-white">{hoveredAnime.attributes.status}</span></div>
-                  )}
-                </div>
-                
-                <div className="flex gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCardClick(hoveredAnime);
-                    }}
-                    className="flex-1 py-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white text-sm rounded-lg transition-all duration-200 font-medium"
-                  >
-                    Watch Now
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMoreInfo(hoveredAnime, e);
-                    }}
-                    className="flex-1 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-1"
-                  >
-                    <Info size={14} />
-                    More Info
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
 
-        {canScrollLeft && (
-          <motion.button
-            onClick={scrollLeft}
-            className="absolute top-1/2 -translate-y-1/2 left-12 bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={24} />
-          </motion.button>
-        )}
-
-        {canScrollRight && (
-          <motion.button
-            onClick={scrollRight}
-            className="absolute top-1/2 -translate-y-1/2 right-12 bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10"
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={24} />
-          </motion.button>
+            <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-black/70 text-white rounded-full hover:scale-110 hover:bg-black/80 transition-all duration-300 shadow-lg border border-gray-600/50">
+              <ChevronLeft size={20} />
+            </button>
+            <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-black/70 text-white rounded-full hover:scale-110 hover:bg-black/80 transition-all duration-300 shadow-lg border border-gray-600/50">
+              <ChevronRight size={20} />
+            </button>
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-export default SectionComponentKitsu;
+const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, onMouseLeave, onPlayClick, activeAnimeId, handleMore }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const getStatusStyle = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'current':
+      case 'ongoing':
+        return 'bg-green-800/30 text-green-400';
+      case 'finished':
+        return 'bg-purple-800/30 text-purple-400';
+      case 'upcoming':
+      case 'tba':
+        return 'bg-yellow-800/30 text-yellow-400';
+      case 'cancelled':
+      case 'canceled':
+        return 'bg-red-800/30 text-red-400';
+      default:
+        return 'bg-gray-700/30 text-gray-300';
+    }
+  };
+
+  const handlePlayClick = (e) => {
+    e.stopPropagation();
+    onPlayClick(anime.id);
+  };
+
+  return (
+    <div className="relative bg-gray-900 rounded-2xl cursor-pointer overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[51vh] group" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <div className="h-full overflow-hidden relative">
+        <img
+          src={imageError ? '/images/seasonal1.jpg' : anime.posterImage}
+          alt={anime.title}
+          className="w-full h-full object-cover"
+          onError={() => setImageError(true)}
+        />
+        {anime.rank && anime.rank <= 10 && (
+          <div className="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-bold">#{anime.rank}</div>
+        )}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button onClick={handlePlayClick} className={`rounded-full p-4 border-4 border-white/30 transform scale-75 px-6 py-6 group-hover:scale-100 transition-transform duration-300 focus:outline-none ${activeAnimeId === anime.id ? 'animate-pulse' : ''}`} aria-label="Play">
+            <Play className="w-4 h-4 scale-220 text-white fill-white" />
+          </button>
+        </div>
+      </div>
+
+      <div className="p-1 flex-grow flex flex-col justify-between">
+        <h3 className="font-bold text-sm mb-2 text-white line-clamp-2">{anime.title}</h3>
+        <div className="text-xs text-gray-400 flex flex-wrap gap-2">
+          {anime.showType && (
+            <span className="px-3 py-1 rounded-full bg-blue-800/30 text-blue-400 flex items-center gap-1">
+              <MonitorPlay size={12} />
+              <span className="font-medium">{anime.showType}</span>
+            </span>
+          )}
+          {anime.status && (
+            <span className={`px-3 py-1 rounded-full flex items-center gap-1 ${getStatusStyle(anime.status)}`}>
+              <RefreshCcw size={12} />
+              <span className="font-medium capitalize">{anime.status}</span>
+            </span>
+          )}
+        </div>
+      </div>
+
+      {isHovered && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="absolute inset-0 bg-black/70 p-4 z-20 flex flex-col justify-between backdrop-blur-sm rounded-2xl"
+        >
+          <div className="text-white space-y-2 text-xs">
+            <div className="font-bold text-sm">{anime.title}</div>
+            <p className="line-clamp-4 text-gray-200">{anime.synopsis || 'No synopsis available.'}</p>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="flex items-center gap-1 text-yellow-400">
+                <Star size={12} /> {anime.rating ? `${parseFloat(anime.rating).toFixed(1)}/10` : 'N/A'}
+              </div>
+              <div className="flex items-center gap-1 text-green-400">
+                <Eye size={12} /> {anime.status}
+              </div>
+              <div className="flex items-center gap-1 text-blue-300">
+                <Calendar size={12} /> {formatDate(anime.startDate)}
+              </div>
+              <div className="flex items-center gap-1 text-pink-300">
+                <Heart size={12} /> {formatNumber(anime.favoritesCount)}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => handleMore(anime.id)}
+              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs py-2 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+            >
+              More Info
+            </button>
+            <button className="flex-1 border border-white/20 text-white text-xs py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+              Add to List
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+export default TrendingAnime;

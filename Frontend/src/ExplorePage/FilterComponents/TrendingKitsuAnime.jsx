@@ -1,18 +1,34 @@
 import { MonitorPlay, RefreshCcw } from 'lucide-react';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
-  ChevronLeft, ChevronRight, Star, Calendar, Heart, Eye
+  ChevronLeft, ChevronRight, Star,Play, Calendar, Heart, Eye
 } from 'lucide-react';
 import { DataContext } from '../../context/AnimeContext';
 import { motion } from 'framer-motion';
+import { Navigate, useNavigate } from 'react-router-dom';
+
 
 const TrendingAnime = ({exFun, loading, error, refetch}) => {
-  // Use exFun prop instead of context
-  // Remove useContext(DataContext)
-
+  // State for current carousel slide
   const [currentSlide, setCurrentSlide] = useState(0);
+  // State for which card is hovered (for showing overlay)
   const [hoveredCard, setHoveredCard] = useState(null);
-
+  // State for which anime's play button is active (blinking)
+  const [activeAnimeId, setActiveAnimeId] = useState(null);
+  const navigate = useNavigate();
+  // Automatically refetch if there is an error
+  useEffect(() => {
+    if (error && typeof refetch === 'function') {
+      refetch();
+    }
+  }, [error, refetch]);
+  const handleMore = (id) => {
+    console.log("working");
+    
+    navigate(`/kitsu/${id}`);
+  };
+  
+  // Map the anime data to a normalized structure for display
   const animeList = (exFun || []).slice(0, 10).map((anime, index) => ({
     id: anime.id,
     title: anime.attributes.en_us || anime.attributes.en_jp || anime.attributes.titles?.en || anime.attributes.titles?.en_jp,
@@ -33,16 +49,20 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
     year: anime.attributes.startDate ? new Date(anime.attributes.startDate).getFullYear() : null
   }));
 
+  // Calculate how many slides are needed (5 cards per slide)
   const slidesToShow = Math.ceil(animeList.length / 5);
 
+  // Move to next slide
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slidesToShow);
   };
 
+  // Move to previous slide
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slidesToShow) % slidesToShow);
   };
 
+  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return 'TBA';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -51,6 +71,7 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
     });
   };
 
+  // Format large numbers for display (e.g., 1.2K, 3.4M)
   const formatNumber = (num) => {
     if (!num) return '0';
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -58,6 +79,7 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
     return num.toString();
   };
 
+  // Main render
   return (
     <div className="w-full rounded-2xl p-6 mt-10 bg-slate-900 border-2 border-slate-800 ">
       <div className="flex items-center justify-between ml-4">
@@ -70,6 +92,7 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
       </div>
 
       <div className="relative rounded-xl overflow-hidden">
+        {/* Loading state: show skeleton cards */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6">
             {Array.from({ length: 5 }).map((_, idx) => (
@@ -88,14 +111,9 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
             ))}
           </div>
         ) : error ? (
+          // Error state: show error message (no retry button)
           <div className="text-center text-red-400 py-10 bg-slate-800/50 rounded-xl border border-slate-700/30 m-6">
             <p className="text-lg font-semibold">{error}</p>
-            <button
-              onClick={refetch}
-              className="mt-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300"
-            >
-              Try Again
-            </button>
           </div>
         ) : (
           <div className="relative">
@@ -116,6 +134,13 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
                           isHovered={hoveredCard === anime.id}
                           onMouseEnter={() => setHoveredCard(anime.id)}
                           onMouseLeave={() => setHoveredCard(null)}
+                          onPlayClick={(id) => {
+                            setActiveAnimeId(id);
+                            setTimeout(() => setActiveAnimeId(null), 500); // Remove blink after 500ms
+                            navigate(`/anime/${id}`);
+                          }}
+                          activeAnimeId={activeAnimeId}
+                          handleMore={handleMore}
                         />
                       ))}
                     </div>
@@ -143,8 +168,12 @@ const TrendingAnime = ({exFun, loading, error, refetch}) => {
   );
 };
 
-const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, onMouseLeave }) => {
+// AnimeCard displays a single anime's info and hover overlay
+const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, onMouseLeave, onPlayClick, activeAnimeId, handleMore }) => {
+  // State for image error fallback
+
   const [imageError, setImageError] = useState(false);
+  // Helper to style status badge
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
       case 'current':
@@ -163,24 +192,42 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
     }
   };
 
+  // Play button click handler
+  const handlePlayClick = (e) => {
+    e.stopPropagation();
+    onPlayClick(anime.id);
+  };
+
   return (
     <div
-      className="relative bg-gray-900 rounded-2xl cursor-pointer overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[51vh]"
+      className="relative bg-gray-900 rounded-2xl cursor-pointer overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[51vh] group"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      {/* Anime poster image */}
       <div className="h-full overflow-hidden relative">
         <img
           src={imageError ? '/images/seasonal1.jpg' : anime.posterImage}
           alt={anime.title}
-          className="w-full h-full  object-cover"
+          className="w-full h-full object-cover"
           onError={() => setImageError(true)}
         />
+        {/* Rank badge for top 10 */}
         {anime.rank && anime.rank <= 10 && (
           <div className="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-bold">
             #{anime.rank}
           </div>
         )}
+        {/* Play button overlay on hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={handlePlayClick}
+            className={`rounded-full p-4 border-4 border-white/30 transform scale-75 px-6 py-6 group-hover:scale-100 transition-transform duration-300 focus:outline-none ${activeAnimeId === anime.id ? 'animate-pulse' : ''}`}
+            aria-label="Play"
+          >
+            <Play className="w-4 h-4 scale-220 text-white fill-white" />
+          </button>
+        </div>
       </div>
 
       <div className="p-1 flex-grow flex flex-col justify-between">
@@ -209,6 +256,8 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className="absolute inset-0 bg-black/70 p-4 z-20 flex flex-col justify-between backdrop-blur-sm rounded-2xl"
         >
+         
+
           <div className="text-white space-y-2 text-xs">
             <div className="font-bold text-sm">{anime.title}</div>
             <p className="line-clamp-4 text-gray-200">
@@ -229,11 +278,23 @@ const AnimeCard = ({ anime, formatDate, formatNumber, isHovered, onMouseEnter, o
               </div>
             </div>
           </div>
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={() => handleMore(anime.id)}
+            className="rounded-full p-4 border-4 border-white/30 transform scale-75 px-6 py-6 hover:scale-100 transition-transform duration-300 focus:outline-none"
+            aria-label="Play"
+          >
+            <Play className="w-4 h-4 scale-220 text-white fill-white" />
+          </button>
+        </div>
           <div className="flex gap-2 mt-4">
-            <button className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs py-2 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300">
+            <button 
+              onClick={() => handleMore(anime.id)}
+            className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs py-2 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300">
               More Info
             </button>
-            <button className="flex-1 border border-white/20 text-white text-xs py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+            <button 
+            className="flex-1 border border-white/20 text-white text-xs py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
               Add to List
             </button>
           </div>
