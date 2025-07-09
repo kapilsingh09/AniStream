@@ -25,43 +25,43 @@ import FactsSlider from '../ExplorePage/FactsSlider';
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen mt-15  bg-gradient-to-br from-zinc-900 via-gray-900 to-black">
+    <div className="min-h-screen mt-15  bg-slate-800 ">
       {/* Hero Slider */}
       {/* <AnimeSlider /> */}
 
-      <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
+      {/* <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} /> */}
       
-      <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} />
+      {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
 
 
-      <div className="flex items-center justify-center bg-black">
-        <AnimeBanner />
-      </div>
+      {/* <div className="flex items-center justify-center bg-black"> */}
+        {/* <AnimeBanner /> */}
+      {/* </div> */}
 
-      <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} />
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
+      {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
+      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
-      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} />
+      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
        <div className="flex items-center justify-center">
-        <GhibliMovieBanner />
+        {/* <GhibliMovieBanner /> */}
       </div>
       <AnimeGrid />
-      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
+      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
 
-      <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} />
+      {/* <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
 
       <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
 
       <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} />
 
       {/* Optional: More banners */}
-      <div className="flex items-center justify-center">
+      {/* <div className="flex items-center justify-center">
         <AnimeBanner />
       </div>
       <footer>
         <FactsSlider />
-      </footer>
+      </footer> */}
     </div>
   );
 };

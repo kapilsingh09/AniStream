@@ -252,7 +252,7 @@ const SectionComponentKitsu = ({ subtitle = '' , title = "Trending Anime", fetch
     return (
       <div className={`h-[60vh] bg-gradient-to-br from-zinc-900 via-gray-900 to-black py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center">
-          <div className="text-4xl mb-4">❌</div>
+          {/* <div className="text-4xl mb-4">❌</div> */}
           <div className="text-lg mb-4">{error}</div>
           <motion.button
             onClick={handleRetry}

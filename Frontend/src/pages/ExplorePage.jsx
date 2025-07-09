@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Filter from '../ExplorePage/Filter'
 import { 
   Flame, Star, Compass, PlayCircle, Heart, Search, Users, BookOpen, 
@@ -14,29 +14,37 @@ import FactsSlider from "../ExplorePage/FactsSlider";
 import Community from "../Home/Community";
 import TrendingKitsuAnime from "../ExplorePage/FilterComponents/TrendingKitsuAnime";
 import Genres from '../utils/Geners';
+import { DataContext } from "../context/AnimeContext";
+// import ApiContext from "../context/ApiDataContext";
+
 
 
 
 
 export default function ExplorePage() {
-
+  const { kitsuTrendingAnime, loadingStates, errors, refetch } = useContext(DataContext);
   
   return (
     <div className=" min-h-screen text-white">
   <div className="space-x-6 bg-slate-900">
 
         {/* <Community /> */}
-         {/* <TrendingKitsuAnime /> */}
+         <TrendingKitsuAnime 
+           exFun={kitsuTrendingAnime}
+           loading={loadingStates?.kitsuTrending}
+           error={errors?.kitsuTrending}
+           refetch={refetch}
+         />
         {/* <SeasonalAnime /> */}
         {/* <Filter /> */}
         
         {/* <TrendingManga /> */}
       
-        <Spotlight />
-        <Trending />
+        {/* <Spotlight /> */}
+        {/* <Trending /> */}
         {/* <FactsSlider /> */}
  
-  </div>
+    </div>
     </div>
   );
 }

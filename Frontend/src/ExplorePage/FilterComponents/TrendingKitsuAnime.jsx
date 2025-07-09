@@ -6,12 +6,14 @@ import {
 import { DataContext } from '../../context/AnimeContext';
 import { motion } from 'framer-motion';
 
-const TrendingAnime = () => {
-  const { kitsuTrendingAnime, loadingStates, errors, refetch } = useContext(DataContext);
+const TrendingAnime = ({exFun, loading, error, refetch}) => {
+  // Use exFun prop instead of context
+  // Remove useContext(DataContext)
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const animeList = kitsuTrendingAnime.slice(0, 10).map((anime, index) => ({
+  const animeList = (exFun || []).slice(0, 10).map((anime, index) => ({
     id: anime.id,
     title: anime.attributes.en_us || anime.attributes.en_jp || anime.attributes.titles?.en || anime.attributes.titles?.en_jp,
     synopsis: anime.attributes.synopsis,
@@ -30,9 +32,6 @@ const TrendingAnime = () => {
     rank: index + 1,
     year: anime.attributes.startDate ? new Date(anime.attributes.startDate).getFullYear() : null
   }));
-
-  const loading = loadingStates.kitsuTrending || false;
-  const error = errors.kitsuTrending || null;
 
   const slidesToShow = Math.ceil(animeList.length / 5);
 

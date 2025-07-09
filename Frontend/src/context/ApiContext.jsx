@@ -36,7 +36,7 @@ const ApiContext = ({ children }) => {
 
   return (
     <ApiDataContext.Provider
-      value={{ featuredAnime ,newlyAddedAnime, loading, error, fetchTrendingAnime }}
+      value={{ featuredAnime ,newlyAddedAnime, loading, error }}
     >
       {children}
     </ApiDataContext.Provider>

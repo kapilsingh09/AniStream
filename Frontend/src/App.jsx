@@ -8,6 +8,7 @@ import JikhanAnimeCard from './routes/JikhanAnimeCard';
 import KitsuAnimeCard from './routes/KitsuAnimeCard';
 import SorryCard from './utils/SorryCard'; 
 import Demo  from './utils/Demo'
+import LoginPage from './pages/LoginPage';
 
 
 const App = () => {
@@ -23,6 +24,8 @@ const App = () => {
         <Route path="play/:id" element={<JikhanAnimeCard />} />
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
         <Route path="genres/:id" element={<Demo />} />
+
+        <Route path="/login" element={<LoginPage />} />
 
         {/* 404 fallback route */}
         <Route path="*" element={<SorryCard />} />
