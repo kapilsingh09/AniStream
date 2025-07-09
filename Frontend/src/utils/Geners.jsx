@@ -21,15 +21,15 @@ const GenreList = () => {
 
   const handleClick = (genre) => {
     setShrink(true);
-    navigate(`/genres/${genre}`); // ✅ Correct route
+    navigate(`/genres/${genre}`); // Correct route
     console.log("Navigating to genre:", genre);
     setTimeout(() => setShrink(false), 300);
   };
 
   return (
     <div
-      className={`rounded-2xl p-6 max-h-screen flex flex-col bg-gradient-to-br from-orange-100 via-rose-200 to-pink-300 shadow-lg border border-gray-200 transition-all duration-300 ease-in-out ${
-        shrink ? "h-[99vh]" : "h-[100vh]"
+      className={`rounded-2xl p-6 max-h-screen flex  flex-col bg-gradient-to-br from-orange-100 via-rose-200 to-pink-300 shadow-lg border border-gray-200 transition-all duration-300 ease-in-out  ${
+        shrink ? "h-[80vh]" : "h-[90vh]"
       }`}
     >
       {/* Genre Grid */}
@@ -50,7 +50,6 @@ const GenreList = () => {
           ))}
         </div>
       </div>
-
       {/* Show More/Less */}
       <div className="mt-5">
         <button
@@ -62,15 +61,7 @@ const GenreList = () => {
       </div>
 
       {/* Hide Scrollbar */}
-      <style jsx>{`
-        .genre-scroll::-webkit-scrollbar {
-          display: none;
-        }
-        .genre-scroll {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+  
     </div>
   );
 };

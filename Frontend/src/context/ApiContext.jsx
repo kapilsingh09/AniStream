@@ -4,13 +4,12 @@ import {
   fetchNewlyAddedAnime
 
 } from '../services/anilistApi';
-import { FetchRomanceAnime } from '../services/JikhanAnimeApi';
+
 export const ApiDataContext = createContext();
 
 const ApiContext = ({ children }) => {
   const [featuredAnime, setFeaturedAnime] = useState([]);
   const [newlyAddedAnime, setNewlyAddedAnime] = useState([])
-  const [romanceAnime, setRomanceAnime] = useState([])
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,20 +18,16 @@ const ApiContext = ({ children }) => {
     (async () => {
       setLoading(true);
       try {
-        const [trending, newlyAdded, romance] = await Promise.all([
+        const [trending, newlyAdded] = await Promise.all([
           fetchTrendingAnime(12),
-          fetchNewlyAddedAnime(10),
-          FetchRomanceAnime(),
+          fetchNewlyAddedAnime(10)
         ]);
-        console.log('Romance fetched:', romance);
-        setRomanceAnime(romance);
         setFeaturedAnime(trending);
         setNewlyAddedAnime(newlyAdded);
         setError(null);
       } catch (error) {
-        setError(error);
-        console.error("Fetching anime data error in ApiContext:", error);
-        alert("Fetching anime data have error apicontext checkit!!", error);
+        // setError(error);
+        // alert("Fetching anime data have error apicontext checkit!!", error);
       } finally {
         setLoading(false);
       }
@@ -41,7 +36,7 @@ const ApiContext = ({ children }) => {
 
   return (
     <ApiDataContext.Provider
-      value={{ featuredAnime, romanceAnime,newlyAddedAnime, loading, error }}
+      value={{ featuredAnime ,newlyAddedAnime, loading, error }}
     >
       {children}
     </ApiDataContext.Provider>

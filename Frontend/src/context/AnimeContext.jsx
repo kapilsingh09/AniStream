@@ -64,8 +64,8 @@ const AnimeContext = ({ children }) => {
       const data = await fetchFunc();
       setFunc(data);
     } catch (err) {
-      console.error(`${errorKey} error:`, err);
-      setErrors(prev => ({ ...prev, [errorKey]: err.message }));
+      // console.error(`${errorKey} error:`, err);
+      // setErrors(prev => ({ ...prev, [errorKey]: err.message }));
     } finally {
       setLoadingStates(prev => ({ ...prev, [loadingKey]: false }));
     }

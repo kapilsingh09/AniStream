@@ -4,3 +4,10 @@
 #second-slider::-webkit-scrollbar{
     display: none;
 }
+.genre-scroll::-webkit-scrollbar {
+    display: none;
+
+    .genre-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }}
