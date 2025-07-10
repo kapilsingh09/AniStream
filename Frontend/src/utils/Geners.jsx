@@ -23,7 +23,7 @@ const GenreList = () => {
     setShrink(true);
     navigate(`/genres/${genre}`); // Correct route
     console.log("Navigating to genre:", genre);
-    setTimeout(() => setShrink(false), 300);
+    setTimeout(() => setShrink(false), 700);
   };
 
   return (

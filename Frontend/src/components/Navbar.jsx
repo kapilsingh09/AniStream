@@ -38,21 +38,21 @@ export default function Navbar() {
   }, []);
 
   // Close search when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isOpen && !event.target.closest('.search-container')) {
-        setisOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (isOpen && !event.target.closest('.search-container')) {
+  //       setisOpen(false);
+  //     }
+  //   };
 
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+  //   if (isOpen) {
+  //     document.addEventListener('mousedown', handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [isOpen]);
 
   return (
     <>
@@ -134,7 +134,6 @@ export default function Navbar() {
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setisOpen(false)}
           />
           
           {/* Search Container */}
