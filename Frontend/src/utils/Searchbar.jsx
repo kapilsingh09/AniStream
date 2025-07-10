@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
+import { Play, Search, X } from 'lucide-react';
 
 const Searchbar = ({ onClose }) => {
-  const [search, setSearch] = useState('naruto');
+  const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Live fetch while typing
+  // Debounce logic
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (search.trim()) {
@@ -17,7 +17,7 @@ const Searchbar = ({ onClose }) => {
       } else {
         setResults([]);
       }
-    }, 500); // debounce time
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [search]);
@@ -26,7 +26,7 @@ const Searchbar = ({ onClose }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=5`);
+      const res = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=8`);
       const data = await res.json();
       setResults(data.data || []);
     } catch (err) {
@@ -40,7 +40,7 @@ const Searchbar = ({ onClose }) => {
     e.preventDefault();
     if (!search.trim()) return;
     navigate(`/search?query=${encodeURIComponent(search)}`);
-    onClose?.(); // optional close if modal
+    onClose?.();
   };
 
   return (
@@ -66,63 +66,85 @@ const Searchbar = ({ onClose }) => {
         </div>
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-violet-500 to-pink-500 text-white py-3 px-6 rounded-xl font-medium hover:from-violet-600 hover:to-pink-600 transition-all duration-300"
+          className="w-full bg-violet-500 text-white py-3 px-6 rounded-xl font-medium hover:from-violet-600 hover:to-pink-600 transition-all duration-300"
         >
           Search
         </button>
       </form>
 
-    
-      {loading && <p className="text-white text-center">Loading...</p>}
-{error && <p className="text-red-400 text-center">{error}</p>}
-{!loading && results.length > 0 && (
-  <div className="bg-slate-800 overflow-y-auto cool-scrollbar h-[30vh] mt-5 rounded-2xl p-3 overflow-auto">
-    <ul className="grid gap-3">
-      {results.map((anime) => (
-        <li key={anime.mal_id} className="flex items-start gap-3 text-white hover:bg-white/10 p-2 rounded-lg cursor-pointer">
-          <img 
-            src={anime.images?.jpg?.image_url} 
-            alt={anime.title} 
-            className="w-12 h-16 object-cover rounded-md flex-shrink-0" 
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="font-semibold text-sm leading-tight">{anime.title}</h3>
-              <div className="flex flex-col items-end text-xs text-gray-300 flex-shrink-0">
-                <span className="bg-blue-600 px-2 py-1 rounded text-white">
-                  {anime.type || 'Unknown'}
-                </span>
-                <span className="mt-1">
-                  {anime.aired?.from ? new Date(anime.aired.from).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  }) : 'Unknown'}
-                </span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-              {anime.synopsis ? (
-                anime.synopsis.length > 100 
-                  ? `${anime.synopsis.substring(0, 100)}...`
-                  : anime.synopsis
-              ) : 'No description available'}
-            </p>
-          </div>
-        </li>
-      ))}
-<div className='w-full mt-2 h-12 bg-purple-600 rounded-2xl flex items-center uppercase text-2xl font-semibold text-center justify-center '>
+      {/* Results */}
+  
+        {loading && <p className="text-white text-center">Loading...</p>}
+        {error && <p className="text-red-400 text-center">{error}</p>}
 
-<button>view more</button>
-</div>
-    </ul>
-  </div>
-)}
-{!loading && search.trim() !== '' && results.length === 0 && (
-  <p className="text-gray-300 text-center">No suggestions found.</p>
-)}
+        {!loading && results.length > 0 && (
+              <div className="bg-slate-800 overflow-y-auto h-[30vh] mt-5 rounded-2xl p-3 cool-scrollbar">
+          <ul className="grid gap-3">
+            {results.map((anime) => (
+              <li
+                key={anime.mal_id}
+                className="flex items-start gap-3 text-white  hover:bg-white/10 p-2 rounded-lg cursor-pointer relative group"
+              >
+                {/* Image with hover effect */}
+                <div className="relative">
+                  <img
+                    src={anime.images?.jpg?.image_url}
+                    alt={anime.title}
+                    className="w-20 h-28 object-cover rounded-md"
+                  />
+                  <div className="absolute inset-0  bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
+                  <div className='border-2 rounded-full p-3 hover:scale-110 border-white/80 duration-300 ease-in-out  '>
+                    <Play className="text-white h-4 w-4" />
+
+                  </div>
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-xl leading-tight">{anime.title}</h3>
+                  <p className="text-sm text-gray-400 mt-1 line-clamp-2">
+                    {anime.synopsis
+                      ? anime.synopsis.length > 150
+                        ? `${anime.synopsis.substring(0, 150)}...`
+                        : anime.synopsis
+                      : 'No description available'}
+                  </p>
+
+                  <div className="flex justify-between items-center mt-2 text-sm text-gray-300">
+                    <span className="bg-blue-600 px-2 py-1 rounded text-white">
+                      {anime.type || 'Unknown'}
+                    </span>
+                    <span className=" px-2 py-1 rounded text-white">
+                      {anime.duration  || 'Unknown'}
+                    </span>
+                    <span>
+                      {anime.aired?.from
+                        ? new Date(anime.aired.from).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })
+                        : 'Unknown'}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
+
+            {/* View more */}
+            <li className="w-full mt-2 h-12 bg-purple-600 rounded-2xl flex items-center uppercase text-2xl font-semibold text-center justify-center">
+              <button>View More</button>
+            </li>
+          </ul>
+          </div>
+        )}
+
+        {!loading && search.trim() !== '' && results.length === 0 && (
+          <p className="text-gray-300 text-center">No suggestions found.</p>
+        )}
       </div>
-    
+   
   );
 };
 

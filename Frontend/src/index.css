@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+body{
+  background-color: #0f172b;
+}
 
 #second-slider::-webkit-scrollbar{
     display: none;
