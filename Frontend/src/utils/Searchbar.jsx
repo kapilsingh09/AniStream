@@ -8,7 +8,28 @@ const Searchbar = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  
+  const genres = [
+    { mal_id: 1, name: "Action", description: "Fast-paced battles, fights, and adrenaline-filled scenes." },
+    { mal_id: 2, name: "Adventure", description: "Epic journeys, exploration, and quests in unknown lands." },
+    { mal_id: 4, name: "Comedy", description: "Humorous stories meant to make the audience laugh." },
+    { mal_id: 7, name: "Drama", description: "Emotionally intense narratives focusing on character development." },
+    { mal_id: 8, name: "Fantasy", description: "Magical worlds, mythical creatures, and supernatural powers." },
+    { mal_id: 10, name: "Horror", description: "Scary and creepy tales with suspense and fear elements." },
+    { mal_id: 14, name: "Romance", description: "Stories focused on love, relationships, and emotional bonds." },
+    { mal_id: 24, name: "Sci-Fi", description: "Technology, space, time travel, and futuristic settings." },
+    { mal_id: 22, name: "Slice of Life", description: "Everyday stories of regular people, often heartwarming or relaxing." },
+    { mal_id: 37, name: "Supernatural", description: "Ghosts, spirits, magic, and otherworldly powers." },
+    { mal_id: 30, name: "Sports", description: "Focused on competitive games and the spirit of athletes." },
+    { mal_id: 41, name: "Thriller", description: "Tense and suspenseful plots with unexpected twists." },
+  ];
+  
+  const genreColors = [
+    'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
+    'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
+    'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
+    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
+  ]
   // Debounce logic
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -18,17 +39,28 @@ const Searchbar = ({ onClose }) => {
         setResults([]);
       }
     }, 500);
-
+    
     return () => clearTimeout(delayDebounce);
   }, [search]);
-
+  
   const fetchData = async (query) => {
     setLoading(true);
     setError('');
     try {
       const res = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=8`);
       const data = await res.json();
-      setResults(data.data || []);
+
+      const uniqueAnimeMap = new Map();
+      (data.data || []).forEach(anime => {
+        if (!uniqueAnimeMap.has(anime.mal_id)) {
+          uniqueAnimeMap.set(anime.mal_id, anime);
+        }
+      });
+
+      const uniqueAnimeList = Array.from(uniqueAnimeMap.values());
+
+
+      setResults(uniqueAnimeList || []);
     } catch (err) {
       setError('Failed to fetch results.');
       setResults([]);
@@ -74,7 +106,7 @@ const Searchbar = ({ onClose }) => {
 
       {/* Results */}
   
-        {loading && <p className="text-white text-center">Loading...</p>}
+        {loading && <p className="text-white text-center mt-2">Loading...</p>}
         {error && <p className="text-red-400 text-center">{error}</p>}
 
         {!loading && results.length > 0 && (
@@ -102,7 +134,7 @@ const Searchbar = ({ onClose }) => {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-xl leading-tight">{anime.title}</h3>
+                  <h3 className="font-semibold text-xl leading-tight">{anime.title_english || "Unkown" }</h3>
                   <p className="text-sm text-gray-400 mt-1 line-clamp-2">
                     {anime.synopsis
                       ? anime.synopsis.length > 150
@@ -139,6 +171,22 @@ const Searchbar = ({ onClose }) => {
           </ul>
           </div>
         )}
+      <h1 className='py-1'>Trending geners</h1>
+      <div className='h-22  mt-2  flex gap-4 flex-wrap'>
+  {genres.map((genre, index) => {
+    const color = genreColors[index % genreColors.length];
+
+    return (
+      <button
+        key={genre.mal_id}
+        className={`text-sm text-white rounded-xl hover:cursor-pointer hover:scale-110 duration-300 ease-in-out px-2 py-1 ${color}`}
+      >
+        {genre.name}
+      </button>
+    );
+  })}
+</div>
+
 
         {!loading && search.trim() !== '' && results.length === 0 && (
           <p className="text-gray-300 text-center">No suggestions found.</p>

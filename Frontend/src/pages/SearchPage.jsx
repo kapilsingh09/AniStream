@@ -120,7 +120,8 @@ const SearchPage = () => {
 
                       return (
                         <div
-                          key={anime.mal_id || i}
+                          
+                        key={anime.mal_id || i}
                           className="group relative cursor-pointer bg-slate-800   backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
                         >
                           <div className="relative overflow-hidden">
