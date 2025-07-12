@@ -23,44 +23,47 @@ const JikanAnimeCard = ({ onNavigate }) => {
     // Fetch anime details from Jikan API
     const fetchAnimeDetails = async () => {
         try {
-            setLoading(true);
-            setError(null);
-            if(id){
-                const response = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                // console.log(data);
-
-                if (!data || !data.data) {
-                    throw new Error('No anime data found');
-                }
-
-                setAnime(data.data);
-            }
-            const response = fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(keyword)}&limit=1`)
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data  = await response.json()
-            setAnime(data.data);
+          setLoading(true);
+          setError(null);
+      
+          let apiUrl = "";
+      
+          if (id) {
+            // if route is like /anime/:id
+            apiUrl = `https://api.jikan.moe/v4/anime/${id}`;
+          } else if (keyword) {
+            // if route is like /find?keyword=naruto
+            apiUrl = `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(keyword)}&limit=1`;
+          } else {
+            throw new Error("No ID or keyword provided");
+          }
+      
+          const response = await fetch(apiUrl);
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+      
+          const data = await response.json();
+      
+          if (!data || !data.data) {
+            throw new Error("No anime data found");
+          }
+      
+          // if `data.data` is an array (keyword search), grab the first result
+          setAnime(Array.isArray(data.data) ? data.data[0] : data.data);
         } catch (error) {
-            console.error('Jikan API Error:', error);
-            setError(error.message || 'Failed to load anime details');
+          console.error("Jikan API Error:", error);
+          setError(error.message || "Failed to load anime details");
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
-    useEffect(() => {
-        if (id) {
-            fetchAnimeDetails();
-        }
-    }, [id]);
+      useEffect(() => {
+        fetchAnimeDetails();
+      }, [id, keyword]);
+      
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Unknown';

@@ -33,14 +33,14 @@ const Homepage = () => {
 
       <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
       
-      <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} />
-
+      {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
+{/* 
 
       <div className="flex items-center justify-center bg-black">
-        <AnimeBanner />
-      </div>
+        {/* <AnimeBanner /> */}
+      {/* </div> */} 
 
-      <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} />
+      {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
       <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
 
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
