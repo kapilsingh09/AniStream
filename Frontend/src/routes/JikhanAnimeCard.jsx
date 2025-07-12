@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import EploaderJikhan from '../utils/EploaderJikhan';
-
+import { useSearchParams } from 'react-router-dom';
 
 const JikanAnimeCard = ({ onNavigate }) => {  
+    const [searchres] = useSearchParams()
+    const keyword = searchres.get("keyword")
     const {id} = useParams();       
     const navigate = useNavigate();
     const [anime, setAnime] = useState(null);
@@ -39,6 +41,13 @@ const JikanAnimeCard = ({ onNavigate }) => {
 
                 setAnime(data.data);
             }
+            const response = fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(keyword)}&limit=1`)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data  = await response.json()
+            setAnime(data.data);
         } catch (error) {
             console.error('Jikan API Error:', error);
             setError(error.message || 'Failed to load anime details');
