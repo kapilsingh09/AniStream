@@ -23,21 +23,22 @@ const JikanAnimeCard = ({ onNavigate }) => {
         try {
             setLoading(true);
             setError(null);
+            if(id){
+                const response = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-            const response = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                // console.log(data);
+
+                if (!data || !data.data) {
+                    throw new Error('No anime data found');
+                }
+
+                setAnime(data.data);
             }
-
-            const data = await response.json();
-            console.log(data);
-
-            if (!data || !data.data) {
-                throw new Error('No anime data found');
-            }
-
-            setAnime(data.data);
         } catch (error) {
             console.error('Jikan API Error:', error);
             setError(error.message || 'Failed to load anime details');

@@ -10,6 +10,7 @@ import SorryCard from './utils/SorryCard';
 import Demo from './utils/Demo'
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
+import KeywordPage from './pages/KeywordPage'
 
 
 const App = () => {
@@ -23,7 +24,10 @@ const App = () => {
         {/* Nested routes (relative paths) */}
          <Route path="/explore" element={<ExplorePage />} />
         <Route path='/search' element={<SearchPage />} />
+        
         <Route path="play/:id" element={<JikhanAnimeCard />} />
+        <Route path="search?keyword/:id" element={<KeywordPage />} />
+
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
         <Route path="genres/:id" element={<Demo />} />
 

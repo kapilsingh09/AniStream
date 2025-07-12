@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, Search, X, Star, Calendar, Clock, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 const Searchbar = ({ onClose }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('naruto');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -77,6 +77,21 @@ const Searchbar = ({ onClose }) => {
     setLoading(false);
   };
 
+  const handleSearch = (e, keyword) => {
+    e.stopPropagation();
+  
+    // Check if keyword is an object and has a title
+    const title =
+      typeof keyword === "string"
+        ? keyword
+        : keyword?.title || keyword?.title_english || "";
+  
+    if (!title) return; // Prevent navigation if no title found
+  
+    navigate(`/search?keyword=${encodeURIComponent(title)}`);
+    
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!search.trim()) return;
@@ -147,8 +162,9 @@ const Searchbar = ({ onClose }) => {
             <div className="p-4 space-y-4 cool-scrollbar">
               {results.map((anime, index) => (
                 <div
+                  onClick={(e) => handleSearch(e, anime)}
                   key={anime.mal_id}
-                  className="group relative bg-white/5 hover:bg-white/10 rounded-xl p-4 cool-scrollbar  transition-all duration-300 cursor-pointer border border-white/10 hover:border-violet-400/50 hover:shadow-lg hover:shadow-violet-500/20"
+                  className="group relative  bg-white/5 hover:bg-white/10 rounded-xl p-4 cool-scrollbar  transition-all duration-300 cursor-pointer border border-white/10 hover:border-violet-400/50 hover:shadow-lg hover:shadow-violet-500/20"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex gap-4">
@@ -243,7 +259,10 @@ const Searchbar = ({ onClose }) => {
 
               {/* Enhanced View More Button */}
               <div className="pt-2">
-                <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-xl font-semibold text-sm uppercase tracking-wide transition-all duration-300 transform hover:cursor-pointer hover:shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-2">
+                <button 
+                  onClick={() => navigate(`/search?query=${encodeURIComponent(search)}`)}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-xl font-semibold text-sm uppercase tracking-wide transition-all duration-300 transform hover:cursor-pointer hover:shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-2"
+                >
                   <Eye size={16} />
                   View All Results
                 </button>
