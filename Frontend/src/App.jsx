@@ -21,7 +21,7 @@ const App = () => {
         <Route index element={<HomePage />} />
 
         {/* Nested routes (relative paths) */}
-        <Route path="/explore" element={<ExplorePage />} />
+         <Route path="/explore" element={<ExplorePage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path="play/:id" element={<JikhanAnimeCard />} />
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
@@ -30,7 +30,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
 
         {/* 404 fallback route */}
-        <Route path="*" element={<SorryCard />} />
+        {/* <Route path="*" element={<SorryCard />} /> */} 
 
       </Route>
     </Routes>

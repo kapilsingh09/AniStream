@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Play, Search, X, Star, Calendar, Clock, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Search, X } from 'lucide-react';
-
 const Searchbar = ({ onClose }) => {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate()
   const genres = [
     { mal_id: 1, name: "Action", description: "Fast-paced battles, fights, and adrenaline-filled scenes." },
     { mal_id: 2, name: "Adventure", description: "Epic journeys, exploration, and quests in unknown lands." },
@@ -25,11 +23,24 @@ const Searchbar = ({ onClose }) => {
   ];
   
   const genreColors = [
-    'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
-    'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
-    'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
-    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
-  ]
+    'bg-gradient-to-r from-pink-500 to-rose-500', 
+    'bg-gradient-to-r from-purple-500 to-indigo-500', 
+    'bg-gradient-to-r from-blue-500 to-cyan-500', 
+    'bg-gradient-to-r from-green-500 to-emerald-500',
+    'bg-gradient-to-r from-yellow-500 to-orange-500', 
+    'bg-gradient-to-r from-orange-500 to-red-500', 
+    'bg-gradient-to-r from-red-500 to-pink-500', 
+    'bg-gradient-to-r from-teal-500 to-green-500',
+    'bg-gradient-to-r from-indigo-500 to-purple-500', 
+    'bg-gradient-to-r from-rose-500 to-pink-500', 
+    'bg-gradient-to-r from-amber-500 to-yellow-500', 
+    'bg-gradient-to-r from-lime-500 to-green-500',
+    'bg-gradient-to-r from-cyan-500 to-blue-500', 
+    'bg-gradient-to-r from-fuchsia-500 to-purple-500', 
+    'bg-gradient-to-r from-violet-500 to-indigo-500', 
+    'bg-gradient-to-r from-emerald-500 to-teal-500',
+  ];
+
   // Debounce logic
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -58,8 +69,6 @@ const Searchbar = ({ onClose }) => {
       });
 
       const uniqueAnimeList = Array.from(uniqueAnimeMap.values());
-
-
       setResults(uniqueAnimeList || []);
     } catch (err) {
       setError('Failed to fetch results.');
@@ -75,6 +84,13 @@ const Searchbar = ({ onClose }) => {
     onClose?.();
   };
 
+  const getRatingColor = (rating) => {
+    if (rating >= 8) return 'text-green-400';
+    if (rating >= 7) return 'text-yellow-400';
+    if (rating >= 6) return 'text-orange-400';
+    return 'text-red-400';
+  };
+
   return (
     <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
       <div className="flex items-center justify-between mb-4">
@@ -84,7 +100,10 @@ const Searchbar = ({ onClose }) => {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <form  className="space-y-4" onClick={handleSubmit}>
+
+       
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
@@ -97,102 +116,165 @@ const Searchbar = ({ onClose }) => {
           />
         </div>
         <button
-          type="submit"
-          className="w-full bg-violet-500 text-white py-3 px-6 rounded-xl font-medium hover:from-violet-600 hover:to-pink-600 transition-all duration-300"
+          onClick={handleSubmit}
+          className="w-full bg-gradient-to-r from-violet-500 to-pink-500 text-white py-3 px-6 rounded-xl font-medium hover:from-violet-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
         >
           Search
         </button>
       </form>
+      </div>
 
       {/* Results */}
-  
-        {loading && <p className="text-white text-center mt-2">Loading...</p>}
-        {error && <p className="text-red-400 text-center">{error}</p>}
+      {loading && (
+        <div className="flex justify-center items-center mt-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-400"></div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="mt-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+          <p className="text-red-400 text-center">{error}</p>
+        </div>
+      )}
 
-        {!loading && results.length > 0 && (
-              <div className="bg-slate-800 overflow-y-auto h-[30vh] mt-5 rounded-2xl p-3 cool-scrollbar">
-          <ul className="grid gap-3">
-            {results.map((anime) => (
-              <li
-                key={anime.mal_id}
-                className="flex items-start gap-3 text-white  hover:bg-white/10 p-2 rounded-lg cursor-pointer relative group"
-              >
-                {/* Image with hover effect */}
-                <div className="relative">
-                  <img
-                    src={anime.images?.jpg?.image_url}
-                    alt={anime.title}
-                    className="w-20 h-28 object-cover rounded-md"
-                  />
-                  <div className="absolute inset-0  bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
-                  <div className='border-2 rounded-full p-3 hover:scale-110 border-white/80 duration-300 ease-in-out  '>
-                    <Play className="text-white h-4 w-4" />
+      {!loading && results.length > 0 && (
+        <div className="mt-5">
+          <h3 className="text-lg font-semibold  text-white mb-3 flex items-center gap-2">
+            <Eye size={18} />
+            Search Results
+          </h3>
+          <div className="bg-slate-900/50 cool-scrollbar backdrop-blur-sm overflow-y-auto max-h-[40vh] rounded-2xl border border-white/10">
+            <div className="p-4 space-y-4 cool-scrollbar">
+              {results.map((anime, index) => (
+                <div
+                  key={anime.mal_id}
+                  className="group relative bg-white/5 hover:bg-white/10 rounded-xl p-4 cool-scrollbar  transition-all duration-300 cursor-pointer border border-white/10 hover:border-violet-400/50 hover:shadow-lg hover:shadow-violet-500/20"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="flex gap-4">
+                    {/* Enhanced Image Container */}
+                    <div className="relative flex-shrink-0">
+                      <div className="w-20 h-28 rounded-lg overflow-hidden bg-gradient-to-br from-violet-500/20 to-pink-500/20">
+                        <img
+                          src={anime.images?.jpg?.image_url}
+                          alt={anime.title}
+                          className="w-full h-full object-cover transition-transform duration-300 "
+                        />
+                        <div className="absolute inset-0  flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="bg-transparent  border-2 border-black rounded-full p-2 transform hover:scale-110 transition-transform duration-200">
+                            <Play className="text-black h-4 w-4" />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Rating Badge */}
+                      {/* {anime.score && (
+                        <div className="absolute -top-2 -right-2 bg-black/80 backdrop-blur-sm rounded-full px-2 py-1 border border-white/20">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className={`text-xs font-semibold ${getRatingColor(anime.score)}`}>
+                              {anime.score}
+                            </span>
+                          </div>
+                        </div>
+                      )} */}
+                    </div>
 
+                    {/* Enhanced Info Section */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-bold text-lg leading-tight text-white group-hover:text-violet-300 transition-colors">
+                          {anime.title_english || anime.title || "Unknown"}
+                        </h3>
+                        {anime.episodes && (
+                          <span className="text-xs text-gray-400 bg-white/10 px-2 py-1 rounded-full">
+                            {anime.episodes} eps
+                          </span>
+                        )}
+                      </div>
+                      
+                      <p className="text-sm text-gray-300 mb-3 line-clamp-2 leading-relaxed">
+                        {anime.synopsis
+                          ? anime.synopsis.length > 120
+                            ? `${anime.synopsis.substring(0, 120)}...`
+                            : anime.synopsis
+                          : 'No description available'}
+                      </p>
+
+                      {/* Enhanced Metadata */}
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-1 rounded-full font-medium">
+                          {anime.type || 'Unknown'}
+                        </span>
+                        
+                        {anime.duration && (
+                          <span className="bg-white/10 text-gray-300 px-2 py-1 rounded-full flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {anime.duration}
+                          </span>
+                        )}
+                        
+                        {anime.aired?.from && (
+                          <span className="bg-white/10 text-gray-300 px-2 py-1 rounded-full flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(anime.aired.from).getFullYear()}
+                          </span>
+                        )}
+                        
+                        {anime.status && (
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            anime.status === 'Finished Airing' 
+                              ? 'bg-green-500/20 text-green-400' 
+                              : anime.status === 'Currently Airing'
+                              ? 'bg-blue-500/20 text-blue-400'
+                              : 'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {anime.status}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  </div>
+                  
+                  {/* Hover Gradient Border */}
+                  {/* <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-500/0 via-pink-500/0 to-violet-500/0 group-hover:from-violet-500/20 group-hover:via-pink-500/20 group-hover:to-violet-500/20 transition-all duration-300 pointer-events-none"></div> */}
                 </div>
+              ))}
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-xl leading-tight">{anime.title_english || "Unkown" }</h3>
-                  <p className="text-sm text-gray-400 mt-1 line-clamp-2">
-                    {anime.synopsis
-                      ? anime.synopsis.length > 150
-                        ? `${anime.synopsis.substring(0, 150)}...`
-                        : anime.synopsis
-                      : 'No description available'}
-                  </p>
-
-                  <div className="flex justify-between items-center mt-2 text-sm text-gray-300">
-                    <span className="bg-blue-600 px-2 py-1 rounded text-white">
-                      {anime.type || 'Unknown'}
-                    </span>
-                    <span className=" px-2 py-1 rounded text-white">
-                      {anime.duration  || 'Unknown'}
-                    </span>
-                    <span>
-                      {anime.aired?.from
-                        ? new Date(anime.aired.from).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })
-                        : 'Unknown'}
-                    </span>
-                  </div>
-                </div>
-              </li>
-            ))}
-
-            {/* View more */}
-            <li className="w-full mt-2 h-12 bg-purple-600 rounded-2xl flex items-center uppercase text-2xl font-semibold text-center justify-center">
-              <button>View More</button>
-            </li>
-          </ul>
+              {/* Enhanced View More Button */}
+              <div className="pt-2">
+                <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-xl font-semibold text-sm uppercase tracking-wide transition-all duration-300 transform hover:cursor-pointer hover:shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-2">
+                  <Eye size={16} />
+                  View All Results
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-      <h1 className='py-1'>Trending geners</h1>
-      <div className='h-22  mt-2  flex gap-4 flex-wrap'>
-  {genres.map((genre, index) => {
-    const color = genreColors[index % genreColors.length];
+        </div>
+      )}
 
-    return (
-      <button
-        key={genre.mal_id}
-        className={`text-sm text-white rounded-xl hover:cursor-pointer hover:scale-110 duration-300 ease-in-out px-2 py-1 ${color}`}
-      >
-        {genre.name}
-      </button>
-    );
-  })}
-</div>
-
-
-        {!loading && search.trim() !== '' && results.length === 0 && (
-          <p className="text-gray-300 text-center">No suggestions found.</p>
-        )}
+      {/* Enhanced Genres Section */}
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+          <Star size={18} />
+          Trending Genres
+        </h3>
+        <div className="flex gap-2 flex-wrap">
+          {genres.map((genre, index) => {
+            const color = genreColors[index % genreColors.length];
+            return (
+              <button
+                key={genre.mal_id}
+                className={`text-sm text-white rounded-xl px-3 py-2 font-medium transition-all duration-300 transform hover:scale-110 hover:shadow-lg ${color} hover:shadow-current/25`}
+                title={genre.description}
+              >
+                {genre.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
-   
+    </div>
   );
 };
 

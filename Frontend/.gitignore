@@ -6,13 +6,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+C:\Users\karan\Desktop\New folder\Frontend\src\assets\AnimePahe_Kaoru_Hana_wa_Rin_to_Saku_-_01_1080p_KawaSubs.mp4
 node_modules
 dist
 dist-ssr
 *.local
-
-# Editor directories and files
+Frontend/src/assets/AnimePahe_Kaoru_Hana_wa_Rin_to_Saku_-_01_1080p_KawaSubs.mp4
+# Editor directFrontend/src/assets/AnimePahe_Kaoru_Hana_wa_Rin_to_Saku_-_01_1080p_KawaSubs.mp4ories and files
 .vscode/*
 !.vscode/extensions.json
 .idea

@@ -27,7 +27,7 @@ const SearchPage = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(searchQuery)}&order_by=score&sort=desc&limit=20`
+        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(searchParams)}&order_by=score&sort=desc&limit=20`
       );
       if (!response.ok) throw new Error("Failed to fetch search results");
       const data = await response.json();
