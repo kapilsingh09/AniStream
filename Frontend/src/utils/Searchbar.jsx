@@ -88,7 +88,7 @@ const Searchbar = ({ onClose }) => {
   
     if (!title) return; // Prevent navigation if no title found
   
-    navigate(`/search?keyword=${encodeURIComponent(title)}`);
+    navigate(`/find?keyword=${encodeURIComponent(title)}`);
     
   };
 

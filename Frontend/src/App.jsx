@@ -26,7 +26,7 @@ const App = () => {
         <Route path='/search' element={<SearchPage />} />
         
         <Route path="play/:id" element={<JikhanAnimeCard />} />
-        <Route path="search?keyword/:id" element={<KeywordPage />} />
+        <Route path="find/:id" element={<KeywordPage />} />
 
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
         <Route path="genres/:id" element={<Demo />} />
