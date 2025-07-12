@@ -119,21 +119,7 @@ const AnimeContext = ({ children }) => {
     fetchWithErrorHandling(() => fetchHorrorAnime(limit), setKitsuTrendingAnime, 'horror', 'horrorError');
 
   // ===== GHIBLI FETCH FUNCTION =====
-  const fetchGhibliFilms = async () => {
-    setGhibliLoading(true);
-    setGhibliError(null);
-    try {
-      const response = await fetch('https://ghibliapi.herokuapp.com/films');
-      if (!response.ok) throw new Error('Ghibli API Error');
-      const data = await response.json();
-      setGhibliFilms(data);
-    } catch (error) {
-      console.error('Ghibli API error:', error);
-      setGhibliError(error.message);
-    } finally {
-      setGhibliLoading(false);
-    }
-  };
+
 
   // ===== FETCH EVERYTHING ON STARTUP =====
   const fetchAllData = async () => {
@@ -158,7 +144,6 @@ const AnimeContext = ({ children }) => {
         fetchAllAnime(),
 
         // Ghibli
-        fetchGhibliFilms()
       ]);
     } catch (e) {
       console.error('Error in fetchAllData:', e);
@@ -212,7 +197,6 @@ const AnimeContext = ({ children }) => {
         ghibliFilms,
         ghibliLoading,
         ghibliError,
-        fetchGhibliFilms,
 
         // === Utility ===
         isLoading,
