@@ -51,7 +51,7 @@ const KeywordPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {results.map((anime) => (
-            <div key={anime.mal_id} className="bg-white shadow rounded-lg overflow-hidden transition hover:shadow-md">
+            <div key={anime.mal_id} className="bg-slate-900 shadow rounded-lg overflow-hidden transition hover:shadow-md">
               <img
                 src={anime.images.jpg.image_url}
                 alt={anime.title}
