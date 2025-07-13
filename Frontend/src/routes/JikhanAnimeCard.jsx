@@ -28,11 +28,11 @@ const JikanAnimeCard = ({ onNavigate }) => {
       
           const response = "";
       
-          // 🧠 If there's an anime ID (from route param), fetch that exact anime
+          //  If there's an anime ID (from route param), fetch that exact anime
           if (id) {
             response = `https://api.jikan.moe/v4/anime/${id}`;
           } 
-          // 🔍 If no ID but we have a keyword, search for the first matching anime
+          //  If no ID but we have a keyword, search for the first matching anime
           else if (keyword) {
             response = `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(keyword)}&limit=1`;
           } 
@@ -41,7 +41,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
             throw new Error("No anime ID or search keyword provided.");
           }
       
-          // 🌐 Make the API call
+          //  Make the API call
           const res = await fetch(response);
           
       
@@ -55,7 +55,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
             throw new Error("No anime data found.");
           }
       
-          // 🧩 If keyword search returns a list, grab the first result
+          //  If keyword search returns a list, grab the first result
           const animeData = Array.isArray(data.data) ? data.data[0] : data.data;
       
           setAnime(animeData);

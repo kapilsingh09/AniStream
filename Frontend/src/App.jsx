@@ -8,7 +8,8 @@ import JikhanAnimeCard from './routes/JikhanAnimeCard';
 import KitsuAnimeCard from './routes/KitsuAnimeCard';
 import SorryCard from './utils/SorryCard';
 import Demo from './utils/Demo'
-import LoginPage from './pages/LoginPage';
+// import LoginPage from './pages/LoginPage';
+import Login from './routes/Login';
 import SearchPage from './pages/SearchPage';
 import KeywordPage from './pages/KeywordPage'
 
@@ -31,7 +32,7 @@ const App = () => {
         <Route path="kitsu/:id" element={<KitsuAnimeCard />} />
         <Route path="genres/:id" element={<Demo />} />
 
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<Login />} />
 
         {/* 404 fallback route */}
         {/* <Route path="*" element={<SorryCard />} /> */} 

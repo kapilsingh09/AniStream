@@ -14,6 +14,7 @@ const NavLink = ({ to, children, className }) => {
       className={`${className} ${isActive ? "text-indigo-300" : "text-white/80 hover:text-white hover:bg-white/10"}`}
     >
       {children}
+      
       {isActive && (
         <motion.span
           layout
@@ -113,13 +114,13 @@ export default function Navbar() {
           </div>
 
           {/* Login Button */}
-          <NavLink
+          <Link
             to="/login"
-            className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
           >
             <User size={16} />
             Login
-          </NavLink>
+          </Link>
         </div>
       </motion.nav>
 
