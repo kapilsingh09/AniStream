@@ -13,20 +13,20 @@ export const login = async (req, res) => {
   }
 
   // Find user by email
-  const user = await Login.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  const loginUser = await Login.findOne({ email });
+  if (!loginUser) {
+    return res.status(404).json({ message: "User not found meo" });
   }
 
   // Compare passwords
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, loginUser.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
   // Sign JWT
   const token = jwt.sign(
-    { id: user._id, email: user.email },
+    { id: loginUser._id, email: loginUser.email },
     JWT_SECRET,
     { expiresIn: "2h" }
   );

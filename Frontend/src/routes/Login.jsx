@@ -32,7 +32,7 @@ const Login = () => {
     if (res.ok) {
       setMessage("✅ Login successful!");
       localStorage.setItem("token", data.token);
-      navigate("/dashboard"); // redirect after login
+      navigate("/"); // redirect after login
     } else {
       setMessage(`❌ ${data.message}`);
     }
@@ -41,7 +41,7 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
       <div className="bg-zinc-800 p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-white mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">Login</h2> 
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
