@@ -17,7 +17,10 @@ export const login = async (req, res) => {
   if (!loginUser) {
     return res.status(404).json({ message: "User not found meo" });
   }
-
+  
+  
+  
+  
   // Compare passwords
   const isMatch = await bcrypt.compare(password, loginUser.password);
   if (!isMatch) {
