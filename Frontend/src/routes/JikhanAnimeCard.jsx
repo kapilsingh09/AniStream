@@ -26,7 +26,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
           setLoading(true);
           setError(null);
       
-          const response = "";
+          let response = ""; // changed to let
       
           //  If there's an anime ID (from route param), fetch that exact anime
           if (id) {
@@ -45,8 +45,8 @@ const JikanAnimeCard = ({ onNavigate }) => {
           const res = await fetch(response);
           
       
-          if (!response.ok) {
-            throw new Error(`API failed with status ${response.status}`);
+          if (!res.ok) { // fixed from response.ok to res.ok
+            throw new Error(`API failed with status ${res.status}`);
           }
       
           const data = await res.json();
@@ -155,15 +155,42 @@ const JikanAnimeCard = ({ onNavigate }) => {
     };
 
     if (loading) {
+        // Skeleton loader for card
         return (
             <div className="min-h-screen flex items-center justify-center bg-black">
-                <div className="flex flex-col items-center space-y-6">
-                    <div className="relative">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-800 border-t-gray-400"></div>
-                        <div className="absolute inset-0 rounded-full bg-gray-900 opacity-20 animate-pulse"></div>
+                <div className="w-[70%] mx-auto animate-pulse">
+                    {/* Banner Skeleton */}
+                    <div className="h-64 md:h-80 lg:h-96 w-full bg-gray-800 rounded-3xl mb-8" />
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                        {/* Left Skeleton */}
+                        <div className="lg:w-1/3 space-y-6">
+                            <div className="w-full max-w-sm h-80 md:h-96 bg-gray-800 rounded-2xl mx-auto" />
+                            <div className="h-12 bg-gray-800 rounded-2xl" />
+                            <div className="grid grid-cols-4 gap-3">
+                                {[...Array(4)].map((_, i) => (
+                                    <div key={i} className="h-12 bg-gray-800 rounded-xl" />
+                                ))}
+                            </div>
+                            <div className="h-24 bg-gray-800 rounded-2xl" />
+                            <div className="grid grid-cols-2 gap-3">
+                                {[...Array(4)].map((_, i) => (
+                                    <div key={i} className="h-16 bg-gray-800 rounded-xl" />
+                                ))}
+                            </div>
+                        </div>
+                        {/* Right Skeleton */}
+                        <div className="lg:w-2/3 space-y-8">
+                            <div className="h-12 bg-gray-800 rounded w-2/3 mb-4" />
+                            <div className="h-8 bg-gray-800 rounded w-1/3 mb-6" />
+                            <div className="h-16 bg-gray-800 rounded-2xl mb-6" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {[...Array(6)].map((_, i) => (
+                                    <div key={i} className="h-20 bg-gray-800 rounded-2xl" />
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                    <div className="text-gray-200 text-xl font-medium">Loading anime details...</div>
-                    <div className="text-gray-400 text-sm">Fetching from Jikan API</div>
+                    <div className="mt-10 h-14 bg-gray-800 rounded-2xl" />
                 </div>
             </div>
         );
