@@ -14,4 +14,5 @@ app.get('/', (req, res) => {
   res.send('Hello from Express app! The server will start from server.js');
 });
 
+
 export default app;

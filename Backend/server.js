@@ -1,10 +1,12 @@
 // server.js
 import dotenv from 'dotenv';
 import app from './app.js';
+import connectDB from './db/index.js'
 
-dotenv.config(); // Load .env variables if needed
-
-const PORT = process.env.PORT || 3000;
+// Load environment variables from .env file
+dotenv.config();
+connectDB()
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
