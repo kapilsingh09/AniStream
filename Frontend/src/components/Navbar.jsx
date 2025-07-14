@@ -3,6 +3,7 @@ import { Home, Search, Compass, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import Searchbar from '../utils/Searchbar';
+import Login from '../routes/Login';
 
 const NavLink = ({ to, children, className }) => {
   const location = useLocation();
@@ -31,6 +32,7 @@ const NavLink = ({ to, children, className }) => {
 export default function Navbar() {
   const [isOpen, setisOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isloginopen, setIsloginopen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 90);
@@ -69,7 +71,7 @@ export default function Navbar() {
         
       >
         {/**/}
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between text-white">
+        <div className="max-w-7xl mx-auto px-6 py-3 relative flex items-center justify-between text-white">
           {/* Brand Logo */}
           <Link
             to="/"
@@ -115,6 +117,7 @@ export default function Navbar() {
 
           {/* Login Button */}
           <Link
+            // onClick={()=> setIsloginopen(!isloginopen)}
             to="/login"
             className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
           >
@@ -122,6 +125,11 @@ export default function Navbar() {
             Login
           </Link>
         </div>
+       {isloginopen && <div className='absolute z-[999999]  w-full '>
+
+         <Login onloginClose={() => setIsloginopen(false)} />
+       </div>
+         }
       </motion.nav>
 
       {/* Search Modal */}

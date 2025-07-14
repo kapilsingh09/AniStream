@@ -6,11 +6,11 @@ import { Outlet } from 'react-router-dom'
 const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-zinc-900 via-gray-900 to-black text-white text-2xl">
-    <Navbar />
+    {/* <Navbar /> */}
     <main className="flex-1">
       <Outlet />
     </main>
-    <Footer />
+    {/* <Footer /> */}
   </div>
   )
 }
