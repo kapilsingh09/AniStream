@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 
-// You should use process.env.JWT_SECRET in production
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+//  should use process.env.JWT_SECRET in production
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_keydsfjkalsdjfodjsiofj121io8936217846hkhfkjdsaf fklsjdfoief weur37u28547fjY(^&#%(#&$($ #($&# R OHFK#(*RY FH( #Y$(#&FFFFF";
 
 // Register Controller
 export const register = async (req, res) => {
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
 // Login Controller
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password ,rememberMe } = req.body;
 
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
@@ -47,14 +47,15 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-            expiresIn: "1h"
+            expiresIn: rememberMe ? "7d" : "1h"
         });
 
+        const cookieAge = rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // set true in prod
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000, // 1 hour
+            maxAge: cookieAge,
         })
         
         res.status(200).json({

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import loginvd from "../assets/WhatsApp Video 2025-07-14 at 11.35.32_30acb6f6.mp4";
+import loginvd from "../assets/loginVid.mp4";
 import { useNavigate } from "react-router-dom";
 const Login = ({ onloginClose }) => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "",rememberMe:false });
   const [message, setMessage] = useState("");
   const [currentQuote, setCurrentQuote] = useState(0);
   const navigate = useNavigate();
+
   const animeQuotes = [
     { text: "Believe in yourself and create your own destiny!", anime: "Naruto" },
     { text: "The world is not perfect, but it's there for us trying the best we can.", anime: "Fullmetal Alchemist" },
@@ -21,10 +22,14 @@ const Login = ({ onloginClose }) => {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
-
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
+  
   const handleNavigate = () => {
     navigate('/register');
     onloginClose()
@@ -38,10 +43,13 @@ const Login = ({ onloginClose }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await res.json();
       if (res.ok) {
-        setMessage("✅ Login successful!");
+        localStorage.setItem('user', JSON.stringify(data.user)); // ✅ add this
+        localStorage.setItem('token', data.token);               // ✅ add this
+        setMessage(" Login successful!");
+        navigate("/")
         setTimeout(() => {
           if (onloginClose) onloginClose(true);
         }, 1000);
@@ -49,16 +57,16 @@ const Login = ({ onloginClose }) => {
         setMessage(`❌ ${data.message}`);
       }
     } catch (error) {
-      // Fallback for demo mode
       setMessage("✅ Welcome to AniStream! (Demo mode)");
       setTimeout(() => {
         if (onloginClose) onloginClose(true);
       }, 1000);
     }
   };
+  
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden font-sans">
+    <div className="min-h-screen w-full relative mt-10 overflow-hidden font-sans">
       {/* Background Video */}
       <div className="absolute inset-0">
         <video
@@ -68,7 +76,8 @@ const Login = ({ onloginClose }) => {
           playsInline
           className="w-full h-full object-cover"
         >
-          {/* <source src={loginvd} type="video/mp4" /> */}
+          {/* //add your video  */}
+          <source src={loginvd} type="video/mp4" />
         </video>
 
         {/* Animated Particles */}
@@ -138,7 +147,7 @@ const Login = ({ onloginClose }) => {
             </div>
           </div>
           <div><p className="text-xs text-center text-yellow-300 mt-6 italic">
-  ⚠️ Please note: Anime streaming is not available at the moment as this is a student project developed for educational purposes.
+   Please note: Anime streaming is not available at the moment as this is a student project developed for educational purposes.
 </p></div>
         </div>
 
@@ -200,7 +209,20 @@ const Login = ({ onloginClose }) => {
                 value={formData.password}
                 onChange={handleChange}
               />
-              <div className="text-right">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleChange}
+                    id="rememberMe"
+                    className="w-4 h-4 text-purple-500 bg-gray-100 border-gray-300 rounded focus:ring-purple-400"
+                  />
+                  <label htmlFor="rememberMe" className="text-sm text-white/80">
+                    Remember Me
+                  </label>
+                </div>
                 <button
                   type="button"
                   onClick={() => setMessage("Password reset link sent! (Demo)")}
@@ -209,6 +231,7 @@ const Login = ({ onloginClose }) => {
                   Forgot password?
                 </button>
               </div>
+
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] cursor-pointer hover:shadow-lg hover:shadow-purple-500/25"

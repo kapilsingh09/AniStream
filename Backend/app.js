@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoutes)
 // app.use("/api/auth",router_login)
 // Base route
+
 app.get('/', (req, res) => {
   res.send('Hello from Express app! The server will start from server.js');
 });

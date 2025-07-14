@@ -1,38 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Home, Search, Compass, User } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Home, Search, Compass, User, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Searchbar from '../utils/Searchbar';
 import Login from '../routes/Login';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const NavLink = ({ to, children, className }) => {
+const NavLink = ({ to, children, className, onClick }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
-
+  
   return (
     <Link
       to={to}
-      className={`${className} ${isActive ? "text-indigo-300" : "text-white/80 hover:text-white hover:bg-white/10"}`}
+      onClick={onClick}
+      className={`${className} ${
+        isActive 
+          ? "text-indigo-300 border-b-2 border-white" 
+          : "text-white/80 hover:text-white hover:bg-white/10"
+      }`}
     >
       {children}
-      
-      {isActive && (
-        <motion.span
-          layout
-          className="absolute bottom-0 left-0 h-0.5 w-full rounded-2xl  bg-white "
-          initial={{ width: 0 }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 0.3 }}
-        />
-      )}
     </Link>
   );
 };
 
 export default function Navbar() {
-  const [isOpen, setisOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isloginopen, setIsloginopen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 90);
@@ -40,121 +40,233 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close search when clicking outside
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (isOpen && !event.target.closest('.search-container')) {
-  //       setisOpen(false);
-  //     }
-  //   };
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setIsMobileMenuOpen(false);
+  };
 
-  //   if (isOpen) {
-  //     document.addEventListener('mousedown', handleClickOutside);
-  //   }
+  // Close search when clicking outside or on search results
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSearchOpen && !event.target.closest('.search-container')) {
+        setIsSearchOpen(false);
+      }
+    };
 
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //   };
-  // }, [isOpen]);
+    if (isSearchOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [useLocation().pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleSearchItemClick = () => {
+    setIsSearchOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <>
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-in-out ${scrolled
-          ? 'bg-gradient-to-br from-violet-500/25 via-purple-500/25 to-pink-500/25 backdrop-blur-sm border-b text-white border-white/12 shadow-lg'
-          
-          : 'bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-pink-400/80 backdrop-blur-xl border-b-2 border-white/15 shadow-2xl'
-          }`}
-        
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-gradient-to-br from-violet-500/25 via-purple-500/25 to-pink-500/25 backdrop-blur-sm border-b text-white border-white/12 shadow-lg'
+            : 'bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-pink-400/80 backdrop-blur-xl border-b-2 border-white/15 shadow-2xl'
+        }`}
       >
-        {/**/}
-        <div className="max-w-7xl mx-auto px-6 py-3 relative flex items-center justify-between text-white">
-          {/* Brand Logo */}
-          <Link
-            to="/"
-            className="text-xl font-bold bg-white bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
-          >
-            {/* Anime-X
-             */}
-           <img 
-           
-           className='h-10 w-10 rounded-xl'
-           src="/AnimeXlogo.jpg" alt="brand img" />
-            
-          </Link>
-
-          {/* Navigation Links */}
-          <div className="flex gap-6 text-sm font-medium">
-            <NavLink
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Brand Logo */}
+            <Link
               to="/"
-              className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
+              className="flex items-center text-xl font-bold bg-white bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+              onClick={closeMobileMenu}
             >
-              <Home size={16} />
-              Home
-            </NavLink>
+              <img
+                className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl"
+                src="/AnimeXlogo.jpg"
+                alt="Anime-X"
+              />
+            </Link>
 
-            <div className="search-container relative">
-              <button
-                onClick={() => setisOpen(!isOpen)}
-                className="relative px-4 py-2 rounded-md transition-all cursor-pointer duration-300 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+              <NavLink
+                to="/"
+                className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
               >
-                <Search size={16} />
-                Search
-              </button>
+                <Home size={16} />
+                Home
+              </NavLink>
+
+              <div className="search-container relative">
+                <button
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  className="relative px-4 py-2 rounded-md transition-all cursor-pointer duration-300 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"
+                >
+                  <Search size={16} />
+                  Search
+                </button>
+              </div>
+
+              <NavLink
+                to="/explore"
+                className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
+              >
+                <Compass size={16} />
+                Explore
+              </NavLink>
             </div>
 
-            <NavLink
-              to="/explore"
-              className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
-            >
-              <Compass size={16} />
-              Explore
-            </NavLink>
+            {/* Desktop Auth */}
+            <div className="hidden md:flex items-center">
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-white/80 text-sm">👋 {user.name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-1 rounded-full border border-white/30 hover:border-red-400 hover:bg-red-500/20 transition-all duration-300 text-sm text-white/80 hover:text-white"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <NavLink
+                  to="/login"
+                  className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
+                >
+                  <User size={16} />
+                  Login
+                </NavLink>
+              )}
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={toggleMobileMenu}
+                className="inline-flex items-center justify-center p-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
+              >
+                {isMobileMenuOpen ? (
+                  <X size={24} />
+                ) : (
+                  <Menu size={24} />
+                )}
+              </button>
+            </div>
           </div>
-
-          {/* Login Button */}
-          <Link
-            // onClick={()=> setIsloginopen(!isloginopen)}
-            to="/login"
-            className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
-          >
-            <User size={16} />
-            Login
-          </Link>
         </div>
-       {isloginopen && <div className='absolute z-[999999]  w-full '>
 
-         <Login onloginClose={() => setIsloginopen(false)} />
-       </div>
-         }
-      </motion.nav>
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-b from-violet-500/30 to-purple-500/30 backdrop-blur-lg border-t border-white/10">
+              <NavLink
+                to="/"
+                onClick={closeMobileMenu}
+                className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+              >
+                <Home size={18} />
+                Home
+              </NavLink>
+
+              <button
+                onClick={() => {
+                  setIsSearchOpen(!isSearchOpen);
+                  closeMobileMenu();
+                }}
+                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10"
+              >
+                <Search size={18} />
+                Search
+              </button>
+
+              <NavLink
+                to="/explore"
+                onClick={closeMobileMenu}
+                className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+              >
+                <Compass size={18} />
+                Explore
+              </NavLink>
+
+              {/* Mobile Auth */}
+              <div className="pt-4 border-t border-white/10">
+                {user ? (
+                  <div className="px-3 py-2">
+                    <div className="text-white/80 text-sm mb-2">👋 {user.name}</div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-300 hover:text-red-200 hover:bg-red-500/20 transition-all duration-300"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <NavLink
+                    to="/login"
+                    onClick={closeMobileMenu}
+                    className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+                  >
+                    <User size={18} />
+                    Login
+                  </NavLink>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Future login modal */}
+        {isLoginOpen && (
+          <div className="absolute z-[999999] w-full">
+            <Login onloginClose={() => setIsLoginOpen(false)} />
+          </div>
+        )}
+      </nav>
 
       {/* Search Modal */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-start justify-center pt-20"
-        >
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
           {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          />
-          
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
           {/* Search Container */}
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="relative w-full max-w-2xl mx-4"
-          >
-            <Searchbar onClose={() => setisOpen(false)} />
-          </motion.div>
-        </motion.div>
+          <div className="relative w-full max-w-2xl mx-4 px-4">
+            <Searchbar 
+              onClose={() => setIsSearchOpen(false)}
+              onItemClick={handleSearchItemClick}
+            />
+          </div>
+        </div>
       )}
     </>
   );
