@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import EploaderJikhan from '../utils/EploaderJikhan';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams  } from 'react-router-dom';
 
 const JikanAnimeCard = ({ onNavigate }) => {  
     const [searchres] = useSearchParams()
@@ -19,7 +19,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
     const [showEp, setShowEp] = useState([]);
     const [isEpOpen, setIsEpOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
-
+    // const navigate = useNavigate();
     // Fetch anime details from Jikan API
     const fetchAnimeDetails = async () => {
         try {
@@ -217,33 +217,26 @@ const JikanAnimeCard = ({ onNavigate }) => {
     const truncatedDescription = anime?.synopsis?.substring(0, 300) + '...';
 
     return (
-        <div className="min-h-screen bg-black py-4 px-4">
+        <div className="min-h-screen bg-black mt-14 py-4 px-4">
             <div className="max-w-none w-[70%] mx-auto">
                 
                 {/* API Source Badge */}
-                <div className="mb-6 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 shadow-lg">
-                            <Sparkles className="h-4 w-4" />
-                            Jikan API
-                        </div>
-                        <span className="text-gray-400 text-sm">MyAnimeList Database</span>
-                    </div>
-                    
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 bg-gray-900 px-4 py-2 rounded-xl border border-gray-800 hover:bg-gray-800 shadow-sm"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        <span className="text-sm font-medium">Back</span>
-                    </button>
-                </div>
+              
 
                 {/* Main Card */}
                 <div className="bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                     
                     {/* Hero Banner */}
                     <div className="h-64 md:h-80 lg:h-96 w-full relative overflow-hidden">
+
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 w-fit text-gray-400 hover:text-white transition-colors duration-200 bg-gray-900 absolute top-2 left-2 hover:underline cursor-pointer z-99  px-4 py-2 rounded-xl border border-gray-800 hover:bg-gray-800 shadow-sm"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span className="text-sm font-medium">Back</span>
+                    </button>
+
                         <img
                             src={getBannerImage()}
                             alt={anime?.title}

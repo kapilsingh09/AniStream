@@ -68,7 +68,7 @@ const Login = ({ onloginClose }) => {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src={loginvd} type="video/mp4" />
+          {/* <source src={loginvd} type="video/mp4" /> */}
         </video>
 
         {/* Animated Particles */}
@@ -90,14 +90,14 @@ const Login = ({ onloginClose }) => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+      <div className="relative  min-h-screen flex items-center justify-center px-4">
         {/* Left Panel: Anime Info */}
         <div className="hidden lg:block absolute left-8 top-1/2 transform -translate-y-1/2 text-white max-w-md w-full">
           <div className="bg-black/40 backdrop-blur-lg rounded-3xl p-8 border border-white/20 space-y-8 shadow-2xl">
 
             {/* Logo + Tagline */}
             <div className="space-y-3">
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-extrabold  text-white">
                 AniStream
               </h1>
               <p className="text-base text-gray-300 leading-relaxed">
@@ -116,6 +116,7 @@ const Login = ({ onloginClose }) => {
             </div>
 
             {/* Feature Cards */}
+  
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center bg-white/5 p-3 rounded-xl border border-white/10 space-x-3">
                 <div className="w-3 h-3 bg-purple-400 rounded-full" />
@@ -131,11 +132,14 @@ const Login = ({ onloginClose }) => {
               </div>
             </div>
 
-            {/* Optional: Social proof / Community count */}
+            
             <div className="text-xs text-gray-400 text-center pt-4 border-t border-white/10">
               Join 2M+ anime fans worldwide 🌏
             </div>
           </div>
+          <div><p className="text-xs text-center text-yellow-300 mt-6 italic">
+  ⚠️ Please note: Anime streaming is not available at the moment as this is a student project developed for educational purposes.
+</p></div>
         </div>
 
 
@@ -145,7 +149,8 @@ const Login = ({ onloginClose }) => {
             {/* Close Button */}
             <div className="absolute top-4 right-4">
               <button
-                onClick={() => onloginClose(true)}
+                // onClick={() => onloginClose(true)}
+                onClick={()=>{navigate('/')}}
                 aria-label="Close Login"
                 className="p-2 rounded-full hover:bg-red-500/70 border border-white/30 hover:border-red-500 transition-all duration-300"
               >
@@ -199,14 +204,14 @@ const Login = ({ onloginClose }) => {
                 <button
                   type="button"
                   onClick={() => setMessage("Password reset link sent! (Demo)")}
-                  className="text-sm text-purple-300 hover:text-purple-200 transition-colors duration-300"
+                  className="text-sm text-purple-300 hover:underline cursor-pointer hover:text-purple-200 transition-colors duration-300"
                 >
                   Forgot password?
                 </button>
               </div>
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/25"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] cursor-pointer hover:shadow-lg hover:shadow-purple-500/25"
               >
                 Enter AniStream
               </button>
@@ -224,7 +229,7 @@ const Login = ({ onloginClose }) => {
               New to AniStream?{" "}
               <button
                 onClick={handleNavigate}
-                className="text-purple-300 hover:text-purple-200 font-semibold transition-colors duration-300"
+                className="text-purple-300  hover:underline cursor-pointer  hover:text-purple-200 font-semibold transition-colors duration-300"
               >
                 Join the Community
               </button>
