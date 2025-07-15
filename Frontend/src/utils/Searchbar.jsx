@@ -260,7 +260,8 @@ const Searchbar = ({ onClose }) => {
               {/* Enhanced View More Button */}
               <div className="pt-2">
                 <button 
-                  onClick={() => navigate(`/search?query=${encodeURIComponent(search)}`)}
+                  // onClick={() => navigate(`/search?query=${encodeURIComponent(search)}`)}
+                  onClick={handleSubmit}
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-xl font-semibold text-sm uppercase tracking-wide transition-all duration-300 transform hover:cursor-pointer hover:shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-2"
                 >
                   <Eye size={16} />

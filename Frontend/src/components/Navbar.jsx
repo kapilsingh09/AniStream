@@ -16,11 +16,14 @@ const NavLink = ({ to, children, className, onClick }) => {
       onClick={onClick}
       className={`${className} ${
         isActive 
-          ? "text-indigo-300 border-b-2 border-white" 
+          ? "text-indigo-300" 
           : "text-white/80 hover:text-white hover:bg-white/10"
-      }`}
+      } relative`}
     >
       {children}
+      {isActive && (
+        <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-2xl bg-white" />
+      )}
     </Link>
   );
 };
@@ -47,21 +50,21 @@ export default function Navbar() {
   };
 
   // Close search when clicking outside or on search results
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isSearchOpen && !event.target.closest('.search-container')) {
-        setIsSearchOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (isSearchOpen && !event.target.closest('.search-container')) {
+  //       setIsSearchOpen(false);
+  //     }
+  //   };
 
-    if (isSearchOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+  //   if (isSearchOpen) {
+  //     document.addEventListener('mousedown', handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSearchOpen]);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [isSearchOpen]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -102,7 +105,7 @@ export default function Navbar() {
             : 'bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-pink-400/80 backdrop-blur-xl border-b-2 border-white/15 shadow-2xl'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto search-container px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Logo */}
             <Link
@@ -127,7 +130,7 @@ export default function Navbar() {
                 Home
               </NavLink>
 
-              <div className="search-container relative">
+              <div className=" relative">
                 <button
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
                   className="relative px-4 py-2 rounded-md transition-all cursor-pointer duration-300 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10"

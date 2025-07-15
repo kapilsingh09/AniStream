@@ -2,28 +2,31 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-import authRoutes from './routes/auth.routes.js'
-// import router_login from './routes/login.routes.js'
+
+// Import route modules
+// import animeRoutes from './routes/anime.routes.js';
+import authRoutes from './routes/auth.routes.js';
+
 
 const app = express();
 
-// Middleware 
-app.use(cors({ origin: "http://localhost:5173", // your frontend URL
-    credentials: true,}));
+// ✅ Middlewares
+app.use(cors({
+  origin: "http://localhost:5173", // Frontend origin
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-// routes
-app.use("/api/auth",authRoutes)
-// app.use("/api/auth",router_login)
-// Base route
+// ✅ Route handlers
+app.use("/api/auth", authRoutes);         // Handles login, signup, etc.
+// app.use("/api/anime", animeRoutes);       // Handles anime endpoints (random, id, stats)
+// app.use("/api/auth", router_login);    // (Optional/old)
 
+// ✅ Default route
 app.get('/', (req, res) => {
   res.send('Hello from Express app! The server will start from server.js');
 });
-
-
-
 
 export default app;

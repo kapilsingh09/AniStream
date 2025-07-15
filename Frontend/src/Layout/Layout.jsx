@@ -7,10 +7,9 @@ const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-zinc-900 via-gray-900 to-black text-white text-2xl">
       <Navbar />
-      <main className="flex-1   "> {/* 👈 Adjust padding here */}
+      <main className="flex-1   "> 
         <Outlet />
       </main>
-      {/* Uncomment Footer if needed */}
       <Footer />
     </div>
   )
