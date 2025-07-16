@@ -49,7 +49,7 @@ const Login = ({ onloginClose }) => {
         localStorage.setItem('user', JSON.stringify(data.user)); // ✅ add this
         localStorage.setItem('token', data.token);               // ✅ add this
         setMessage(" Login successful!");
-        navigate("/")
+        window.location.href = "/";
         setTimeout(() => {
           if (onloginClose) onloginClose(true);
         }, 1000);

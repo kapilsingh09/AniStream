@@ -22,7 +22,7 @@ import {
 } from '../services/kitsuAnimeApi';
 import FactsSlider from '../ExplorePage/FactsSlider';
 import Vdplayer from '../videoJs/Vdplayer';
-
+import AviAnime from '../utils/AviAnime';
 
 const Homepage = () => {
   return (
@@ -30,18 +30,18 @@ const Homepage = () => {
       {/* <Vdplayer /> */}
       {/* Hero Slider */}
       <AnimeSlider />
-
+    <AviAnime />
       <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
       
       {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
 
 
-      <div className="flex items-center justify-center bg-black">
+      {/* <div className="flex items-center justify-center bg-black">
          <AnimeBanner />
-      </div> 
+      </div>  */}
 
       {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
+      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
@@ -49,7 +49,7 @@ const Homepage = () => {
         {/* <GhibliMovieBanner /> */}
       
       </div> 
-      {/* <AnimeGrid /> */}
+      {/* <AviAnime /> */}
       {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
 
       {/* <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}

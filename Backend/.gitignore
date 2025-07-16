@@ -12,7 +12,7 @@ npm-debug.log*
 # OS generated files
 .DS_Store
 Thumbs.db
-
+videos
 # Build output
 dist/
 build/
