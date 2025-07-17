@@ -2,6 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import animeRoutes from './routes/animeRoutes.js'
 
 // Import route modules
 // import animeRoutes from './routes/anime.routes.js';
@@ -27,7 +28,7 @@ app.use("/api/auth", authRoutes);         // Handles login, signup, etc.
 // app.use("/api/anime", animeRoutes); // So your route is at /api/anime
 app.use("/api/available_data", availableDataRoutes);
 // app.use("/api/auth", router_login);    // (Optional/old)
-
+app.use("/api/anime",animeRoutes)
 // ✅ Default route
 app.get('/', (req, res) => {
   res.send('Hello from Express app! The server will start from server.js');
