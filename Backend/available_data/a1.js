@@ -1,3 +1,5 @@
+// import img from '../public/images/wagari sama.jpg'
+// C:\Users\karan\Desktop\Project-2\Frontend\src\assets\wagari sama.jpg
 const available_data = [
     {
         "id": "kaoru-hana-wa-rin-to-saku",
@@ -9,6 +11,11 @@ const available_data = [
         "episodes_aired": 2,
         "total_episodes": null,
         "start_date": "2025-07-06",
+        // The current path is incorrect for use on a web page.
+        // For a React/Vite app, use a relative import path from the public folder or src/assets.
+        // Example if the image is in 'public/assets/wagari sama.jpg':
+        "img":"https://media.kitsu.app/anime/49205/poster_image/2f9c5da04cea44def6cf75be21e894c2.jpg",
+        // Or if you import it in React, you would use: import wagariSama from '../assets/wagari sama.jpg'
         "genres": [
             "Romantic Comedy",
             "Drama",

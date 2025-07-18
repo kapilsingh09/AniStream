@@ -15,6 +15,8 @@ const AviAnime = () => {
         const res = await fetch("http://localhost:3000/api/available_data");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
+        console.log(data);
+        
         setAnimeData(data);
       } catch (err) {
         console.error("Error:", err);
@@ -54,6 +56,7 @@ const AviAnime = () => {
                       status,
                       cast,
                       genres,
+                      img,
                     } = anime;
                     const year = new Date(start_date).getFullYear();
 
@@ -64,7 +67,11 @@ const AviAnime = () => {
                         className="group cursor-pointer bg-gradient-to-l from-purple-500/90 to-pink-500/80 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-300 hover:scale-105 hover:shadow-xl"
                       >
                         <div className="h-56 bg-white/20 relative flex items-center justify-center text-white text-xl font-bold">
-                          {title}
+                          <img
+                            src={img}
+                            alt={title}
+                            className="object-cover w-full h-full absolute inset-0"
+                          />
                           <div className="absolute bottom-2 right-2 bg-black/60 text-xs px-2 py-0.5 rounded">
                             {year}
                           </div>

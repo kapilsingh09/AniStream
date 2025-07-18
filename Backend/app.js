@@ -3,7 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import animeRoutes from './routes/animeRoutes.js'
-
+import path from 'path'
+import { fileURLToPath } from 'url';
 // Import route modules
 // import animeRoutes from './routes/anime.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -11,9 +12,14 @@ import authRoutes from './routes/auth.routes.js';
 // import animeRoutes from './routes/anime.routes.js'
 import availableDataRoutes from './routes/availableData.js'
 
- const app = express();
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
 
 // ✅ Middlewares
+
 app.use(cors({
   origin: "http://localhost:5173", // Frontend origin
   credentials: true,
@@ -21,7 +27,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use('/videos', express.static('public/videos'));
+
+// Serve videos from the root /videos directory
+app.use('/videos', express.static(path.join(__dirname, '..', 'videos')));
 
 // ✅ Route handlers
 app.use("/api/auth", authRoutes);         // Handles login, signup, etc.
