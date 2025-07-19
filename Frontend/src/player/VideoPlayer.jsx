@@ -11,18 +11,20 @@ const VideoPlayer = ({ src }) => {
   }, [src]);
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 rounded-lg shadow-lg overflow-hidden bg-black">
-      <video
-        ref={videoRef}
-        src={src}
-        controls
-        autoPlay
-        preload="auto"
-        className="w-full bg-black"
-        style={{ aspectRatio: '16 / 9' }}
-      >
-        Your browser does not support the video tag.
-      </video>
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 px-4">
+      <div className="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl bg-black border border-gray-700">
+        <video
+          ref={videoRef}
+          src={src}
+          autoPlay
+          preload="auto"
+          controls
+          playsInline
+          className="w-full h-[70vh]  object-contain pl-5 pr-5 bg-black"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
   );
 };

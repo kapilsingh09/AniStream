@@ -14,7 +14,7 @@ import Login from './routes/Login';
 import Register from './routes/Register';
 import SearchPage from './pages/SearchPage';
 import KeywordPage from './pages/KeywordPage';
-import VideoPage from './pages/videoPage';
+import VideoPage from './pages/VideoPage';
 
 const App = () => {
   return (

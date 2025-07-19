@@ -23,18 +23,18 @@ import {
 import FactsSlider from '../ExplorePage/FactsSlider';
 // import Vdplayer from '../videoJs/Vdplayer';
 import AviAnime from '../utils/AviAnime';
+import Player from '../player/Player';
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen mt-15  bg-slate-800  ">
-      {/* <Vdplayer /> */}
+    <div className="min-h-screen mt-10  bg-slate-800  ">
       {/* Hero Slider */}
       {/* <AnimeSlider /> */}
     {/* <AviAnime /> */}
       {/* <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} /> */}
       {/* <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} /> */}
 
-
+    <Player />
       {/* <div className="flex items-center justify-center bg-black">
          <AnimeBanner />
       </div>  */}
