@@ -10,7 +10,7 @@ function VideoPage() {
       try {
         const res = await axios.get(`http://localhost:3000/api/anime/${slug}`);
         setAnimeData(res.data);
-        console.log(res.data);
+        // console.log(res.data);j
         
         // Log each episode's video URL
         res.data.episodes.forEach((ep, index) => {

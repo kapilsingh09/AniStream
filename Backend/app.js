@@ -13,8 +13,8 @@ import authRoutes from './routes/auth.routes.js';
 import availableDataRoutes from './routes/availableData.js'
 
 // Fix __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -30,7 +30,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve videos from the root /videos directory
 app.use('/videos', express.static(path.join(__dirname, '..', 'videos')));
-
+app.use('/videos', express.static('videos'));
+  
 // ✅ Route handlers
 app.use("/api/auth", authRoutes);         // Handles login, signup, etc.
 // app.use("/api/anime", animeRoutes); // So your route is at /api/anime
