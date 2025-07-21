@@ -1,39 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
-const VideoPlayer = ({ src }) => {
+const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [volume, setVolume] = useState(1);
-  const [playbackRate, setPlaybackRate] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
+  const togglePlay = () => {
     const video = videoRef.current;
-    if (video) {
-      video.load();
-      setIsPlaying(true);
-    }
-  }, [src]);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      const video = videoRef.current;
-      if (!video) return;
-      if (e.code === 'Space') {
-        e.preventDefault();
-        togglePlayPause();
-      } else if (e.key === 'f') {
-        toggleFullscreen();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const togglePlayPause = () => {
-    const video = videoRef.current;
-    if (!video) return;
-
     if (video.paused) {
       video.play();
       setIsPlaying(true);
@@ -43,87 +15,42 @@ const VideoPlayer = ({ src }) => {
     }
   };
 
-  const toggleFullscreen = () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      video.requestFullscreen();
-    }
-  };
-
-  const handleVolumeChange = (e) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-    }
-  };
-
-  const handleSpeedChange = (e) => {
-    const speed = parseFloat(e.target.value);
-    setPlaybackRate(speed);
-    if (videoRef.current) {
-      videoRef.current.playbackRate = speed;
-    }
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 px-4">
-      <div className="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl bg-black border border-gray-700">
+    <div className="w-full max-w-full mx-auto mt-20 flex gap-4 p-4 rounded-2xl overflow-hidden shadow-lg bg-black/30 backdrop-blur-md text-white">
+      
+      {/* Left Panel: Episodes */}
+      <div className="w-[20%] min-w-[180px] bg-black/40 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-3">Episodes</h2>
+        <ul className="space-y-2 text-sm">
+          <li className="hover:underline cursor-pointer">Episode 1</li>
+          <li className="hover:underline cursor-pointer">Episode 2</li>
+          <li className="hover:underline cursor-pointer">Episode 3</li>
+        </ul>
+      </div>
+
+      {/* Middle Panel: Video */}
+      <div className="flex-1 flex justify-center">
         <video
           ref={videoRef}
-          src={src}
-          autoPlay
-          preload="auto"
+          onClick={togglePlay}
           controls
-          playsInline
-          className="w-full h-[70vh] object-contain bg-black"
+          className="w-full max-w-4xl h-auto cursor-pointer rounded-xl"
+          preload="metadata"
         >
+          <source src={src} type={type} />
           Your browser does not support the video tag.
         </video>
+      </div>
 
-        {/* Custom Controls */}
-        <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 bg-gray-800 text-white text-sm">
-          <button onClick={togglePlayPause} className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">
-            {isPlaying ? 'Pause' : 'Play'}
-          </button>
-
-          <div className="flex items-center gap-2">
-            <label htmlFor="volume">Volume</label>
-            <input
-              id="volume"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w-24"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label htmlFor="speed">Speed</label>
-            <select
-              id="speed"
-              value={playbackRate}
-              onChange={handleSpeedChange}
-              className="bg-gray-700 rounded px-2 py-1"
-            >
-              <option value="0.5">0.5x</option>
-              <option value="1">1x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2x</option>
-            </select>
-          </div>
-
-          <button onClick={toggleFullscreen} className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">
-            Fullscreen
-          </button>
-        </div>
+      {/* Right Panel: Anime Details */}
+      <div className="w-[25%] min-w-[220px] bg-black/40 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-3">Anime Details</h2>
+        <p className="text-sm text-gray-300">
+          <strong>Title:</strong> Your Anime Title<br />
+          <strong>Genre:</strong> Action, Fantasy<br />
+          <strong>Episodes:</strong> 12<br />
+          <strong>Status:</strong> Ongoing
+        </p>
       </div>
     </div>
   );

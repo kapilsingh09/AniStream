@@ -1,12 +1,11 @@
-import React from 'react'
-import VideoPlayer from './VideoPlayer'
+// src/App.js
+import React from 'react';
+import VideoPlayer from '../player/VideoPlayer';
 
-const Player = () => {
+function App() {
   return (
-    <div className='mt-10'>
-        <VideoPlayer src="http://localhost:3000/videos/anime-49205-ep1.mp4" />
-    </div>
-  )
+    <VideoPlayer src="http://localhost:3000/videos/anime-49205-ep1.mp4" />
+  );
 }
 
-export default Player
+export default App;
