@@ -16,17 +16,39 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   };
 
   return (
-    <div className="w-full max-w-full mx-auto mt-20 flex gap-4 p-4 rounded-2xl overflow-hidden shadow-lg bg-black/30 backdrop-blur-md text-white">
+    <div className="w-full max-w-full mx-auto mt-20 flex gap-4 rounded-2xl overflow-hidden shadow-lg bg-black/30 backdrop-blur-md text-white">
       
       {/* Left Panel: Episodes */}
-      <div className="w-[20%] min-w-[180px] bg-black/40 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-3">Episodes</h2>
-        <ul className="space-y-2 text-sm">
-          <li className="hover:underline cursor-pointer">Episode 1</li>
-          <li className="hover:underline cursor-pointer">Episode 2</li>
-          <li className="hover:underline cursor-pointer">Episode 3</li>
-        </ul>
+      {/* Left Panel: Episodes */}
+      <div className="w-[20%] min-w-[200px] bg-black/40 rounded-xl p-4 border h-[50vh] border-white/10 flex flex-col">
+  <h2 className="text-lg font-semibold mb-4 border-b border-white/10 pb-2">Episodes</h2>
+
+  {/* Search */}
+  <div className="mb-4">
+    <input
+      type="text"
+      placeholder="Search episode..."
+      className="w-full bg-white/10 text-white text-sm px-3 py-2 rounded-lg placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+    />
+  </div>
+
+  {/* Responsive Grid List */}
+  <div className="grid grid-cols-1  gap-3 overflow-y-auto pr-1 flex-1 custom-scroll">
+    {[...Array(20)].map((_, i) => (
+      <div
+        key={i}
+        className="bg-white/10 hover:bg-green-600/40 transition rounded-lg p-3 cursor-pointer"
+      >
+        <span className="font-medium text-sm block">Ep {i + 1}</span>
+        <span className="text-xs text-gray-300 truncate block sm:whitespace-normal">
+          Episode Title Long Enough To Be Truncated If Needed
+        </span>
       </div>
+    ))}
+  </div>
+</div>
+
+
 
       {/* Middle Panel: Video */}
       <div className="flex-1 flex justify-center">
