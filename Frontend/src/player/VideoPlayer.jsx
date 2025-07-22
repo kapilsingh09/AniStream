@@ -70,7 +70,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
         {/* Left Panel: Episodes */}
         <div
           className={`
-            transition-all duration-500 border border-white ease-in-out p-6
+            transition-all duration-500 border border-white ease-in-out p-2
              max-h-full
             backdrop-blur-md bg-black/30 border-r h-lvh cool-scrollbar
             flex flex-col
