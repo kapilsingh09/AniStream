@@ -21,7 +21,7 @@ body{
   }
   
   .cool-scrollbar::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
   }
   
   .cool-scrollbar::-webkit-scrollbar-track {

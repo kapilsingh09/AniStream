@@ -70,18 +70,18 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
         {/* Left Panel: Episodes */}
         <div
           className={`
-            transition-all duration-500 ease-in-out p-6
-            h-full max-h-full
-            backdrop-blur-md bg-black/30 border-r border-white/10
+            transition-all duration-500 border border-white ease-in-out p-6
+             max-h-full
+            backdrop-blur-md bg-black/30 border-r h-lvh cool-scrollbar
             flex flex-col
             ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[28%]'}
             ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[350px]'}
           `}
-          style={{
-            height: '100%',
-            maxHeight: '100%',
-            boxSizing: 'border-box',
-          }}
+          // style={{
+          //   height: '100%',
+          //   maxHeight: '100%',
+          //   boxSizing: 'border-box',
+          // }}
         >
           <div className="flex items-center gap-3 mb-6">
             {/* <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -104,8 +104,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           </div>
 
           {/* Episodes List */}
-          <div className="space-y-3 overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30"
-            style={{ maxHeight: '100%' }}
+          <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30"
+            // style={{ maxHeight: '100%' }}
           >
             {filteredEpisodes.length === 0 ? (
               <div className="text-gray-400 text-center py-8">No episodes found.</div>
