@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Search, ChevronDown, Star, Calendar, Clock, Users } from 'lucide-react';
+import { Play, Pause, Search, Star, Calendar, Users } from 'lucide-react';
 
 const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
@@ -30,7 +30,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     }
   };
 
-  const filteredEpisodes = episodes.filter(ep => 
+  const filteredEpisodes = episodes.filter(ep =>
     ep.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ep.id.toString().includes(searchQuery)
   );
@@ -42,16 +42,19 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     const updateTime = () => setCurrentTime(video.currentTime);
     const updateDuration = () => setDuration(video.duration);
 
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
     video.addEventListener('timeupdate', updateTime);
     video.addEventListener('loadedmetadata', updateDuration);
-    video.addEventListener('play', () => setIsPlaying(true));
-    video.addEventListener('pause', () => setIsPlaying(false));
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
 
     return () => {
       video.removeEventListener('timeupdate', updateTime);
       video.removeEventListener('loadedmetadata', updateDuration);
-      video.removeEventListener('play', () => setIsPlaying(true));
-      video.removeEventListener('pause', () => setIsPlaying(false));
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
     };
   }, []);
 
@@ -63,31 +66,31 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   return (
     <div className="w-full mx-auto min-h-screen bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
-        
         {/* Left Panel: Episodes */}
-        <div className={`
-          transition-all duration-500 ease-in-out p-6 backdrop-blur-md bg-black/30 border-r border-white/10
-          ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[28%]'}
-          ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[350px]'}
-        `}>
+        <div
+          className={`
+            transition-all duration-500 ease-in-out p-6
+            h-full max-h-full
+            backdrop-blur-md bg-black/30 border-r border-white/10
+            flex flex-col
+            ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[28%]'}
+            ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[350px]'}
+          `}
+          style={{
+            height: '100%',
+            maxHeight: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <Play className="w-4 h-4" />
-            </div>
+            {/* <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              {/* <Play className="w-4 h-4" /> */}
             <h2 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">Episodes</h2>
           </div>
 
           {/* Search Bar */}
-          <div className="relative mb-6">
+          <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -101,58 +104,57 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           </div>
 
           {/* Episodes List */}
-          <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
-            {filteredEpisodes.map((episode, i) => (
-              <div
-                key={episode.id}
-                onClick={() => setSelectedEpisodeIndex(i)}
-                className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02]
-                  ${selectedEpisodeIndex === i 
-                    ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 shadow-lg shadow-purple-500/25' 
-                    : 'bg-white/5 hover:bg-white/10 border border-white/10'
-                  }`}
-              >
-                <div className="flex items-center p-4">
-                  <div className="relative">
-                    <img 
-                      src={episode.thumbnail} 
-                      alt={`Episode ${episode.id}`}
-                      className="w-16 h-9 rounded-lg object-cover"
-                    />
-                    {episode.watched && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black"></div>
-                    )}
-                  </div>
-                  
-                  <div className="ml-4 flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-purple-300">EP {episode.id}</span>
-                      {selectedEpisodeIndex === i && <div className="w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>}
-                    </div>
-                    <p className="font-semibold text-sm truncate group-hover:text-purple-300 transition-colors">
-                      {episode.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                      <Clock className="w-3 h-3" />
-                      <span>{episode.duration}</span>
-                    </div>
-                  </div>
+          <div className="space-y-3 overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30"
+            style={{ maxHeight: '100%' }}
+          >
+            {filteredEpisodes.length === 0 ? (
+              <div className="text-gray-400 text-center py-8">No episodes found.</div>
+            ) : (
+              filteredEpisodes.map((ep, i) => {
+                const isSelected = selectedEpisodeIndex === episodes.findIndex(e => e.id === ep.id);
+                const handleSelect = () => setSelectedEpisodeIndex(episodes.findIndex(e => e.id === ep.id));
 
-                  {selectedEpisodeIndex === i && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-transparent pointer-events-none"></div>
-                  )}
-                </div>
-              </div>
-            ))}
+                return (
+                  <div
+                    key={ep.id}
+                    onClick={handleSelect}
+                    className={`
+            group flex items-center gap-3 p-3 relative overflow-hidden rounded-xl cursor-pointer transition-all
+            ${isSelected ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'}
+          `}
+                  >
+                    {/* Thumbnail Preview */}
+                    {/* <div className="relative w-16 h-10 rounded overflow-hidden bg-black/20 shrink-0"> */}
+                      {/* <img
+                        src={ep.thumbnail}
+                        alt={`Ep ${ep.id}`}
+                        className="w-full h-full object-cover"
+                      /> */}
+                    {/* </div> */}
+
+                    {/* Episode Info */}
+                    <div className="flex-1  min-w-0">
+                      <div className="flex justify-between items-center mb-0.5">
+                        <span className="text-sm font-semibold text-white">Episode {ep.id}</span>
+                        <span className="text-xs text-gray-400">{ep.duration}</span>
+                      {ep.watched && (
+                        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-green-400"></div>
+                      )}
+                      </div>
+                      <p className="text-xs text-gray-300 truncate">{ep.title}</p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
+
         </div>
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col lg:flex-row">
-          
           {/* Video Panel */}
           <div className={`transition-all duration-500 ease-in-out flex-1 p-6 ${expandMode ? '' : 'lg:pr-0'}`}>
-            
             {/* Video Container */}
             <div className="relative group">
               <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl">
@@ -167,13 +169,12 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   <source src={src} type={type} />
                   Your browser does not support the video tag.
                 </video>
-                
                 {/* Custom play overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                   <div className="absolute bottom-4 left-4 right-4">
                     <div className="flex items-center justify-between text-white">
                       <div className="flex items-center gap-4">
-                        <button 
+                        <button
                           onClick={(e) => { e.stopPropagation(); togglePlay(); }}
                           className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors pointer-events-auto"
                         >
@@ -199,11 +200,11 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 >
                   {expandMode ? '← Collapse' : 'Expand →'}
                 </button>
-                
+
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-400">Servers:</span>
                   {[1, 2, 3].map(server => (
-                    <button 
+                    <button
                       key={server}
                       className="px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-xs
                         hover:bg-purple-500/20 hover:border-purple-400/50 transition-all duration-300"
@@ -225,10 +226,10 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-                    Episode {selectedEpisodeIndex + 1}: {episodes[selectedEpisodeIndex]?.title}
+                    Episode {episodes[selectedEpisodeIndex]?.id}: {episodes[selectedEpisodeIndex]?.title}
                   </h1>
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    In this thrilling episode, our heroes face their greatest challenge yet. With the fate of the world hanging in the balance, 
+                    In this thrilling episode, our heroes face their greatest challenge yet. With the fate of the world hanging in the balance,
                     ancient powers awaken and alliances are tested. Don't miss this action-packed adventure that will leave you on the edge of your seat.
                   </p>
                 </div>
@@ -246,12 +247,12 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Anime Details
               </h2>
-              
+
               <div className="space-y-6">
                 {/* Poster */}
                 <div className="aspect-[3/4] rounded-xl overflow-hidden shadow-lg">
-                  <img 
-                    src="https://picsum.photos/300/400?random=poster" 
+                  <img
+                    src="https://picsum.photos/300/400?random=poster"
                     alt="Anime Poster"
                     className="w-full h-full object-cover"
                   />
@@ -276,7 +277,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                         <span className="ml-2 text-green-400 font-semibold">Ongoing</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       <Play className="w-4 h-4 text-purple-400" />
                       <div>
@@ -301,8 +302,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   <div className="pt-4 border-t border-white/10">
                     <h4 className="font-semibold mb-2 text-purple-300">Synopsis</h4>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      A young warrior discovers ancient magical powers and must unite with unlikely allies to prevent 
-                      an ancient evil from consuming the world. With stunning animation and epic battles, this series 
+                      A young warrior discovers ancient magical powers and must unite with unlikely allies to prevent
+                      an ancient evil from consuming the world. With stunning animation and epic battles, this series
                       redefines the fantasy genre.
                     </p>
                   </div>
