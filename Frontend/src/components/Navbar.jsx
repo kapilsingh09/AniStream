@@ -70,7 +70,7 @@ export default function Navbar() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [useLocation().pathname]);
-
+  
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -106,7 +106,7 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto search-container px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             {/* Brand Logo */}
             <Link
               to="/"
@@ -195,7 +195,7 @@ export default function Navbar() {
               <NavLink
                 to="/"
                 onClick={closeMobileMenu}
-                className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+                className=" px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
               >
                 <Home size={18} />
                 Home
@@ -206,7 +206,7 @@ export default function Navbar() {
                   setIsSearchOpen(!isSearchOpen);
                   closeMobileMenu();
                 }}
-                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10"
+                className="w-full text-left  px-3 py-2 rounded-md text-base font-medium flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10"
               >
                 <Search size={18} />
                 Search
@@ -215,7 +215,7 @@ export default function Navbar() {
               <NavLink
                 to="/explore"
                 onClick={closeMobileMenu}
-                className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+                className=" px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
               >
                 <Compass size={18} />
                 Explore
@@ -237,7 +237,7 @@ export default function Navbar() {
                   <NavLink
                     to="/login"
                     onClick={closeMobileMenu}
-                    className="block px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+                    className=" px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
                   >
                     <User size={18} />
                     Login
