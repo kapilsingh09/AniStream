@@ -4,6 +4,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(null);
+  const [rightShow, setRightShow] = useState(false)
   const togglePlay = () => {
     const video = videoRef.current;
     if (video.paused) {
@@ -19,7 +20,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     <div className="w-full max-w-full mx-auto mt-20 flex gap-1  min-h-screen overflow-hidden shadow-lg bg-black/30 backdrop-blur-md text-white">
       
       {/* Left Panel: Episodes */}
-      <div className="w-[20%] min-w-[200px] bg-black/40 rounded-xl p-4 border h-[70vh] border-white/10 flex flex-col">
+      <div className="w-[20%] min-w-[200px] bg-black/40    p-4 border h-[70vh] border-white/10 flex flex-col">
         <h2 className="text-lg font-semibold mb-4 border-b border-white/10 pb-2">Episodes</h2>
 
         <div className="mb-4">
@@ -53,21 +54,34 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
 
       {/* Middle Panel: Video */}
-      <div className="flex-1">
+      <div className="flex-3">
         <video
           ref={videoRef}
           onClick={togglePlay}
           controls
-          className="w-full max-w-4xl h-auto cursor-pointer rounded-xl"
+          className="w-full max-w-4xl h-auto cursor-pointer "
           preload="metadata"
         >
           <source src={src} type={type} />
           Your browser does not support the video tag.
         </video>
+        <div className='bg-yellow-500 h-fit'>
+          <button 
+          onClick={()=>{setRightShow(!rightShow)}}
+          className='border  rounded-2xl text-sm px-2 py-2  '>
+            Expand
+          </button>
+
+          <div className=''>
+            <button>server 1</button>
+            <button>server 2</button>
+          </div>
+        </div>
+
       </div>
 
       {/* Right Panel: Anime Details */}
-      <div className="w-[25%] min-w-[220px] bg-black/40 rounded-xl p-4">
+     {rightShow ? <div className="w-[25%] min-w-[220px] bg-black/40  p-4">
         <h2 className="text-lg font-semibold mb-3">Anime Details</h2>
         <p className="text-sm text-gray-300">
           <strong>Title:</strong> Your Anime Title<br />
@@ -75,7 +89,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           <strong>Episodes:</strong> 12<br />
           <strong>Status:</strong> Ongoing
         </p>
-      </div>
+      </div> : ""}
     </div>
   );
 };
