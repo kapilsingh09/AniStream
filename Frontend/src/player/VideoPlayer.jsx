@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Play, Pause, Search, Star, Calendar, Users } from 'lucide-react';
+import axios from 'axios';
 
 const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
@@ -9,15 +10,26 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [animeData, setAnimeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
 
-  // Mock episode data
-  const episodes = Array.from({ length: 24 }, (_, i) => ({
-    id: i + 1,
-    title: `The ${['Awakening', 'Journey Begins', 'Hidden Power', 'Dark Secrets', 'Final Battle', 'New Dawn', 'Lost Memories', 'Ancient Magic'][i % 8]}`,
-    duration: `${Math.floor(Math.random() * 5) + 20}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
-    watched: i < 3,
-    thumbnail: `https://picsum.photos/160/90?random=${i}`
-  }));
+  useEffect(() => {
+    // Fetch anime data from API
+    const fetchAnime = async () => {
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const res = await axios.get('http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity');
+        setAnimeData(res.data);
+      } catch (error) {
+        setFetchError('Error fetching anime data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnime();
+  }, []);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -30,62 +42,77 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     }
   };
 
-  const filteredEpisodes = episodes.filter(ep =>
-    ep.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ep.id.toString().includes(searchQuery)
-  );
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const updateTime = () => setCurrentTime(video.currentTime);
-    const updateDuration = () => setDuration(video.duration);
-
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-
-    video.addEventListener('timeupdate', updateTime);
-    video.addEventListener('loadedmetadata', updateDuration);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
-
-    return () => {
-      video.removeEventListener('timeupdate', updateTime);
-      video.removeEventListener('loadedmetadata', updateDuration);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
-    };
-  }, []);
-
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  // Filter episodes by search query
+  const filteredEpisodes = animeData && animeData.episodes
+    ? animeData.episodes.filter(
+        (ep) =>
+          ep.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          ep.id?.toString().includes(searchQuery)
+      )
+    : [];
+
+  // Handle episode selection
+  const handleSelect = (idx) => {
+    setSelectedEpisodeIndex(idx);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+  };
+//not sure for cal
+  // const formatDurationFromMinutes = (minutes) => {
+  //   if (!minutes || isNaN(minutes)) return '--:--';
+  //   const totalSeconds = Math.floor(minutes * 60);
+  //   const mins = Math.floor(totalSeconds / 60);
+  //   const secs = totalSeconds % 60;
+  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
+  // };
+  
+  
+  // Get current episode
+  const currentEpisode =
+    animeData && animeData.episodes && animeData.episodes[selectedEpisodeIndex]
+      ? animeData.episodes[selectedEpisodeIndex]
+      : null;
+
+  // If loading, show loading message
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
+        <div className="text-lg font-semibold animate-pulse">Loading...</div>
+      </div>
+    );
+  }
+
+  // If error, show error message
+  if (fetchError) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
+        <div className="text-lg font-semibold text-red-400">{fetchError}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full mx-auto min-h-screen bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
+    <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
-        {/* Left Panel: Episodes */}
+        {/* Episodes */}
         <div
           className={`
             transition-all duration-500 border border-white ease-in-out p-2
-             max-h-full
+            max-h-full
             backdrop-blur-md bg-black/30 border-r h-lvh cool-scrollbar
             flex flex-col
-            ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[28%]'}
-            ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[350px]'}
+            ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[23%]'}
+            ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}
           `}
-          // style={{
-          //   height: '100%',
-          //   maxHeight: '100%',
-          //   boxSizing: 'border-box',
-          // }}
         >
           <div className="flex items-center gap-3 mb-6">
-            {/* <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              {/* <Play className="w-4 h-4" /> */}
             <h2 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">Episodes</h2>
           </div>
 
@@ -104,89 +131,62 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           </div>
 
           {/* Episodes List */}
-          <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30"
-            // style={{ maxHeight: '100%' }}
-          >
-            {filteredEpisodes.length === 0 ? (
+          <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
+            {(!animeData || !animeData.episodes || animeData.episodes.length === 0) ? (
               <div className="text-gray-400 text-center py-8">No episodes found.</div>
             ) : (
-              filteredEpisodes.map((ep, i) => {
-                const isSelected = selectedEpisodeIndex === episodes.findIndex(e => e.id === ep.id);
-                const handleSelect = () => setSelectedEpisodeIndex(episodes.findIndex(e => e.id === ep.id));
-
-                return (
-                  <div
-                    key={ep.id}
-                    onClick={handleSelect}
-                    className={`
-            group flex items-center gap-3 p-3 relative overflow-hidden rounded-xl cursor-pointer transition-all
-            ${isSelected ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'}
-          `}
-                  >
-                    {/* Thumbnail Preview */}
-                    {/* <div className="relative w-16 h-10 rounded overflow-hidden bg-black/20 shrink-0"> */}
-                      {/* <img
-                        src={ep.thumbnail}
-                        alt={`Ep ${ep.id}`}
-                        className="w-full h-full object-cover"
-                      /> */}
-                    {/* </div> */}
-
-                    {/* Episode Info */}
-                    <div className="flex-1  min-w-0">
-                      <div className="flex justify-between items-center mb-0.5">
-                        <span className="text-sm font-semibold text-white">Episode {ep.id}</span>
-                        <span className="text-xs text-gray-400">{ep.duration}</span>
-                      {ep.watched && (
-                        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-green-400"></div>
-                      )}
+              filteredEpisodes.length === 0 ? (
+                <div className="text-gray-400 text-center py-8">No episodes match your search.</div>
+              ) : (
+                filteredEpisodes.map((ep, i) => {
+                  const isSelected = selectedEpisodeIndex === animeData.episodes.indexOf(ep);
+                  return (
+                    <div
+                      key={ep.id || ep.episode || i}
+                      onClick={() => handleSelect(animeData.episodes.indexOf(ep))}
+                      className={`
+                        group flex items-center gap-3 relative overflow-hidden rounded-xl cursor-pointer transition-all
+                        ${isSelected ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'}
+                      `}
+                    >
+                      {/* Episode Info */}
+                      <div className="flex-1 min-w-0 p-3">
+                        <div className="flex justify-between items-center mb-0.5">
+                          <div className="text-sm font-semibold text-white">
+                            Episode {ep.id || ep.episode}
+                          </div>
+                          {/* <span className="text-xs text-gray-400">
+                          {formatDurationFromMinutes(ep.duration + 0.021)}
+                          </span> */}
+                        </div>
+                        <p className="text-xs text-gray-300 truncate">{ep.title || 'Untitled'}</p>
                       </div>
-                      <p className="text-xs text-gray-300 truncate">{ep.title}</p>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
+              )
             )}
           </div>
-
         </div>
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col lg:flex-row">
           {/* Video Panel */}
-          <div className={`transition-all duration-500 ease-in-out flex-1 p-6 ${expandMode ? '' : 'lg:pr-0'}`}>
+          <div className={`transition-all duration-500 ease-in-out flex-1 h-full  ${expandMode ? '' : 'lg:pr-0'}`}>
             {/* Video Container */}
             <div className="relative group">
-              <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl">
+              <div className="relative overflow-hidden bg-black shadow-2xl">
                 <video
                   ref={videoRef}
                   onClick={togglePlay}
                   controls
                   className="w-full h-auto cursor-pointer"
                   preload="metadata"
-                  poster="https://picsum.photos/1280/720?random=video"
+                  // poster={currentEpisode?.thumbnail || "https://picsum.photos/1280/720?random=video"}
                 >
-                  <source src={src} type={type} />
+                  <source src={currentEpisode?.videoUrl || src} type={type} />
                   Your browser does not support the video tag.
                 </video>
-                {/* Custom play overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between text-white">
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-                          className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors pointer-events-auto"
-                        >
-                          {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-                        </button>
-                        <div className="text-sm font-medium">
-                          {formatTime(currentTime)} / {formatTime(duration)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -226,91 +226,106 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-                    Episode {episodes[selectedEpisodeIndex]?.id}: {episodes[selectedEpisodeIndex]?.title}
+                    {currentEpisode
+                      ? `Episode ${currentEpisode.id || currentEpisode.episode}: ${currentEpisode.title || ''}`
+                      : 'No episode selected'}
                   </h1>
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    In this thrilling episode, our heroes face their greatest challenge yet. With the fate of the world hanging in the balance,
-                    ancient powers awaken and alliances are tested. Don't miss this action-packed adventure that will leave you on the edge of your seat.
+                    {currentEpisode && currentEpisode.description
+                      ? currentEpisode.description
+                      : "No description available for this episode."}
                   </p>
                 </div>
                 <div className="ml-6 flex items-center gap-2 text-yellow-400">
                   <Star className="w-4 h-4 fill-current" />
-                  <span className="text-sm font-semibold">9.2</span>
+                  <span className="text-sm font-semibold">
+                    {animeData?.rating || '9.2'}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
+
           {/* Right Panel: Anime Details */}
           {expandMode && (
-            <div className="w-full lg:w-[25%] lg:min-w-[300px] p-6 bg-black/20 backdrop-blur-md border-l border-white/10">
-              <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-                Anime Details
-              </h2>
+  <div className="w-full lg:w-[20%] lg:min-w-[240px] p-4 bg-black/20 backdrop-blur-md border-l border-white/10">
+    <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+      Anime Details
+    </h2>
 
-              <div className="space-y-6">
-                {/* Poster */}
-                <div className="aspect-[3/4] rounded-xl overflow-hidden shadow-lg">
-                  <img
-                    src="https://picsum.photos/300/400?random=poster"
-                    alt="Anime Poster"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+    <div className="space-y-4">
+      {/* Poster */}
+      <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md">
+        <img
+          src={animeData?.thumbnail || "sorry dev"}
+          alt="Anime Poster"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-                {/* Details */}
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Mystic Warriors</h3>
-                    <div className="flex items-center gap-2 text-yellow-400 mb-3">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="font-semibold">9.2</span>
-                      <span className="text-gray-400 text-sm">(15.7k reviews)</span>
-                    </div>
-                  </div>
+      {/* Details */}
+      <div className="space-y-3 text-sm">
+        <div>
+          <h3 className="font-semibold text-base mb-1">{animeData?.title || "Unknown Title"}</h3>
+          <div className="flex items-center gap-1 text-yellow-400 text-xs">
+            <Star className="w-3 h-3 fill-current" />
+            <span>{animeData?.rating || "9.2"}</span>
+            <span className="text-gray-400">
+              {animeData?.reviews ? `(${animeData.reviews})` : "(15.7k)"}
+            </span>
+          </div>
+        </div>
 
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-3">
-                      <Calendar className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <span className="text-gray-400">Status:</span>
-                        <span className="ml-2 text-green-400 font-semibold">Ongoing</span>
-                      </div>
-                    </div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-3.5 h-3.5 text-purple-400" />
+            <span className="text-gray-400">Status:</span>
+            <span className="ml-auto text-green-400 font-semibold">
+              {animeData?.status || "Ongoing"}
+            </span>
+          </div>
 
-                    <div className="flex items-center gap-3">
-                      <Play className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <span className="text-gray-400">Episodes:</span>
-                        <span className="ml-2">24 / 24</span>
-                      </div>
-                    </div>
+          <div className="flex items-center gap-2">
+            <Play className="w-3.5 h-3.5 text-purple-400" />
+            <span className="text-gray-400">Episodes:</span>
+            <span className="ml-auto">
+              {animeData?.episodes?.length
+                ? `${animeData.episodes.length} / ${animeData.episodes.length}`
+                : "0 / 0"}
+            </span>
+          </div>
+        </div>
 
-                    <div className="pt-2">
-                      <span className="text-gray-400">Genres:</span>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {['Action', 'Fantasy', 'Adventure', 'Magic'].map(genre => (
-                          <span key={genre} className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded-md text-xs">
-                            {genre}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+        <div>
+          <span className="text-gray-400">Genres:</span>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {(animeData?.genres && animeData.genres.length > 0
+              ? animeData.genres
+              : ['sorry for geners']
+            ).map((genre) => (
+              <span key={genre} className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 rounded text-[10px]">
+                {genre}
+              </span>
+            ))}
+          </div>
+        </div>
 
-                  {/* Synopsis */}
-                  <div className="pt-4 border-t border-white/10">
-                    <h4 className="font-semibold mb-2 text-purple-300">Synopsis</h4>
-                    <p className="text-gray-300 text-sm leading-relaxed">
-                      A young warrior discovers ancient magical powers and must unite with unlikely allies to prevent
-                      an ancient evil from consuming the world. With stunning animation and epic battles, this series
-                      redefines the fantasy genre.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Synopsis */}
+        <div className="pt-2 border-t border-white/10">
+          <h4 className="font-medium mb-1 text-purple-300 text-sm">Synopsis</h4>
+          <p className="text-gray-300 text-xs leading-snug line-clamp-5">
+            {animeData?.synopsis ||
+              "A young warrior discovers magical powers and must unite with allies to stop an ancient evil. Epic fantasy adventure awaits."}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
         </div>
       </div>
     </div>
