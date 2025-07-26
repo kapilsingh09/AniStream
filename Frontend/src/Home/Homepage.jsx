@@ -33,20 +33,20 @@ const Homepage = () => {
     {/* <AviAnime /> */}
  
     <AviAnime />
-    <Player />
-      {/* <div className="flex items-center justify-center bg-black">
+    {/* <Player /> */}
+       <div className="flex items-center justify-center bg-black">
          <AnimeBanner />
       </div> 
 
       <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} />
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
+      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
-      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} />
+      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
        <div className="flex items-center justify-center">
         {/* <GhibliMovieBanner /> */}
       
-      {/* </div>  */} 
+      </div>  
       {/* <AviAnime /> */}
       {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
 

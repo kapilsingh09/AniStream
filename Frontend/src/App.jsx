@@ -15,6 +15,7 @@ import Register from './routes/Register';
 import SearchPage from './pages/SearchPage';
 import KeywordPage from './pages/KeywordPage';
 import VideoPage from './pages/VideoPage';
+import Player from './player/Player';
 
 const App = () => {
   return (
@@ -35,7 +36,7 @@ const App = () => {
           <Route path="/find" element={<JikhanAnimeCard />} />
           <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
           <Route path="/genres/:id" element={<Demo />} />
-            <Route path="/anime/:id" element={<VideoPage />} />
+            <Route path="/watch/:id" element={<Player />} />
           {/* 404 */}
           <Route path="*" element={<SorryCard />} />
         </Route>
