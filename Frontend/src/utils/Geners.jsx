@@ -14,14 +14,14 @@ const genres = [
 const GenreList = () => {
   const [showAll, setShowAll] = useState(false);
   const [shrink, setShrink] = useState(false);
-  const navigate = useNavigate(); //Initialize navigate here
+  const navigate = useNavigate(); 
 
   const initialCount = 26;
   const displayedGenres = showAll ? genres : genres.slice(0, initialCount);
 
   const handleClick = (genre) => {
     setShrink(true);
-    navigate(`/genres/${genre}`); // Correct route
+    navigate(`/genres/${genre}`); 
     console.log("Navigating to genre:", genre);
     setTimeout(() => setShrink(false), 700);
   };
@@ -59,7 +59,6 @@ const GenreList = () => {
           {showAll ? "Show Less" : `Show All (${genres.length - initialCount} more)`}
         </button>
       </div>
-
       {/* Hide Scrollbar */}
   
     </div>

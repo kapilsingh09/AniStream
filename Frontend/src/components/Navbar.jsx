@@ -153,7 +153,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center">
               {user ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-white/80 text-sm">👋 {user.name}</span>
+                  <span className="text-white/80 text-sm">👋{user.name}</span>
                   <button
                     onClick={handleLogout}
                     className="px-3 py-1 rounded-full border border-white/30 hover:border-red-400 hover:bg-red-500/20 transition-all duration-300 text-sm text-white/80 hover:text-white"
