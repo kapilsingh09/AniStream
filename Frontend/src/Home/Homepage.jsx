@@ -29,13 +29,12 @@ const Homepage = () => {
   return (
     <div className="min-h-screen mt-10  bg-slate-800  ">
       {/* Hero Slider */}
-      <AnimeSlider />
+      {/* <AnimeSlider /> */}
     {/* <AviAnime /> */}
-      <AnimeSection title="Top Anime of 2025" fetchFunction={FetchTopAnime} />
-      <AnimeSection title="Upcoming Releases – 2025" fetchFunction={FetchUpcomingAnime} />
-
+ 
+    <AviAnime />
     <Player />
-      <div className="flex items-center justify-center bg-black">
+      {/* <div className="flex items-center justify-center bg-black">
          <AnimeBanner />
       </div> 
 
@@ -47,23 +46,23 @@ const Homepage = () => {
        <div className="flex items-center justify-center">
         {/* <GhibliMovieBanner /> */}
       
-      </div> 
+      {/* </div>  */} 
       {/* <AviAnime /> */}
-      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
+      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
 
       <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} />
 
       <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
 
-      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} />
+      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
       {/* Optional: More banners */}
-      <div className="flex items-center justify-center">
+      {/* <div className="flex items-center justify-center">
         <AnimeBanner />
       </div>
       <footer>
         <FactsSlider />
-      </footer>
+      </footer> */}
     </div>
   );
 };

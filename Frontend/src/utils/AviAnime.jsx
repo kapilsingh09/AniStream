@@ -29,11 +29,11 @@ const AviAnime = () => {
   }, []);
 
   const handleClick = (id) => {
-    navigate(`/anime/${id}`);
+    navigate(`/watch/${id}`);
   };
 
   return (
-    <div className="min-h-screen p-6 mt-14">
+    <div className="min-h-[50vh] h-auto  bg-slate-800 p-6 mt-14">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">Local Anime Grid</h1>
@@ -47,6 +47,7 @@ const AviAnime = () => {
                 ? [...Array(8)].map((_, i) => (
                     <div key={i} className="animate-pulse h-72 bg-white/10 rounded-xl"></div>
                   ))
+
                 : animeData.map((anime) => {
                     const {
                       id,
