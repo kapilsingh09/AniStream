@@ -9,7 +9,7 @@ const SorryCard = ({ show, onClose }) => {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-transparent overflow-x-hidden bg-opacity-50 z-40"
+        className="fixed inset-0 bg-transparent  overflow-x-hidden bg-opacity-50 z-100"
         onClick={onClose}
       ></div>
 
@@ -29,7 +29,7 @@ const SorryCard = ({ show, onClose }) => {
           We apologize for the inconvenience and appreciate your understanding.
         </p>
 
-        <div className="flex justify-center">
+        <div className="flex h-full w-fit justify-center">
           <button
             className="bg-white text-zinc-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-300"
             onClick={onClose}

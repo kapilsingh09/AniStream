@@ -24,6 +24,7 @@ import FactsSlider from '../ExplorePage/FactsSlider';
 // import Vdplayer from '../videoJs/Vdplayer';
 import AviAnime from '../utils/AviAnime';
 import Player from '../player/Player';
+import SorryCard from '../utils/SorryCard';
 
 const Homepage = () => {
   return (
@@ -31,7 +32,7 @@ const Homepage = () => {
       {/* Hero Slider */}
       {/* <AnimeSlider /> */}
     {/* <AviAnime /> */}
- 
+ <SorryCard />
     <AviAnime />
     {/* <Player /> */}
        {/* <div className="flex items-center justify-center ">

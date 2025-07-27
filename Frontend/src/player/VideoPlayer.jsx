@@ -1,6 +1,7 @@
   import React, { useRef, useState, useEffect } from 'react';
   import { Play, Pause, Search, Star, Calendar, Users } from 'lucide-react';
   import axios from 'axios';
+import SorryCard from '../utils/SorryCard';
 
   const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     const videoRef = useRef(null);
@@ -35,12 +36,7 @@
     useEffect(() => {
       const video = videoRef.current;
       if (video) {
-        video.load(); // reloads the video source
-        video.play().then(() => {
-          setIsPlaying(true);
-        }).catch(() => {
-          // Autoplay might be blocked by browser
-        });
+        video.load(); // Just load, don't play automatically
       }
     }, [selectedEpisodeIndex]);
 
@@ -57,25 +53,23 @@
     };
 
     // Filter episodes by search query
-    const filteredEpisodes = animeData?.episodes?.filter(
-      (ep) =>
-        ep.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ep.id?.toString().includes(searchQuery)
+    const filteredEpisodes = animeData?.episodes?.filter((ep) =>
+      // ep.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ep.id?.toString().includes(searchQuery) ||      // Search by episode number
+      ep.episode?.toString().includes(searchQuery)    // Fallback if your API uses "episode"
     ) || [];
-
     // When an episode is clicked, select and play it
     const handleSelect = (idx) => {
-      console.log(idx);
-      
-      setSelectedEpisodeIndex(idx);
-      setIsPlaying(false);
+      setSelectedEpisodeIndex(idx); 
+      setIsPlaying(false);         
       setCurrentTime(0);
       setDuration(0);
-      // The useEffect above will auto-play the new episode
     };
 
-    const currentEpisode =
-      animeData?.episodes?.[selectedEpisodeIndex] || null;
+    const currentEpisode = filteredEpisodes[selectedEpisodeIndex] ||  null
+    
+// console.log(currentEpisode);
+
 
     if (loading) {
       return (
@@ -93,6 +87,7 @@
       );
     }
 
+   
     return (
       <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
         <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
@@ -125,39 +120,26 @@
             <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
               {filteredEpisodes.length === 0 ? (
                 <div className="text-gray-400 text-center py-8">No episodes found.</div>
-              ) : (
-                filteredEpisodes
-                  .filter((ep) => ep.airdate !== null)
-                  .map((ep, i) => {
-                    // Find the index in the original episodes array to keep selection in sync
-                    const idx = animeData.episodes.findIndex(e => e.id === ep.id);
-                    const isSelected = selectedEpisodeIndex === idx;
-
-                    return (
-                      <div
-                        key={ep.id || ep.episode || i}
-                        onClick={() => {handleSelect(idx)
-                          console.log(idx)}
-                          
-                        } // When you click, it will play
-                        className={`
-                          group flex items-center gap-3 relative overflow-hidden rounded-xl cursor-pointer transition-all
-                          ${isSelected ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'}
-                        `}
-                      >
-                        <div className="flex-1 min-w-0 p-3">
-                          <div className="flex justify-between items-center mb-0.5">
-                            <div className="text-sm font-semibold text-white">
-                              Episode {ep.id || ep.episode}
-                            </div>
-                          </div>
-                          <p className="text-xs text-gray-300 truncate">
-                            {ep.title || 'Untitled'}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })
+              ) : 
+              //episodes render here filter or then map
+              (filteredEpisodes
+                .filter((ep) => ep.airdate !== null)
+                .map((ep, i) => (
+                  <div
+                    key={ep.id || i}
+                    onClick={() => handleSelect(i)} 
+                    className={`cursor-pointer p-3 rounded mb-2 ${
+                      selectedEpisodeIndex === i ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="font-bold text-white text-sm">
+                      Episode {ep.id || ep.episode}
+                    </div>
+                    <div className="text-xs text-white/60">
+                      {ep.title || 'Untitled'}
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>
@@ -168,16 +150,22 @@
             <div className={`transition-all duration-500 ease-in-out flex-1 h-full  ${expandMode ? '' : 'lg:pr-0'}`}>
               <div className="relative group">
                 <div className="relative overflow-hidden bg-black shadow-2xl">
-                  <video
-                    ref={videoRef}
-                    onClick={togglePlay}
-                    controls
-                    className="w-full h-auto cursor-pointer"
-                    preload="metadata"
-                  >
-                    <source src={currentEpisode?.videoUrl || src} type={type} />
-                    Your browser does not support the video tag.
-                  </video>
+                 {!currentEpisode.videoUrl ?  (
+                 <div className="flex items-center justify-center h-[360px] bg-black/40">
+                 <SorryCard />
+               </div>
+                 ):(
+                   <video
+                   ref={videoRef}
+                   onClick={togglePlay}
+                   controls
+                   className="w-full h-auto cursor-pointer"
+                   preload="metadata"
+                 >
+                   <source src={currentEpisode?.videoUrl || src} type={type} />
+                   Your browser does not support the video tag.
+                 </video>
+                 )}
                 </div>
               </div>
 
@@ -202,10 +190,10 @@
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-300">
+                {/* <div className="flex items-center gap-2 text-sm text-gray-300">
                   <Users className="w-4 h-4" />
                   <span>1.2k watching</span>
-                </div>
+                </div> */}
               </div>
 
               <div className="mt-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
