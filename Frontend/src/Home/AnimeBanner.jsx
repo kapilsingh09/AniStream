@@ -84,16 +84,13 @@
 
     const handleWatchClick = () => {
       if (malId) {
-        // Navigate to the kitsu route with the ID
         navigate(`/kitsu/${malId}`);
         // console.log(malId); q
         
       } else {
-        // Show sorry modal if no ID is available
         setShowSorry(true);
       }
     };
-    // Alternative: If you want to use Kitsu ID instead of MAL ID
     const handleWatchClickKitsuId = () => {
       if (anime?.id) {
         navigate(`/kitsu/${anime.id}`);
