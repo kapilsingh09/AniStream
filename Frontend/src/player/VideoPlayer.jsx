@@ -14,6 +14,7 @@ import SorryCard from '../utils/SorryCard';
     const [animeData, setAnimeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [fetchError, setFetchError] = useState(null);
+    const [showsorry, setShowsorry] = useState(true)
 
     // Fetch anime data on mount
     useEffect(() => {
@@ -149,22 +150,21 @@ import SorryCard from '../utils/SorryCard';
             {/* Video Panel */}
             <div className={`transition-all duration-500 ease-in-out flex-1 h-full  ${expandMode ? '' : 'lg:pr-0'}`}>
               <div className="relative group">
-                <div className="relative overflow-hidden bg-black shadow-2xl">
-                 {!currentEpisode.videoUrl ?  (
-                 <div className="flex items-center justify-center h-[360px] bg-black/40">
-                 <SorryCard />
-               </div>
-                 ):(
+                <div className="relative overflow-hidden bg-black shadow-2xl h-full">
+                 {(!currentEpisode.videoUrl) ? (
+                   <SorryCard  onClose={() => {setShowsorry(!showsorry)}} />
+                  // <h1>Hello </h1>
+                 ) : (
                    <video
-                   ref={videoRef}
-                   onClick={togglePlay}
-                   controls
-                   className="w-full h-auto cursor-pointer"
-                   preload="metadata"
-                 >
-                   <source src={currentEpisode?.videoUrl || src} type={type} />
-                   Your browser does not support the video tag.
-                 </video>
+                     ref={videoRef}
+                     onClick={togglePlay}
+                     controls
+                     className="w-full h-auto cursor-pointer"
+                     preload="metadata"
+                   >
+                     <source src={currentEpisode?.videoUrl || src} type={type} />
+                     Your browser does not support the video tag.
+                   </video>
                  )}
                 </div>
               </div>
