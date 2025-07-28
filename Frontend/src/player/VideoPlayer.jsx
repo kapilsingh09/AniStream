@@ -78,6 +78,14 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   const currentEpisode = filteredEpisodes[selectedEpisodeIndex] || null;
 
+  const crossBack = () => {
+    if (selectedEpisodeIndex > 0) {
+      // Safely decrement index using current value
+      setSelectedEpisodeIndex(prev => prev - 1);
+      setIsPlaying(false); // Optional: pause the video when navigating
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
@@ -97,7 +105,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   return (
     <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
-      <SorryCard show={showSorry} onClose={() => setShowSorry(false)} />
+      
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
         <div className={`transition-all duration-500 ease-in-out p-2 max-h-full backdrop-blur-md bg-black/30 h-lvh cool-scrollbar flex flex-col ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[23%]'} ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}>
@@ -140,6 +148,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 ))
             )}
           </div>
+
         </div>
 
         {/* Main Content Area */}
@@ -156,6 +165,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 ) : !currentEpisode.videoUrl ? (
                   <div className="flex flex-col relative items-center justify-center h-full p-8">
                     {/* SorryCard is now shown globally, so nothing here */}
+                    <SorryCard show={showSorry} onClose={() => {setShowSorry(false)
+                      crossBack()
+                    }}  />
                   </div>
                 ) : (
                   <video

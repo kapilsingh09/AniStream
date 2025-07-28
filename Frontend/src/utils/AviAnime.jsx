@@ -32,8 +32,17 @@ const AviAnime = () => {
     navigate(`/watch/${id}`);
   };
 
+
+
+  const genreColors = [
+    'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
+    'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
+    'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
+    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
+  ]
+
   return (
-    <div className="min-h-[50vh] h-auto  bg-slate-800 p-6 mt-14">
+    <div className="min-h-[50vh] h-auto  bg-slate-900 p-6 mt-14">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">Local Anime Grid</h1>
@@ -65,7 +74,7 @@ const AviAnime = () => {
                       <div
                         key={id}
                         onClick={() => handleClick(id)}
-                        className="group cursor-pointer bg-gradient-to-l from-purple-500/90 to-pink-500/80 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                        className="group cursor-pointer bg-slate-800 backdrop-blur-lg rounded-xl hover:backdrop-blur-sm overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-300 hover:scale-105 hover:shadow-xl"
                       >
                         <div className="h-56 bg-white/20 relative flex items-center justify-center text-white text-xl font-bold">
                           <img
@@ -75,6 +84,9 @@ const AviAnime = () => {
                           />
                           <div className="absolute bottom-2 right-2 bg-black/60 text-xs px-2 py-0.5 rounded">
                             {year}
+                          </div>
+                          <div className="absolute bottom-2 left-2 bg-black/60 text-xs px-2 py-0.5 rounded">
+                            {id}
                           </div>
                         </div>
                         <div className="p-3 text-white">
@@ -86,12 +98,20 @@ const AviAnime = () => {
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {status}
+                              {(status)}
                             </div>
                           </div>
-                          <div className="text-[10px] mt-1 line-clamp-1 text-white/60">
-                            {genres?.slice(0, 3).join(", ")}
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {genres?.slice(0, 3).map((genre, i) => (
+                                <span
+                                  key={genre}
+                                  className={`px-1.5 py-0.5 text-[10px] text-white rounded ${genreColors[i % genreColors.length]}`}
+                                >
+                                  {genre}
+                                </span>
+                              ))}
                           </div>
+
                         </div>
                       </div>
                     );

@@ -4,6 +4,7 @@ import path from 'path';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { log } from 'console';
 
 const router = express.Router();
 
@@ -11,13 +12,13 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-/**
- * Fetches all paginated episodes for a given anime ID from Kitsu
- */
+
+
 const fetchAllEpisodes = async (animeId) => {
   let episodes = [];
   let url = `https://kitsu.io/api/edge/anime/${animeId}/episodes?page[limit]=20&page[offset]=0`;
 
+    // only for episodess
   while (url) {
     const res = await axios.get(url);
     episodes = [...episodes, ...res.data.data];
@@ -31,26 +32,25 @@ router.get('/:slug', async (req, res) => {
   const { slug } = req.params;
 
   try {
-    // Step 1: Search anime by slug
     const searchRes = await axios.get(
       `https://kitsu.io/api/edge/anime?filter[text]=${encodeURIComponent(slug)}`
     );
+
     const anime = searchRes.data.data[0];
 
     if (!anime) {
       return res.status(404).json({ error: 'Anime not found on Kitsu.' });
     }
 
-    // Step 2: Extract anime metadata
+
     const animeId = anime.id;
     const animeTitle = anime.attributes.titles?.en || anime.attributes.canonicalTitle || 'Unknown Title';
     const thumbnail = anime.attributes.posterImage?.original;
     const animeDescription = anime.attributes.description || 'No anime description available.';
 
-    // Step 3: Fetch all episodes
     const episodesData = await fetchAllEpisodes(animeId);
 
-    // Step 4: Format episodes
+
     const episodes = episodesData.map((ep, index) => {
       const episodeNum = ep.attributes.number || index + 1;
       const episodeTitle = ep.attributes.canonicalTitle || `Episode ${episodeNum}`;
@@ -58,9 +58,17 @@ router.get('/:slug', async (req, res) => {
       const episodeLength = ep.attributes.length || null;
       const airdate = ep.attributes.airdate || null;
 
+
+
       const filename = `anime-${animeId}-ep${episodeNum}.mp4`;
       const filePath = path.join(__dirname, '..', 'videos', filename);
       const exists = fs.existsSync(filePath);
+
+      // MY HELPERSS
+      // console.log(filePath);
+      // console.log(exists);
+      
+      
 
       return {
         episode: episodeNum,
@@ -73,7 +81,7 @@ router.get('/:slug', async (req, res) => {
       };
     });
 
-    // Step 5: Send final response
+  
     res.json({
       title: animeTitle,
       thumbnail,
