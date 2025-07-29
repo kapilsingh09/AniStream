@@ -4,25 +4,21 @@ import path from 'path';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { log } from 'console';
 
 const router = express.Router();
 
-// __dirname workaround for ES modules
+// __dirname workaround for ES modulesjj
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-
 
 const fetchAllEpisodes = async (animeId) => {
   let episodes = [];
   let url = `https://kitsu.io/api/edge/anime/${animeId}/episodes?page[limit]=20&page[offset]=0`;
 
-    // only for episodess
   while (url) {
     const res = await axios.get(url);
     episodes = [...episodes, ...res.data.data];
-    url = res.data.links?.next || null; // Continue to next page if available
+    url = res.data.links?.next || null;
   }
 
   return episodes;
@@ -42,52 +38,83 @@ router.get('/:slug', async (req, res) => {
       return res.status(404).json({ error: 'Anime not found on Kitsu.' });
     }
 
-
     const animeId = anime.id;
-    const animeTitle = anime.attributes.titles?.en || anime.attributes.canonicalTitle || 'Unknown Title';
-    const thumbnail = anime.attributes.posterImage?.original;
-    const animeDescription = anime.attributes.description || 'No anime description available.';
+    const attributes = anime.attributes;
 
+    // Gather all relevant anime data
+    const animeData = {
+      id: animeId,
+      slug: attributes.slug,
+      title: attributes.titles?.en || attributes.canonicalTitle || 'Unknown Title',
+      title_jp: attributes.titles?.ja_jp || attributes.titles?.en_jp || null,
+      canonicalTitle: attributes.canonicalTitle,
+      synopsis: attributes.synopsis,
+      description: attributes.description || 'No anime description available.',
+      subtype: attributes.subtype,
+      status: attributes.status,
+      ageRating: attributes.ageRating,
+      ageRatingGuide: attributes.ageRatingGuide,
+      startDate: attributes.startDate,
+      endDate: attributes.endDate,
+      episodeCount: attributes.episodeCount,
+      episodeLength: attributes.episodeLength,
+      showType: attributes.showType,
+      // nsfw: attributes.nsfw,
+      averageRating: attributes.averageRating,
+      ratingRank: attributes.ratingRank,
+      popularityRank: attributes.popularityRank,
+      userCount: attributes.userCount,
+      favoritesCount: attributes.favoritesCount,
+      ratingFrequencies: attributes.ratingFrequencies,
+      posterImage: attributes.posterImage,
+      coverImage: attributes.coverImage,
+      youtubeVideoId: attributes.youtubeVideoId,
+      genres: [], // will fill below
+      // Add more fields as needed
+    };
+
+    // Fetch genres
+    let genres = [];
+    if (anime.relationships && anime.relationships.genres && anime.relationships.genres.links?.related) {
+      try {
+        const genresRes = await axios.get(anime.relationships.genres.links.related);
+        genres = genresRes.data.data.map(g => g.attributes.name);
+      } catch (err) {
+        genres = [];
+      }
+    }
+    animeData.genres = genres;
+
+    // Fetch episodes
     const episodesData = await fetchAllEpisodes(animeId);
 
-
     const episodes = episodesData.map((ep, index) => {
-      const episodeNum = ep.attributes.number || index + 1;
-      const episodeTitle = ep.attributes.canonicalTitle || `Episode ${episodeNum}`;
-      const episodeDescription = ep.attributes.synopsis || 'No episode description available.';
-      const episodeLength = ep.attributes.length || null;
-      const airdate = ep.attributes.airdate || null;
-
-
-
+      const epAttr = ep.attributes;
+      const episodeNum = epAttr.number || index + 1;
       const filename = `anime-${animeId}-ep${episodeNum}.mp4`;
       const filePath = path.join(__dirname, '..', 'videos', filename);
       const exists = fs.existsSync(filePath);
 
-      // MY HELPERSS
-      // console.log(filePath);
-      // console.log(exists);
-      
-      
-
       return {
+        id: ep.id,
         episode: episodeNum,
-        title: episodeTitle,
-        description: episodeDescription,
+        title: epAttr.canonicalTitle || `Episode ${episodeNum}`,
+        description: epAttr.synopsis || 'No episode description available.',
         videoUrl: exists ? `http://localhost:3000/videos/${filename}` : null,
-        thumbnail,
-        duration: episodeLength,
-        airdate,
+        thumbnail: animeData.posterImage?.original || null,
+        duration: epAttr.length || null,
+        airdate: epAttr.airdate || null,
+        seasonNumber: epAttr.seasonNumber || null,
+        relativeNumber: epAttr.relativeNumber || null,
+        // Add more episode fields as needed
       };
     });
 
-  
+    // Compose all data to send to frontend
     res.json({
-      title: animeTitle,
-      thumbnail,
-      description: animeDescription,
-      totalEpisodes: episodes.length,
+      ...animeData,
       episodes,
+      totalEpisodes: episodes.length,
     });
 
   } catch (error) {

@@ -82,26 +82,26 @@ const AviAnime = () => {
                             alt={title}
                             className="object-cover w-full h-full absolute inset-0"
                           />
-                          <div className="absolute bottom-2 right-2 bg-black/60 text-xs px-2 py-0.5 rounded">
+                          <div className="absolute top-2 right-2 bg-black/60 text-xs px-2 py-0.5 rounded">
                             {year}
                           </div>
-                          <div className="absolute bottom-2 left-2 bg-black/60 text-xs px-2 py-0.5 rounded">
+                          <div className="absolute top-2 left-2 bg-black/60 text-xs px-2 py-0.5 rounded">
                             {id}
                           </div>
                         </div>
                         <div className="p-3 text-white">
                           <h3 className="text-sm font-semibold mb-1 line-clamp-2">{title}</h3>
                           <div className="flex justify-between text-xs text-white/70 mb-1">
-                            <div className="flex items-center gap-1">
+                            {/* <div className="flex items-center gap-1">
                               <Play className="w-3 h-3" />
                               {episodes_aired || "?"} eps
-                            </div>
+                            </div> */}
                             <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               {(status)}
                             </div>
                           </div>
-                          <div className="flex flex-wrap gap-1 mt-1">
+                          {/* <div className="flex flex-wrap gap-1 mt-1">
                             {genres?.slice(0, 3).map((genre, i) => (
                                 <span
                                   key={genre}
@@ -110,7 +110,7 @@ const AviAnime = () => {
                                   {genre}
                                 </span>
                               ))}
-                          </div>
+                          </div> */}
 
                         </div>
                       </div>

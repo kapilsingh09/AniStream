@@ -1,11 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
-  Play, Pause, Search, Star,
+  Play,
+  Pause,
+  Search,
+  Star,
   Lightbulb,
   PlayCircle,
   FastForward,
   Rewind,
-  BookmarkPlus, Calendar, Users, Maximize, Minimize
+  BookmarkPlus,
+  Calendar,
+  Users,
+  Maximize,
+  Minimize,
 } from 'lucide-react';
 // import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from 'axios';
@@ -22,10 +29,10 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const [fetchError, setFetchError] = useState(null);
   const [showSorry, setShowSorry] = useState(false);
 
-  const [lightsOn, setLightsOn] = useState(true);
+  const [lightsOn, setLightsOn] = useState(false);
   const [autoPlay, setAutoPlay] = useState(true);
-  const [autoskipintro, setAutoskipinto] = useState(true)
-  const [autoskipextro, setAutoskipextro] = useState(true)
+  const [autoskipintro, setAutoskipinto] = useState(true);
+  const [autoskipextro, setAutoskipextro] = useState(true);
 
   const [selectedSub, setSelectedSub] = useState('hd-1');
   const [selectedDub, setSelectedDub] = useState('hd-1');
@@ -35,7 +42,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
       setLoading(true);
       setFetchError(null);
       try {
-        const res = await axios.get('http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity');
+        const res = await axios.get(
+          'http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity'
+        );
         setAnimeData(res.data);
       } catch (error) {
         setFetchError('Error fetching anime data.');
@@ -55,10 +64,16 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   // Show SorryCard if the current episode has no videoUrl
   useEffect(() => {
-    if (!loading && animeData && animeData.episodes && animeData.episodes.length > 0) {
-      const filteredEpisodes = animeData.episodes.filter((ep) =>
-        ep.id?.toString().includes(searchQuery) ||
-        ep.episode?.toString().includes(searchQuery)
+    if (
+      !loading &&
+      animeData &&
+      animeData.episodes &&
+      animeData.episodes.length > 0
+    ) {
+      const filteredEpisodes = animeData.episodes.filter(
+        (ep) =>
+          ep.id?.toString().includes(searchQuery) ||
+          ep.episode?.toString().includes(searchQuery)
       );
       const currentEpisode = filteredEpisodes[selectedEpisodeIndex] || null;
       if (currentEpisode && !currentEpisode.videoUrl) {
@@ -82,10 +97,12 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     }
   };
 
-  const filteredEpisodes = animeData?.episodes?.filter((ep) =>
-    ep.id?.toString().includes(searchQuery) ||
-    ep.episode?.toString().includes(searchQuery)
-  ) || [];
+  const filteredEpisodes =
+    animeData?.episodes?.filter(
+      (ep) =>
+        ep.id?.toString().includes(searchQuery) ||
+        ep.episode?.toString().includes(searchQuery)
+    ) || [];
 
   const handleSelect = (idx) => {
     setSelectedEpisodeIndex(idx);
@@ -97,7 +114,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const crossBack = () => {
     if (selectedEpisodeIndex > 0) {
       // Safely decrement index using current value
-      setSelectedEpisodeIndex(prev => prev - 1);
+      setSelectedEpisodeIndex((prev) => prev - 1);
       setIsPlaying(false); // Optional: pause the video when navigating
     }
   };
@@ -119,7 +136,6 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   }
 
   return (
-
     <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
       {lightsOn && (
@@ -128,9 +144,17 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
-        <div className={`transition-all duration-500 ease-in-out p-2 max-h-full backdrop-blur-md bg-black/30 h-lvh cool-scrollbar flex flex-col ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[23%]'} ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}>
+        <div
+          className={`transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30 h-lvh cool-scrollbar flex flex-col ${
+            expandMode
+              ? 'w-full lg:w-[20%]'
+              : 'w-full lg:w-[23%]'
+          } ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}
+        >
           <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">Episodes</h2>
+            <h2 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+              Episodes
+            </h2>
           </div>
 
           {/* Search Bar */}
@@ -148,7 +172,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           {/* Episode List Items */}
           <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
             {filteredEpisodes.length === 0 ? (
-              <div className="text-gray-400 text-center py-8">No episodes found.</div>
+              <div className="text-gray-400 text-center py-8">
+                No episodes found.
+              </div>
             ) : (
               filteredEpisodes
                 .filter((ep) => ep.airdate !== null)
@@ -156,7 +182,11 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   <div
                     key={ep.id || i}
                     onClick={() => handleSelect(i)}
-                    className={`cursor-pointer p-3 rounded mb-2 ${selectedEpisodeIndex === i ? 'bg-purple-500/30' : 'bg-white/5 hover:bg-white/10'}`}
+                    className={`cursor-pointer p-3 rounded mb-2 ${
+                      selectedEpisodeIndex === i
+                        ? 'bg-purple-500/30'
+                        : 'bg-white/5 hover:bg-white/10'
+                    }`}
                   >
                     <div className="font-bold text-white text-sm">
                       Episode {ep.id || ep.episode}
@@ -168,34 +198,41 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 ))
             )}
           </div>
-
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col lg:flex-row">
+        <div className="flex-1 flex  flex-col lg:flex-row">
           {/* Video Section */}
-          <div className={`transition-all duration-500 ease-in-out flex-1 h-full ${expandMode ? '' : 'lg:pr-0'}`}>
+          <div
+            className={`transition-all duration-500 ease-in-out flex-1 h-full ${
+              expandMode ? '' : 'lg:pr-0'
+            }`}
+          >
             <div className="relative group">
               <div className="relative overflow-hidden bg-black shadow-2xl h-full">
-
                 {!currentEpisode ? (
-                  <div className="flex flex-col items-center  justify-center h-full p-8">
-                    <h2 className="text-xl font-semibold text-white mb-2">No episode selected</h2>
+                  <div className="flex flex-col items-center justify-center h-full p-8">
+                    <h2 className="text-xl font-semibold text-white mb-2">
+                      No episode selected
+                    </h2>
                   </div>
                 ) : !currentEpisode.videoUrl ? (
                   <div className="flex flex-col relative items-center justify-center h-full p-8">
                     {/* SorryCard is now shown globally, so nothing here */}
-                    <SorryCard show={showSorry} onClose={() => {
-                      setShowSorry(false)
-                      crossBack()
-                    }} />
+                    <SorryCard
+                      show={showSorry}
+                      onClose={() => {
+                        setShowSorry(false);
+                        crossBack();
+                      }}
+                    />
                   </div>
                 ) : (
                   <video
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
-                    className="w-full h-auto cursor-pointer"
+                    className="w-full object-contain  h-full cursor-pointer"
                     preload="metadata"
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
@@ -206,11 +243,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
             </div>
 
             {/* video player bottom */}
-            <div className="p-3  flex flex-wrap items-center justify-between gap-4">
-
+            <div className="p-3 flex flex-wrap items-center justify-between gap-4">
               {/* Left Controls */}
               <div className="w-full flex items-center flex-nowrap overflow-x-auto gap-3 text-sm pb-1">
-
                 {/* Expand */}
                 <button
                   onClick={() => setExpandMode(!expandMode)}
@@ -232,43 +267,60 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 {/* Lights */}
                 <button
                   onClick={() => setLightsOn(!lightsOn)}
-                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${lightsOn
-                    ? 'bg-violet-500'
-                    : ''
-                    }`}
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${
+                    lightsOn ? 'bg-violet-500' : ''
+                  }`}
                 >
                   <Lightbulb size={16} />
-                  <span className={lightsOn ? "" : "text-red-500"}> <span className='text-white'>Lights: </span>{lightsOn ? 'On' : 'Off'}</span>
+                  <span className={lightsOn ? '' : 'text-red-500'}>
+                    {' '}
+                    <span className="text-white">Lights: </span>
+                    {lightsOn ? 'On' : 'Off'}
+                  </span>
                 </button>
 
                 {/* AutoPlay */}
-                <button className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${autoPlay ? 'bg-violet-500'
-                  : ''
+                <button
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${
+                    autoPlay ? 'bg-violet-500' : ''
                   }`}
                   onClick={() => setAutoPlay(!autoPlay)}
                 >
                   <PlayCircle size={16} />
-                  <span className={autoPlay ? "" : "text-red-500"}> <span className='text-white'>AutoPlay:</span>{autoPlay ? 'On' : 'Off'}</span>
+                  <span className={autoPlay ? '' : 'text-red-500'}>
+                    <span className="text-white">AutoPlay:</span>
+                    {autoPlay ? 'On' : 'Off'}
+                  </span>
                 </button>
 
                 {/* Skip Intro */}
                 <button
                   onClick={() => setAutoskipinto(!autoskipintro)}
-                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform
-    ${autoskipintro ? 'bg-violet-500' : ''
-                    }
-    `}
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${
+                    autoskipintro ? 'bg-violet-500' : ''
+                  }`}
                 >
                   <FastForward size={16} />
-                  <span className={autoskipintro ? "" : "text-red-500"}> <span className='text-white'>  <span className='text-white'>Skip Intro: </span></span>{autoskipintro ? 'On' : 'Off'}</span>
+                  <span className={autoskipintro ? '' : 'text-red-500'}>
+                    <span className="text-white">
+                      <span className="text-white">Skip Intro: </span>
+                    </span>
+                    {autoskipintro ? 'On' : 'Off'}
+                  </span>
                 </button>
 
                 {/* Skip Outro */}
                 <button
                   onClick={() => setAutoskipextro(!autoskipextro)}
-                  className={`min-w-fit px-3 py-2 ${autoskipextro ? 'bg-violet-500' : ' '} text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform`}>
+                  className={`min-w-fit px-3 py-2 ${
+                    autoskipextro ? 'bg-violet-500' : ' '
+                  } text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform`}
+                >
                   <Rewind size={16} />
-                  <span className={autoskipextro ? "" : "text-red-500"}> <span className='text-white'> Skip Outro: </span>{autoskipextro ? 'On' : 'Off'}</span>
+                  <span className={autoskipextro ? '' : 'text-red-500'}>
+                    <span className="text-white"> Skip Outro: </span>
+                    {autoskipextro ? 'On' : 'Off'}
+                  </span>
                 </button>
 
                 <button className="px-3 py-2 flex items-center gap-2 bg-violet-600 text-white rounded-xl text-sm font-semibold transition-all duration-300">
@@ -276,100 +328,116 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   Add Watchlist
                 </button>
               </div>
-
               {/* Right-Aligned Watchlist Button */}
-
             </div>
 
             {/* <div className="flex  items-start bg-black justify-between">
-                <div className="flex-1">
-                  <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-                    {currentEpisode
-                      ? `Episode ${currentEpisode.id || currentEpisode.episode}: ${currentEpisode.title || ''}`
-                      : 'No episode selected'}
-                  </h1>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {currentEpisode?.description || "No description available for this episode."}
-                  </p>
-                </div>
-                <div className="ml-6 flex items-center gap-2 text-yellow-400">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="text-sm font-semibold">{animeData?.rating || '9.2'}</span>
-                </div>
-              </div> */}
+              <div className="flex-1">
+                <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+                  {currentEpisode
+                    ? `Episode ${currentEpisode.id || currentEpisode.episode}: ${currentEpisode.title || ''}`
+                    : 'No episode selected'}
+                </h1>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  {currentEpisode?.description || "No description available for this episode."}
+                </p>
+              </div>
+              <div className="ml-6 flex items-center gap-2 text-yellow-400">
+                <Star className="w-4 h-4 fill-current" />
+                <span className="text-sm font-semibold">{animeData?.rating || '9.2'}</span>
+              </div>
+            </div> */}
 
-
-            <div className="p-4 backdrop-blur-md border border-white/10 h-[17vh] flex flex-wrap gap-4 items-center rounded-xl bg-black/30 text-white text-sm">
-
+            <div className= "h-[17vh] flex pl-4 pr-4 items-center text-white text-sm">
               {/* Left Info Box */}
-              <div className="bg-gradient-to-br from-red-400 to-red-300 h-full w-full sm:w-1/3 rounded-xl p-3 flex flex-col justify-center text-center shadow-md">
+              <div className=" h-full bg-slate-900  w-[65%] p-3 rounded-l-2xl flex flex-col justify-center text-center shadow-md">
                 <p className="text-base font-semibold mb-1">You are watching</p>
                 <span className="font-medium mb-1">Episode:</span>
-                <p className="text-xs px-3">If the current server doesn't work, please try other servers listed below.</p>
+                <p className="text-xs px-3">
+                  If the current server doesn't work, please try other servers
+                  listed below.
+                </p>
               </div>
 
               {/* Server Options */}
-              <div className="bg-gradient-to-br from-red-800 to-red-900 h-full w-full sm:w-1/2 rounded-xl p-3 text-white shadow-md flex flex-col justify-around gap-3">
+                <div className=" h-full w-full bg-black/40 rounded-r-xl p-3 text-white shadow-md flex flex-col justify-around gap-3">
+                  {/* Sub Section */}
+                  <div className="flex text-center gap-8">
+                      <span className="block font-medium mb-1">Sub:</span>
+                    <div className="flex gap-2 flex-wrap">
+                      {['hd-1', 'hd-2'].map((sub) => (
+                        <button
+                          key={sub}
+                          onClick={() => setSelectedSub(sub)}
+                          className={`px-4 py-2 rounded-lg transition font-medium ${
+                            selectedSub === sub
+                              ? 'bg-orange-400  text-white'
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                        >
+                          {sub.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                {/* Sub Section */}
-                <div className='flex text-center gap-8'>
-              <span className="block font-medium mb-1">Sub:</span>
-              <div className="flex gap-2 flex-wrap">
-                {['hd-1', 'hd-2'].map((sub) => (
-                  <button
-                    key={sub}
-                    onClick={() => setSelectedSub(sub)}
-                    className={`px-4 py-1 rounded-xl transition font-medium
-                      ${selectedSub === sub
-                        ? 'bg-violet-500 text-white'
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                      }`}
-                  >
-                    {sub.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-                {/* Dub Section */}
-                <div className='flex items-center justify-self-center gap-8'> 
-                  <span className="block font-medium mb-1">Dub:</span>
-                  <div className="flex gap-4 flex-wrap">
+                  {/* Dub Section */}
+                  <div className="flex items-center justify-self-center gap-8">
+                    <span className="block font-medium mb-1">Dub:</span>
+                    <div className="flex gap-2 flex-wrap">
+                      {['hd-1', 'hd-2'].map((dub) => (
+                        <button
+                          key={dub}
+                          onClick={() => setSelectedDub(dub)}
+                          className={`px-4 py-2 rounded-lg transition font-medium ${
+                            selectedDub === dub
+                              ? 'bg-violet-500 text-white'
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                        >
+                          {dub.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* <div className="flex gap-4 flex-wrap">
                     <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-1</button>
                     <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-2</button>
-                  </div>
+                  </div> */}
                 </div>
-
-              </div>
-
             </div>
-
           </div>
-
-
-
 
           {/* Anime Details Panel */}
           {expandMode && (
-            <div className="w-full lg:w-[20%] lg:min-w-[240px] p-4 bg-black/20 backdrop-blur-md border-l border-white/10">
+            <div className="w-full lg:w-[20%] lg:min-w-[280px] p-4 bg-black/20 backdrop-blur-md border-l border-white/10">
               <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Anime Details
               </h2>
               <div className="space-y-4">
                 <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md">
                   <img
-                    src={animeData?.thumbnail || "https://via.placeholder.com/300x400?text=No+Image"}
+                    src={
+                      animeData?.thumbnail ||
+                      'https://via.placeholder.com/300x400?text=No+Image'
+                    }
                     alt="Anime Poster"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <h3 className="font-semibold text-base mb-1">{animeData?.title || "Unknown Title"}</h3>
+                    <h3 className="font-semibold text-base mb-1">
+                      {animeData?.title || 'Unknown Title'}
+                    </h3>
                     <div className="flex items-center gap-1 text-yellow-400 text-xs">
                       <Star className="w-3 h-3 fill-current" />
-                      <span>{animeData?.rating || "9.2"}</span>
-                      <span className="text-gray-400">{animeData?.reviews ? `(${animeData.reviews})` : "(15.7k)"}</span>
+                      <span>{animeData?.rating || '9.2'}</span>
+                      <span className="text-gray-400">
+                        {animeData?.reviews
+                          ? `(${animeData.reviews})`
+                          : '(15.7k)'}
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -377,7 +445,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                       <Calendar className="w-3.5 h-3.5 text-purple-400" />
                       <span className="text-gray-400">Status:</span>
                       <span className="ml-auto text-green-400 font-semibold">
-                        {animeData?.status || "Ongoing"}
+                        {animeData?.status || 'Ongoing'}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -386,24 +454,33 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                       <span className="ml-auto">
                         {animeData?.episodes?.length
                           ? `${animeData.episodes.length} / ${animeData.episodes.length}`
-                          : "0 / 0"}
+                          : '0 / 0'}
                       </span>
                     </div>
                   </div>
                   <div>
                     <span className="text-gray-400">Genres:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {(animeData?.genres?.length > 0 ? animeData.genres : ['Unknown']).map((genre) => (
-                        <span key={genre} className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 rounded text-[10px]">
+                      {(animeData?.genres?.length > 0
+                        ? animeData.genres
+                        : ['Unknown']
+                      ).map((genre) => (
+                        <span
+                          key={genre}
+                          className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 rounded text-[10px]"
+                        >
                           {genre}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="pt-2 border-t border-white/10">
-                    <h4 className="font-medium mb-1 text-purple-300 text-sm">Synopsis</h4>
+                    <h4 className="font-medium mb-1 text-purple-300 text-sm">
+                      Synopsis
+                    </h4>
                     <p className="text-gray-300 text-xs leading-snug line-clamp-5">
-                      {animeData?.synopsis || "A young warrior discovers magical powers and must unite with allies to stop an ancient evil. Epic fantasy adventure awaits."}
+                      {animeData?.synopsis ||
+                        'A young warrior discovers magical powers and must unite with allies to stop an ancient evil. Epic fantasy adventure awaits.'}
                     </p>
                   </div>
                 </div>
