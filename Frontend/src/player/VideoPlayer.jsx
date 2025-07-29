@@ -1,5 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Search, Star, Calendar, Users } from 'lucide-react';
+import {
+  Play, Pause, Search, Star,
+  Lightbulb,
+  PlayCircle,
+  FastForward,
+  Rewind,
+  BookmarkPlus, Calendar, Users, Maximize, Minimize
+} from 'lucide-react';
+// import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from 'axios';
 import SorryCard from '../utils/SorryCard';
 
@@ -13,6 +21,14 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [showSorry, setShowSorry] = useState(false);
+
+  const [lightsOn, setLightsOn] = useState(true);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [autoskipintro, setAutoskipinto] = useState(true)
+  const [autoskipextro, setAutoskipextro] = useState(true)
+
+  const [selectedSub, setSelectedSub] = useState('hd-1');
+  const [selectedDub, setSelectedDub] = useState('hd-1');
 
   useEffect(() => {
     const fetchAnime = async () => {
@@ -103,9 +119,13 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   }
 
   return (
+
     <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
-      
+      {lightsOn && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
+      )}
+
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
         <div className={`transition-all duration-500 ease-in-out p-2 max-h-full backdrop-blur-md bg-black/30 h-lvh cool-scrollbar flex flex-col ${expandMode ? 'w-full lg:w-[20%]' : 'w-full lg:w-[23%]'} ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}>
@@ -165,9 +185,10 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                 ) : !currentEpisode.videoUrl ? (
                   <div className="flex flex-col relative items-center justify-center h-full p-8">
                     {/* SorryCard is now shown globally, so nothing here */}
-                    <SorryCard show={showSorry} onClose={() => {setShowSorry(false)
+                    <SorryCard show={showSorry} onClose={() => {
+                      setShowSorry(false)
                       crossBack()
-                    }}  />
+                    }} />
                   </div>
                 ) : (
                   <video
@@ -184,30 +205,83 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center pl-3 justify-between gap-4">
-              <div className="flex items-center gap-3">
+            {/* video player bottom */}
+            <div className="p-3  flex flex-wrap items-center justify-between gap-4">
+
+              {/* Left Controls */}
+              <div className="w-full flex items-center flex-nowrap overflow-x-auto gap-3 text-sm pb-1">
+
+                {/* Expand */}
                 <button
                   onClick={() => setExpandMode(!expandMode)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-sm font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="min-w-fit px-2 py-2 rounded cursor-pointer text-sm font-semibold text-white flex items-center gap-1 transition-all duration-300 transform"
                 >
-                  {expandMode ? '← Collapse' : 'Expand →'}
+                  {expandMode ? (
+                    <>
+                      <Maximize size={16} />
+                      Expand
+                    </>
+                  ) : (
+                    <>
+                      <Minimize size={16} />
+                      Collapse
+                    </>
+                  )}
                 </button>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">Servers:</span>
-                  {[1, 2, 3].map(server => (
-                    <button
-                      key={server}
-                      className="px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-xs hover:bg-purple-500/20 hover:border-purple-400/50 transition-all duration-300"
-                    >
-                      Server {server}
-                    </button>
-                  ))}
-                </div>
+
+                {/* Lights */}
+                <button
+                  onClick={() => setLightsOn(!lightsOn)}
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${lightsOn
+                    ? 'bg-violet-500'
+                    : ''
+                    }`}
+                >
+                  <Lightbulb size={16} />
+                  <span className={lightsOn ? "" : "text-red-500"}> <span className='text-white'>Lights: </span>{lightsOn ? 'On' : 'Off'}</span>
+                </button>
+
+                {/* AutoPlay */}
+                <button className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${autoPlay ? 'bg-violet-500'
+                  : ''
+                  }`}
+                  onClick={() => setAutoPlay(!autoPlay)}
+                >
+                  <PlayCircle size={16} />
+                  <span className={autoPlay ? "" : "text-red-500"}> <span className='text-white'>AutoPlay:</span>{autoPlay ? 'On' : 'Off'}</span>
+                </button>
+
+                {/* Skip Intro */}
+                <button
+                  onClick={() => setAutoskipinto(!autoskipintro)}
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform
+    ${autoskipintro ? 'bg-violet-500' : ''
+                    }
+    `}
+                >
+                  <FastForward size={16} />
+                  <span className={autoskipintro ? "" : "text-red-500"}> <span className='text-white'>  <span className='text-white'>Skip Intro: </span></span>{autoskipintro ? 'On' : 'Off'}</span>
+                </button>
+
+                {/* Skip Outro */}
+                <button
+                  onClick={() => setAutoskipextro(!autoskipextro)}
+                  className={`min-w-fit px-3 py-2 ${autoskipextro ? 'bg-violet-500' : ' '} text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform`}>
+                  <Rewind size={16} />
+                  <span className={autoskipextro ? "" : "text-red-500"}> <span className='text-white'> Skip Outro: </span>{autoskipextro ? 'On' : 'Off'}</span>
+                </button>
+
+                <button className="px-3 py-2 flex items-center gap-2 bg-violet-600 text-white rounded-xl text-sm font-semibold transition-all duration-300">
+                  <BookmarkPlus size={16} />
+                  Add Watchlist
+                </button>
               </div>
+
+              {/* Right-Aligned Watchlist Button */}
+
             </div>
 
-            <div className="mt-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-              <div className="flex items-start justify-between">
+            {/* <div className="flex  items-start bg-black justify-between">
                 <div className="flex-1">
                   <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                     {currentEpisode
@@ -222,9 +296,58 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   <Star className="w-4 h-4 fill-current" />
                   <span className="text-sm font-semibold">{animeData?.rating || '9.2'}</span>
                 </div>
+              </div> */}
+
+
+            <div className="p-4 backdrop-blur-md border border-white/10 h-[17vh] flex flex-wrap gap-4 items-center rounded-xl bg-black/30 text-white text-sm">
+
+              {/* Left Info Box */}
+              <div className="bg-gradient-to-br from-red-400 to-red-300 h-full w-full sm:w-1/3 rounded-xl p-3 flex flex-col justify-center text-center shadow-md">
+                <p className="text-base font-semibold mb-1">You are watching</p>
+                <span className="font-medium mb-1">Episode:</span>
+                <p className="text-xs px-3">If the current server doesn't work, please try other servers listed below.</p>
+              </div>
+
+              {/* Server Options */}
+              <div className="bg-gradient-to-br from-red-800 to-red-900 h-full w-full sm:w-1/2 rounded-xl p-3 text-white shadow-md flex flex-col justify-around gap-3">
+
+                {/* Sub Section */}
+                <div className='flex text-center gap-8'>
+              <span className="block font-medium mb-1">Sub:</span>
+              <div className="flex gap-2 flex-wrap">
+                {['hd-1', 'hd-2'].map((sub) => (
+                  <button
+                    key={sub}
+                    onClick={() => setSelectedSub(sub)}
+                    className={`px-4 py-1 rounded-xl transition font-medium
+                      ${selectedSub === sub
+                        ? 'bg-violet-500 text-white'
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                      }`}
+                  >
+                    {sub.toUpperCase()}
+                  </button>
+                ))}
               </div>
             </div>
+
+                {/* Dub Section */}
+                <div className='flex items-center justify-self-center gap-8'> 
+                  <span className="block font-medium mb-1">Dub:</span>
+                  <div className="flex gap-4 flex-wrap">
+                    <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-1</button>
+                    <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-2</button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
+
+
+
 
           {/* Anime Details Panel */}
           {expandMode && (
