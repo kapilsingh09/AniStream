@@ -96,10 +96,10 @@ const AviAnime = () => {
                               <Play className="w-3 h-3" />
                               {episodes_aired || "?"} eps
                             </div> */}
-                            <div className="flex items-center gap-1">
+                            {/* <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               {(status)}
-                            </div>
+                            </div> */}
                           </div>
                           {/* <div className="flex flex-wrap gap-1 mt-1">
                             {genres?.slice(0, 3).map((genre, i) => (

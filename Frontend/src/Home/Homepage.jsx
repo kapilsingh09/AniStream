@@ -40,22 +40,22 @@ const Homepage = () => {
       </div>  */}
 
       {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
+      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
-      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} />
+      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 
        <div className="flex items-center justify-center">
         {/* <GhibliMovieBanner /> */}
       
       </div>  
       {/* <AviAnime /> */}
-      {/* {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} /> */}
+      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
 
       <AnimeSection title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} />
 
       <AnimeSection title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
 
-      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> 
+      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
       {/* Optional: More banners */}
       {/* <div className="flex items-center justify-center">
