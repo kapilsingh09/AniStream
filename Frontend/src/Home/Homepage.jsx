@@ -28,18 +28,18 @@ import SorryCard from '../utils/SorryCard';
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen mt-10  bg-slate-800  ">
+    <div className="min-h-screen   bg-slate-800  ">
       {/* Hero Slider */}
-      {/* <AnimeSlider /> */}
+      <AnimeSlider />
     {/* <AviAnime /> */}
- <SorryCard />
+ {/* <SorryCard /> */}
     <AviAnime />
     {/* <Player /> */}
        {/* <div className="flex items-center justify-center ">
          <AnimeBanner />
       </div>  */}
 
-      <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} />
+      {/* <AnimeSection title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
       {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
 
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}

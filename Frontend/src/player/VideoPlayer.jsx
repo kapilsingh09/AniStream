@@ -46,6 +46,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           'http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity'
         );
         setAnimeData(res.data);
+        // console.log(res.data);
+        
       } catch (error) {
         setFetchError('Error fetching anime data.');
       } finally {
@@ -72,8 +74,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     ) {
       const filteredEpisodes = animeData.episodes.filter(
         (ep) =>
-          ep.id?.toString().includes(searchQuery) ||
-          ep.episode?.toString().includes(searchQuery)
+          (ep.episode?.toString().includes(searchQuery) ||
+            ep.id?.toString().includes(searchQuery))
       );
       const currentEpisode = filteredEpisodes[selectedEpisodeIndex] || null;
       if (currentEpisode && !currentEpisode.videoUrl) {
@@ -97,11 +99,23 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
     }
   };
 
+  // Helper: get display episode number (1, 2, 3, ...)
+  const getDisplayEpisodeNumber = (ep, idx) => {
+    if (typeof ep.episode === 'number' && !isNaN(ep.episode)) {
+      return ep.episode;
+    }
+    if (typeof ep.episode === 'string' && !isNaN(Number(ep.episode))) {
+      return Number(ep.episode);
+    }
+    
+    return idx + 1;
+  };
+
   const filteredEpisodes =
     animeData?.episodes?.filter(
       (ep) =>
-        ep.id?.toString().includes(searchQuery) ||
-        ep.episode?.toString().includes(searchQuery)
+        (ep.episode?.toString().includes(searchQuery) ||
+         ep.id?.toString().includes(searchQuery))
     ) || [];
 
   const handleSelect = (idx) => {
@@ -113,9 +127,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   const crossBack = () => {
     if (selectedEpisodeIndex > 0) {
-      // Safely decrement index using current value
       setSelectedEpisodeIndex((prev) => prev - 1);
-      setIsPlaying(false); // Optional: pause the video when navigating
+      setIsPlaying(false);
     }
   };
 
@@ -151,9 +164,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               : 'w-full lg:w-[23%]'
           } ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}
         >
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-              Episodes
+          <div className="flex items-center gap-3 mb-2 ml-1">
+            <h2 className="text-xl font-bold    text-white">
+               List of episodes
             </h2>
           </div>
 
@@ -189,7 +202,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                     }`}
                   >
                     <div className="font-bold text-white text-sm">
-                      Episode {ep.id || ep.episode}
+                      Episode {getDisplayEpisodeNumber(ep, i)}
                     </div>
                     <div className="text-xs text-white/60">
                       {ep.title || 'Untitled'}
@@ -352,7 +365,9 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               {/* Left Info Box */}
               <div className=" h-full bg-slate-900  w-[65%] p-3 rounded-l-2xl flex flex-col justify-center text-center shadow-md">
                 <p className="text-base font-semibold mb-1">You are watching</p>
-                <span className="font-medium mb-1">Episode:</span>
+                <span className="font-medium mb-1">
+                  Episode: {currentEpisode ? getDisplayEpisodeNumber(currentEpisode, selectedEpisodeIndex) : ''}
+                </span>
                 <p className="text-xs px-3">
                   If the current server doesn't work, please try other servers
                   listed below.
@@ -410,20 +425,22 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
           {/* Anime Details Panel */}
           {expandMode && (
-            <div className="w-full lg:w-[20%] lg:min-w-[280px] p-4 bg-black/20 backdrop-blur-md border-l border-white/10">
-              <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+            <div className="w-full lg:w-[20%] lg:min-w-[280px] p-4 bg-slate-900 backdrop-blur-md border-l border-white/10">
+              {/* <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Anime Details
-              </h2>
+              </h2> */}
               <div className="space-y-4">
-                <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md">
+                <div className=" overflow-hidden shadow-md">
+                <div className="h-[180px] w-[120px] mx-auto rounded-lg">
                   <img
                     src={
-                      animeData?.thumbnail ||
-                      'https://via.placeholder.com/300x400?text=No+Image'
+                      animeData?.posterImage.original
+                      // 'https://via.placeholder.com/300x400?text=No+Image'
                     }
                     alt="Anime Poster"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
+                </div>
                 </div>
                 <div className="space-y-3 text-sm">
                   <div>
@@ -473,6 +490,16 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                         </span>
                       ))}
                     </div>
+
+                    <div className="flex items-center gap-2 mt-1 text-xs">
+                      <span className="text-gray-400">Episode Length:</span>
+                      <span className="ml-auto px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded">
+                        {animeData?.episodeLength
+                          ? `${animeData.episodeLength} min`
+                          : 'Unknown'}
+                      </span>
+                    </div>
+
                   </div>
                   <div className="pt-2 border-t border-white/10">
                     <h4 className="font-medium mb-1 text-purple-300 text-sm">
