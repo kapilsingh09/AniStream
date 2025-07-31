@@ -436,10 +436,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 )}
 
             </div>
-{/* <div className="flex gap-4 flex-wrap">
-  <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-1</button>
-  <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-2</button>
-</div> */}
+
 </div>
             
           {/* Anime Details Panel */}
