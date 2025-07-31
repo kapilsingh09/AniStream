@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle, Users, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Slider() {
@@ -7,19 +7,13 @@ export default function Slider() {
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
-  const [currentCategory, setCurrentCategory] = useState('trending');
+  // Only show topRated anime
+  const [currentCategory] = useState('topRated');
   const hasFetched = useRef(false);
 
-
+  // Only show top rated anime
   const apiEndpoints = {
-    // Using the current endpoint for trending anime streamings (currently airing and trending)
-    trending: 'https://kitsu.io/api/edge/anime?filter[status]=current&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
-
-    topRated: 'https://kitsu.io/api/edge/anime?filter[status]=finished&sort=-averageRating&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
-    
-    romcom: 'https://kitsu.io/api/edge/anime?filter[categories]=romance,comedy&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
-
-    airing: 'https://kitsu.io/api/edge/anime?filter[status]=current&sort=-userCount&limit=8&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank'
+    topRated: 'https://kitsu.io/api/edge/anime?sort=-averageRating&filter[status]=current&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank'
   };
 
   useEffect(() => {
@@ -84,6 +78,7 @@ export default function Slider() {
     };
 
     fetchAnime();
+    // eslint-disable-next-line
   }, [currentCategory]);
 
   useEffect(() => {
@@ -110,12 +105,14 @@ export default function Slider() {
     setCurrent(index);
   };
 
-  const changeCategory = (category) => {
-    if (category !== currentCategory) {
-      setCurrentCategory(category);
-      setLoading(true);
-    }
-  };
+  // No category switching needed, but keep function for possible future use
+  // (not used, but left for possible future expansion)
+  // const changeCategory = (category) => {
+  //   if (category !== currentCategory) {
+  //     setCurrentCategory(category);
+  //     setLoading(true);
+  //   }
+  // };
 
   const formatDate = (dateString) => {
     if (!dateString) return 'TBA';
@@ -149,22 +146,17 @@ export default function Slider() {
     }
   };
 
+  // Only one category, so icon and title are simple
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'trending': return <TrendingUp className="w-4 h-4" />;
       case 'topRated': return <Star className="w-4 h-4" />;
-      case 'romcom': return '💕';
-      case 'airing': return <Play className="w-4 h-4" />;
       default: return null;
     }
   };
 
   const getCategoryTitle = (category) => {
     switch (category) {
-      case 'trending': return 'Trending';
       case 'topRated': return 'Top Rated';
-      case 'romcom': return 'Rom-Com';
-      case 'airing': return 'Currently Airing';
       default: return 'Anime';
     }
   };
@@ -257,25 +249,19 @@ export default function Slider() {
   }
 
   return (
-    <div className="relative w-full h-[70vh] overflow-hidden mt-15 bg-black">
+    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-15 bg-black">
       {/* Category Selector */}
       <div className="absolute top-4 left-4 z-40 flex gap-2">
-        {Object.keys(apiEndpoints).map((category) => (
-          <motion.button
-            key={category}
-            onClick={() => changeCategory(category)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 backdrop-blur-sm ${
-              currentCategory === category
-                ? 'bg-white/20 text-white border border-white/30'
-                : 'bg-black/40 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {getCategoryIcon(category)}
-            {getCategoryTitle(category)}
-          </motion.button>
-        ))}
+        <motion.button
+          key={currentCategory}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 backdrop-blur-sm bg-white/20 text-white border border-white/30`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          disabled
+        >
+          {getCategoryIcon(currentCategory)}
+          {getCategoryTitle(currentCategory)}
+        </motion.button>
       </div>
 
       {/* Gradient Overlays */}

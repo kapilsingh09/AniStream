@@ -28,6 +28,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [showSorry, setShowSorry] = useState(false);
+  const [setshowupcomingep, setSetshowupcomingep] = useState(false)
 
   const [lightsOn, setLightsOn] = useState(false);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -46,7 +47,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           'http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity'
         );
         setAnimeData(res.data);
-        // console.log(res.data);
+        console.log(res.data);
         
       } catch (error) {
         setFetchError('Error fetching anime data.');
@@ -149,7 +150,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   }
 
   return (
-    <div className="w-full mx-auto min-h-screen bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
+    <div className="w-full mx-auto h-auto min-h-screen  bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
       {lightsOn && (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
@@ -221,7 +222,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               expandMode ? '' : 'lg:pr-0'
             }`}
           >
-            <div className="relative group">
+            <div className="relative group h-[65vh]" >
               <div className="relative overflow-hidden bg-black shadow-2xl h-full">
                 {!currentEpisode ? (
                   <div className="flex flex-col items-center justify-center h-full p-8">
@@ -341,25 +342,13 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                   Add Watchlist
                 </button>
               </div>
-              {/* Right-Aligned Watchlist Button */}
-            </div>
 
-            {/* <div className="flex  items-start bg-black justify-between">
-              <div className="flex-1">
-                <h1 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-                  {currentEpisode
-                    ? `Episode ${currentEpisode.id || currentEpisode.episode}: ${currentEpisode.title || ''}`
-                    : 'No episode selected'}
-                </h1>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {currentEpisode?.description || "No description available for this episode."}
-                </p>
-              </div>
-              <div className="ml-6 flex items-center gap-2 text-yellow-400">
-                <Star className="w-4 h-4 fill-current" />
-                <span className="text-sm font-semibold">{animeData?.rating || '9.2'}</span>
-              </div>
-            </div> */}
+              
+              {/* Right-Aligned Watchlist Button */}
+            </div>  
+
+
+        
 
             <div className= "h-[17vh] flex pl-4 pr-4 items-center text-white text-sm">
               {/* Left Info Box */}
@@ -375,6 +364,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               </div>
 
               {/* Server Options */}
+             
                 <div className=" h-full w-full bg-black/40 rounded-r-xl p-3 text-white shadow-md flex flex-col justify-around gap-3">
                   {/* Sub Section */}
                   <div className="flex text-center gap-8">
@@ -415,28 +405,57 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                       ))}
                     </div>
                   </div>
-                  {/* <div className="flex gap-4 flex-wrap">
-                    <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-1</button>
-                    <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-2</button>
-                  </div> */}
-                </div>
+               
             </div>
+      
           </div>
+            <div className='flex items-center justify-center '>
 
+
+            {setshowupcomingep && (
+  <div className="w-[80%] mx-auto my-4 flex items-center justify-between bg-blue-600 text-white rounded-lg shadow-lg px-4 py-3 relative animate-fade-in">
+    <div className="flex items-center gap-2">
+      <span className="text-xl">🚀</span>
+      <p className="text-sm">
+        Next episode airs on{" "}
+        <span className="font-semibold underline">
+          8/2/2025, 8:00:00 PM
+        </span>
+      </p>
+    </div>
+
+    <button
+      onClick={() => setSetshowupcomingep(false)}
+      className="text-white hover:text-gray-200 text-lg font-bold px-2 transition-colors"
+      title="Close"
+      aria-label="Close"
+    >
+      ×
+    </button>
+  </div>
+)}
+
+            </div>
+{/* <div className="flex gap-4 flex-wrap">
+  <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-1</button>
+  <button className="bg-white/20 px-4 py-1 rounded-xl cursor-pointer hover:bg-white/30 transition">HD-2</button>
+</div> */}
+</div>
+            
           {/* Anime Details Panel */}
           {expandMode && (
             <div className="w-full lg:w-[20%] lg:min-w-[280px] p-4 bg-slate-900 backdrop-blur-md border-l border-white/10">
               {/* <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Anime Details
               </h2> */}
-              <div className="space-y-4">
-                <div className=" overflow-hidden shadow-md">
-                <div className="h-[180px] w-[120px] mx-auto rounded-lg">
+              <div className="space-y-5">
+                <div className=" overflow-hidden  ">
+                <div className="h-[180px] w-[120px] rounded-lg">
                   <img
                     src={
                       animeData?.posterImage.original
                       // 'https://via.placeholder.com/300x400?text=No+Image'
-                    }
+                    } 
                     alt="Anime Poster"
                     className="w-full h-full object-cover rounded-lg"
                   />
