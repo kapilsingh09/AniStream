@@ -64,7 +64,7 @@ const Homepage = () => {
       
       </div>  
       {/* <AviAnime /> */}
-      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchRomanceticAnime} />
+      <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} />
 
       {/* <AnimeSection  /> */}
 
