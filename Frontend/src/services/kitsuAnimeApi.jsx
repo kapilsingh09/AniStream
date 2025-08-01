@@ -2,28 +2,48 @@ import axios from 'axios';
 
 const BASE_URL = 'https://kitsu.io/api/edge';
 
-// FOR FILTER PAG//E
-
-export const fetchAllAnime = async (limit = 20, offset = 0) => {
+// FOR FILTER PAGE
+export const fetchAllAnime = async (limit = 12, offset = 0) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'page[limit]': limit,
       'page[offset]': offset,
-      'sort': '-popularityRank', // sort by popular
+      'sort': '-popularityRank',
     },
   });
   return res.data.data;
 };
 
-
-//done
-export const fetchTrendingAnime = async (limit = 20) => {
-  const res = await axios.get(`${BASE_URL}/trending/anime?limit=${limit}`);
+// ✅ Updated Trending Anime using current airing + recent startDate
+export const fetchTrendingAnime = async (limit = 12) => {
+  const today = new Date().toISOString().split('T')[0];
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[status]': 'current',
+      'filter[startDate]': `2025-06-01..${today}`,
+      'sort': '-popularityRank',
+      'page[limit]': limit,
+    },
+  });
   return res.data.data;
 };
 
-// 2. Seasonal Anime (Filtered by season and year)
-export const fetchSeasonalAnime = async (season = 'spring', year = 2024, limit = 20) => {
+// 🆕 New Arrivals Anime (optional extra)
+export const fetchNewArrivals = async (limit = 12) => {
+  const today = new Date().toISOString().split('T')[0];
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[status]': 'current',
+      'filter[startDate]': `2025-06-01..${today}`,
+      'sort': '-startDate',
+      'page[limit]': limit,
+    },
+  });
+  return res.data.data;
+};
+
+// Seasonal Anime
+export const fetchSeasonalAnime = async (season = 'spring', year = 2024, limit = 12) => {
   const seasonMonths = {
     winter: ['01', '02', '03'],
     spring: ['04', '05', '06'],
@@ -43,8 +63,8 @@ export const fetchSeasonalAnime = async (season = 'spring', year = 2024, limit =
   return res.data.data;
 };
 
-// 3. Search Anime by Title
-export const searchAnime = async (query, limit = 20) => {
+// Search Anime
+export const searchAnime = async (query, limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[text]': query,
@@ -54,8 +74,8 @@ export const searchAnime = async (query, limit = 20) => {
   return res.data.data;
 };
 
-// 4. Get Anime by Category Slug (ex: action, romance, drama)
-export const fetchAnimeByCategory = async (categorySlug, limit = 20) => {
+// By Category
+export const fetchAnimeByCategory = async (categorySlug, limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': categorySlug,
@@ -66,12 +86,12 @@ export const fetchAnimeByCategory = async (categorySlug, limit = 20) => {
   return res.data.data;
 };
 
-// 5. Random Popular Romance + Comedy (Romcom)
+// Random Romcom
 export const fetchRandomRomcomAnime = async () => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[genres]': 'romance,comedy',
-      'page[limit]': 20,
+      'page[limit]': 12,
       'sort': 'popularity',
     },
   });
@@ -89,47 +109,47 @@ export const fetchRandomRomcomAnime = async () => {
   };
 };
 
-// 5.1. Fetch Multiple Romance Comedy Anime
-export const fetchRomanceComedyAnime = async (limit = 20) => {
+// Multiple Romcom
+export const fetchRomanceComedyAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'romance,comedy',
       'page[limit]': limit,
-      'sort': '-popularityRank',
+      'sort': 'popularityRank',
     },
   });
   return res.data.data;
 };
 
-// 6. Get Random Highly Rated Anime
-// export const getRandomAnime = async () => {
-//   const randomOffset = Math.floor(Math.random() * 100);
-//   const res = await axios.get(
-//     `${BASE_URL}/anime?sort=ratingRank&page[limit]=1&page[offset]=${randomOffset}`
-//   );
-//   return [res.data.data[0]];
-// };
+export const fetchRomanceticAnime = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[categories]': 'romance,movie',
+      'page[limit]': limit,
+      'sort': 'popularityRank',
+    },
+  });
+  return res.data.data;
+};
 
+
+// Random Highly Rated
 export const getRandomAnime = async () => {
-  const randomOffset = Math.floor(Math.random() * 100)
+  const randomOffset = Math.floor(Math.random() * 100);
   const res = await axios.get(
-    `https://kitsu.io/api/edge/anime?sort=ratingRank&page[limit]=1&page[offset]=${randomOffset}`
+    `${BASE_URL}/anime?sort=ratingRank&page[limit]=1&page[offset]=${randomOffset}`
   );
-  // Return as an array for compatibility with AnimeBanner
   return [res.data.data[0]];
-}
+};
 
-// 7. Get All Categories
-export const fetchCategories = async (limit = 20) => {
+// Categories
+export const fetchCategories = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/categories?page[limit]=${limit}`);
   return res.data.data;
 };
 
-// 8. Get School Anime (using school category)
-
-
-// 9. Get Action Anime
-export const fetchActionAnime = async (limit = 20) => {
+// Action
+export const fetchActionAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'action',
@@ -140,8 +160,8 @@ export const fetchActionAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 10. Get Romance Anime
-export const fetchRomanceAnime = async (limit = 20) => {
+// Romance
+export const fetchRomanceAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'romance',
@@ -152,8 +172,8 @@ export const fetchRomanceAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 11. Get Comedy Anime
-export const fetchComedyAnime = async (limit = 20) => {
+// Comedy
+export const fetchComedyAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'comedy',
@@ -164,8 +184,8 @@ export const fetchComedyAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 12. Get Drama Anime
-export const fetchDramaAnime = async (limit = 20) => {
+// Drama
+export const fetchDramaAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'drama',
@@ -176,8 +196,8 @@ export const fetchDramaAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 13. Get Fantasy Anime
-export const fetchFantasyAnime = async (limit = 20) => {
+// Fantasy
+export const fetchFantasyAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'fantasy',
@@ -188,8 +208,8 @@ export const fetchFantasyAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 14. Get Horror Anime
-export const fetchHorrorAnime = async (limit = 20) => {
+// Horror
+export const fetchHorrorAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'horror',
@@ -200,8 +220,8 @@ export const fetchHorrorAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 15. Get Sports Anime
-export const fetchSportsAnime = async (limit = 20) => {
+// Sports
+export const fetchSportsAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'sports',
@@ -212,8 +232,8 @@ export const fetchSportsAnime = async (limit = 20) => {
   return res.data.data;
 };
 
-// 16. Get Slice of Life Anime
-export const fetchSliceOfLifeAnime = async (limit = 20) => {
+// Slice of Life
+export const fetchSliceOfLifeAnime = async (limit = 12) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[categories]': 'slice-of-life',

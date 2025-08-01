@@ -16,9 +16,15 @@ import {
 
 import { 
   fetchTrendingAnime,
-  fetchRomanceAnime,
+  // fetchRomanceAnime,
   fetchActionAnime,
   fetchHorrorAnime,
+  fetchDramaAnime,
+  fetchFantasyAnime,
+  fetchComedyAnime,
+  fetchRomanceticAnime,
+  fetchRomanceAnime,
+  fetchRomanceComedyAnime,
 } from '../services/kitsuAnimeApi';
 import FactsSlider from '../ExplorePage/FactsSlider';
 // import Vdplayer from '../videoJs/Vdplayer';
@@ -49,22 +55,22 @@ const Homepage = () => {
          <AnimeBanner />
       </div> 
 
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
+      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} />
 
-      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
+      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}
 
        <div className="flex items-center justify-center">
         {/* <GhibliMovieBanner /> */}
       
       </div>  
       {/* <AviAnime /> */}
-      {/* <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchHorrorAnime} />
+      <SectionComponentKitsu title="Chilling Horror & Dark Themes" fetchFunction={fetchRomanceticAnime} />
 
-      <AnimeSection  />
+      {/* <AnimeSection  /> */}
 
-      <AnimeSection  />
+      {/* <AnimeSection  /> */}
 
-      <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
+      {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
       {/* Optional: More banners */}
       {/* <div className="flex items-center justify-center">
