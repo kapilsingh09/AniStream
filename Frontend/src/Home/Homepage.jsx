@@ -31,26 +31,25 @@ import SorryCard from '../utils/SorryCard';
 const Homepage = () => {
   return (
 
-    <div className="min-h-screen   bg-slate-800  ">
+    <div className="min-h-screen flex-1 shrink-1 bg-black   ">
 
 
-      <AnimeSlider />
+      {/* <AnimeSlider /> */}
        <AviAnime />
-       {/* <JikhanAnimeComponent title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
-    {/* <JikhanAnimeComponent title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
+
     
     {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
-    <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} />
-    {/* <JikhanAnimeComponent  title="All-Time Top Rated" fetchFunction={FetchTopRatedAnime} /> */}
+    {/* <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={FetchTrendingRomanceComedyAnime} /> */}
+    {/* <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} /> */}
 
 
 
-    {/* <Player /> */}
-       {/* <div className="flex items-center justify-center ">
+
+       <div className="flex items-center justify-center ">
          <AnimeBanner />
-      </div>  */}
+      </div> 
 
-      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} /> */}
+      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchTrendingAnime} />
 
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchRomanceAnime} /> */}
 

@@ -104,12 +104,12 @@ const SectionComponent = ({ title = "Trending Anime", fetchFunction, className =
   }, [checkScrollPosition]);
 
   const scrollLeft = () => {
-    sliderRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: -1000, behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
 
   const scrollRight = () => {
-    sliderRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: 1000, behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
 
