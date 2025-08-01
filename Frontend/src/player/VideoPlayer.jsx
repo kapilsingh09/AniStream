@@ -530,6 +530,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               </div>
             </div>
           )}
+          
         </div>
       </div>
     </div>

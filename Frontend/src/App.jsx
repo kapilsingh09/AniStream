@@ -2,7 +2,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './utils/ScrollToTop'; 
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// queryClient
 import Layout from './Layout/Layout';
 import HomePage from './Home/Homepage';
 import ExplorePage from './pages/ExplorePage';
@@ -16,11 +17,14 @@ import SearchPage from './pages/SearchPage';
 import KeywordPage from './pages/KeywordPage';
 import VideoPage from './pages/VideoPage';
 import Player from './player/Player';
+import { Pizza } from 'lucide-react';
 
+const rizz = new QueryClient()
 const App = () => {
   return (
     <>
-      <ScrollToTop /> {/* ✅ Add this here */}
+    <QueryClientProvider client={rizz} >
+      {/* <ScrollToTop /> ✅ Add this here */}
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
@@ -35,12 +39,14 @@ const App = () => {
           <Route path="/play/:id" element={<JikhanAnimeCard />} />
           <Route path="/find" element={<JikhanAnimeCard />} />
           <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
+          {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
           <Route path="/genres/:id" element={<Demo />} />
             <Route path="/watch/:id" element={<Player />} />
           {/* 404 */}
           <Route path="*" element={<SorryCard />} />
         </Route>
       </Routes>
+      </QueryClientProvider>
     </>
   );
 };
