@@ -69,18 +69,18 @@ const AnimeBanner = () => {
     loadAnime();
   }, []);
 
-  const getImage = () => {
-    if (!anime || !anime.attributes) return '';
-    const { bannerImage, coverImage, posterImage } = anime.attributes;
-    return (
-      bannerImage ||
-      coverImage?.original ||
-      coverImage?.large ||
-      posterImage?.original ||
-      posterImage?.large ||
-      'https://imgs.search.brave.com/-Eam3dmMfduDIKs-dhRpNWG0pIQCpETsgmaC5rH4-PQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTUv/MDU1LzQ3My9zbWFs/bC9hLWJsYWNrLWJh/Y2tncm91bmQtd2l0/aC1zbW9rZS1jb21p/bmctb3V0LW9mLWl0/LWZyZWUtcGhvdG8u/anBn'
-    );
-  };
+  // const getImage = () => {
+  //   if (!anime || !anime.attributes) return '';
+  //   const { bannerImage, coverImage, posterImage } = anime.attributes;
+  //   return (
+  //     bannerImage ||
+  //     coverImage?.original ||
+  //     coverImage?.large ||
+  //     posterImage?.original ||
+  //     posterImage?.large ||
+  //     'https://imgs.search.brave.com/-Eam3dmMfduDIKs-dhRpNWG0pIQCpETsgmaC5rH4-PQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTUv/MDU1LzQ3My9zbWFs/bC9hLWJsYWNrLWJh/Y2tncm91bmQtd2l0/aC1zbW9rZS1jb21p/bmctb3V0LW9mLWl0/LWZyZWUtcGhvdG8u/anBn'
+  //   );
+  // };
 
   const handleWatchClick = () => {
     if (malId) {
@@ -136,7 +136,7 @@ const AnimeBanner = () => {
         onClick={handleWatchClick}
       >
         <img
-          src={getImage()}
+          src={anime?.attributes?.coverImage?.original  || ''}
           alt={anime?.attributes?.canonicalTitle || 'Anime'}
           className="w-full h-full object-cover"
         />

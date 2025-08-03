@@ -32,6 +32,7 @@ import JikhanAnimeComponent from './JikhanAnimeComponent';
 import AviAnime from '../utils/AviAnime';
 import Player from '../player/Player';
 import SorryCard from '../utils/SorryCard';
+import RecomendedAnime from '../components/RecomendedAnime';
 
 
 const Homepage = () => {
@@ -41,7 +42,7 @@ const Homepage = () => {
 
 
       {/* <AnimeSlider /> */}
-       <AviAnime />
+       {/* <AviAnime /> */}
 
     
     {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
@@ -51,11 +52,11 @@ const Homepage = () => {
 
 
 
-       <div className="flex items-center justify-center ">
+       {/* <div className="flex items-center justify-center ">
          <AnimeBanner />
-      </div> 
+      </div>  */}
 
-      <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} />
+      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} /> */}
 
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}
 
@@ -63,8 +64,9 @@ const Homepage = () => {
         {/* <GhibliMovieBanner /> */}
       
       </div>  
-      {/* <AviAnime /> */}
-      <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} />
+      <AviAnime />
+      <RecomendedAnime />
+      {/* <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} /> */}
 
       {/* <AnimeSection  /> */}
 
