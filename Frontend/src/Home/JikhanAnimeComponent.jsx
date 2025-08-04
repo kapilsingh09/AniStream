@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SectionComponent = ({ title = "Trending Anime", fetchFunction, className = "" }) => {
+const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "" }) => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [retrying, setRetrying] = useState(false);
