@@ -388,7 +388,7 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="min-w-[14vw] max-w-[12vw] rounded-xl h-full overflow-hidden text-white  flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
+              className="min-w-[14vw] max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
             >
               <div className="relative h-[44vh] w-full">
                 <img

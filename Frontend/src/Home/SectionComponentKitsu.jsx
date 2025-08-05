@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Info, RefreshCw } from 'lucide-react';
+import { ChevronLeft, Star,ChevronRight, Info, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -54,14 +54,13 @@ const SectionComponentKitsu = ({
     isSuccess,
   } = useQuery({
     queryKey: ['kitsuAnime', title, subtitle],
-    staleTime: 24 * 60 * 60 * 1000,
     queryFn: async () => {
       if (!fetchFunction) throw new Error('No fetch function provided');
       const data = await fetchFunction();
       return filterAndDedupAnime(data);
     },
     enabled: !!fetchFunction, // only run if fetchFunction is provided
-    staleTime: Infinity, // cache forever unless manually invalidated
+    staleTime: 24 * 60 * 60 * 1000, // cache forever unless manually invalidated
     cacheTime: Infinity,
     retry: (failureCount, err) => {
       // Stop retrying if we already have data
@@ -73,7 +72,8 @@ const SectionComponentKitsu = ({
 
 
   const animeData = animeRawData || [];
-
+  // console.log(animeData);
+  
   // Retry handler
   const handleRetry = async () => {
     setRetrying(true);
@@ -218,9 +218,76 @@ const SectionComponentKitsu = ({
     };
   }, []);
 
+  // console.log(animeRawData);
+  
   const handleCardClick = (anime) => {
     navigate(`/kitsu/${anime.id}`);
   };
+
+  const getSubtypeLabelClass = (subtype) => {
+  switch (subtype?.toLowerCase()) {
+    case "tv":
+      return "bg-indigo-600 text-white";
+    case "movie":
+      return "bg-red-600 text-white";
+    case "ova":
+      return "bg-purple-600 text-white";
+    case "ona":
+      return "bg-teal-600 text-white";
+    case "special":
+      return "bg-pink-600 text-white";
+    case "music":
+      return "bg-yellow-600 text-black";
+    default:
+      return "bg-gray-400 text-white";
+  }
+};
+
+const getAgeRatingInfo = (rating) => {
+  switch (rating?.toUpperCase()) {
+    case "G":
+      return {
+        className: "bg-green-500 text-white",
+        icon: "👶",
+        label: "G",
+      };
+    case "PG":
+      return {
+        className: "bg-blue-500 text-white",
+        icon: "👦",
+        label: "PG",
+      };
+    case "PG-13":
+      return {
+        className: "bg-yellow-500 text-black",
+        icon: "🧒",
+        label: "PG-13",
+      };
+    case "R":
+    case "R18":
+      return {
+        className: "bg-red-600 text-white",
+        icon: "⚠️",
+        label: "R",
+      };
+    case "R+":
+      return {
+        className: "bg-orange-600 text-white",
+        icon: "🔞",
+        label: "R+",
+      };
+    default:
+      return {
+        className: "bg-gray-500 text-white",
+        icon: "❓",
+        label: "N/A",
+      };
+  }
+};
+
+
+
+
 
   // Loading state
   if (loading || isFetching) {
@@ -289,24 +356,23 @@ const SectionComponentKitsu = ({
   // Main render
   return (
     <div className={`h-[60vh] bg-black py-3 ${className} relative text-white`}>
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-black/60 to-transparent z-10 pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-black/60 to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute left-0 top-0 bottom-0 w-30 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-30 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
 
       <div className="flex items-center px-10 mb-2">
         <h1 className="text-white text-2xl font-bold drop-shadow-lg">{title}</h1>
-        <br />
         <div className="flex-1 h-px bg-white/30 ml-4"></div>
         <div className="text-white/80 text-sm ml-4 drop-shadow">{animeData.length} items</div>
       </div>
 
-      <h3 className=" ml-10 text-red-300 text-sm  font-bold drop-shadow-lg">{subtitle}</h3>
-      <div className="relative px-10">
+      {/* <h3 className=" ml-10 text-red-300 text-sm  font-bold drop-shadow-lg">{subtitle}</h3> */}
+      <div className="relative px-8">
         <div
           ref={sliderRef}
-          className="w-full h-[50vh]  flex overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
+          className="w-full h-[55vh] flex overflow-x-auto gap-5 scroll-smooth py-2 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {/* maincard component  parent of cards*/}
+          {/* maincard component parent   of cards */}
           {animeData.map((anime, index) => {
             const attr = anime.attributes;
             return (
@@ -322,31 +388,43 @@ const SectionComponentKitsu = ({
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 className="min-w-[14vw] max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
               >
-                <div className="relative h-[40vh] w-full">
+                <div className="relative h-[44vh] w-full">
                   <img
                     src={attr?.posterImage?.large || attr?.posterImage?.medium}
                     alt={attr?.titles?.en_jp || attr?.titles?.en || 'Anime'}
                     onError={handleImageError}
-                    className="w-full h-full object-cover rounded group-hover:brightness-110 transition-all duration-300"
+                    className="w-full h-full object-cover rounded-xl group-hover:brightness-110 transition-all duration-300"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
 
-                  {attr?.averageRating && (
-                    <motion.div className="absolute top-2 right-2 bg-red-600 text-xs px-2 py-1 rounded backdrop-blur-sm">
-                      ⭐ {Math.round(attr.averageRating / 10 * 10) / 10}
-                    </motion.div>
-                  )}
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  {/* Subtype label */}
+                  {/* Star Rating */}
+                  {typeof attr?.averageRating === 'string' && (() => {
+                    // Kitsu averageRating is a string percentage, e.g. "87.65"
+                    const rating = parseFloat(attr.averageRating);
+                    if (isNaN(rating)) return null;
+                    return (
+                      <div className="absolute top-2 right-2 flex items-center text-xm    gap-1  bg-red-500 text-white font-semibold  px-2 py-1 rounded-lg backdrop-blur-sm">
+                         <Star className="w-3 h-3" />
+                        <span className="font-semibold text-xs">{(rating / 10).toFixed(1) || 'N/A'}</span>
+                      </div>
+                    );
+                  })()}
 
-                  {attr?.popularityRank && (
-                    <div className="absolute top-2 left-2 bg-purple-600 text-xs px-3 py-1 rounded backdrop-blur-sm">
-                      #{attr.popularityRank}
-                    </div>
-                  )}
+                  {/* Age rating label */}
+                  {attr?.ageRating && (() => {
+                    const { className, label } = getAgeRatingInfo(attr.ageRating);
+                    return (
+                      <div className={`absolute top-2 left-2 ${className}  text-xs px-3 py-1 rounded`}>
+                        {label}
+                      </div>
+                    );
+                  })()}
                 </div>
-
+                
                 <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
-                  <div className="line-clamp-2 group-hover:text-blue-300 transition-colors" title={attr?.titles?.en_jp || attr?.titles?.en}>
+                  <div className="line-clamp-2 group-hover:text-yellow-400 transition-colors" title={attr?.titles?.en_jp || attr?.titles?.en}>
                     {attr?.titles?.en_us || attr?.titles?.en || 'Unknown Title'}
                   </div>
                 </div>

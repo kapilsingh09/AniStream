@@ -17,6 +17,7 @@ import {
 // import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from 'axios';
 import SorryCard from '../utils/SorryCard';
+import RecomendedAnime from '../components/RecomendedAnime';
 
 const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
@@ -533,6 +534,8 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           
         </div>
       </div>
+
+      <RecomendedAnime />
     </div>
   );
 };
