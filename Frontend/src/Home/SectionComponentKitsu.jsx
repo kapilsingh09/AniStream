@@ -232,7 +232,7 @@ const SectionComponentKitsu = ({
       return "bg-red-600 text-white";
     case "ova":
       return "bg-purple-600 text-white";
-    case "ona":
+    case "ona":5
       return "bg-teal-600 text-white";
     case "special":
       return "bg-pink-600 text-white";
@@ -306,7 +306,7 @@ const getAgeRatingInfo = (rating) => {
   // Error state
   if (isError) {
     return (
-      <div className={`h-[60vh] bg-gradient-to-br from-zinc-900 via-gray-900 to-black py-3 flex items-center justify-center ${className}`}>
+      <div className={`h-[60vh]  to-black py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center">
           <div className="text-4xl mb-4">❌</div>
           <div className="text-lg mb-4">{error?.message || 'An error occurred'}</div>

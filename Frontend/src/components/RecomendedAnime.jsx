@@ -2,6 +2,7 @@ import React from 'react'
 import {motion} from 'framer-motion'
 
 const RecomendedAnime = () => {
+  
     const recommended = [
         {
             id: 1,

@@ -51,7 +51,7 @@ const Homepage = () => {
 
      {/* <RecomendedAnime />   */}
 {/*  */}
-
+<AviAnime />
 {/* 
        <div className="flex items-center justify-center ">
          <AnimeBanner />

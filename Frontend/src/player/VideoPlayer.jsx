@@ -157,10 +157,12 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
         <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
       )}
 
+ 
+
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
         <div
-          className={`transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30 h-lvh cool-scrollbar flex flex-col ${
+          className={`transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30  h-lvh cool-scrollbar flex flex-col ${
             expandMode
               ? 'w-full lg:w-[20%]'
               : 'w-full lg:w-[23%]'
@@ -223,7 +225,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
               expandMode ? '' : 'lg:pr-0'
             }`}
           >
-            <div className="relative group h-[65vh]" >
+            <div className="relative group h-[65vh]">
               <div className="relative overflow-hidden bg-black shadow-2xl h-full">
                 {!currentEpisode ? (
                   <div className="flex flex-col items-center justify-center h-full p-8">
@@ -232,22 +234,24 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                     </h2>
                   </div>
                 ) : !currentEpisode.videoUrl ? (
-                  <div className="flex flex-col relative items-center justify-center h-full p-8">
-                    {/* SorryCard is now shown globally, so nothing here */}
-                    <SorryCard
-                      show={showSorry}
-                      onClose={() => {
-                        setShowSorry(false);
-                        crossBack();
-                      }}
-                    />
+                  <div className="flex flex-col items-center justify-center h-full p-8 relative">
+                    {/* SorryCard is now shown relative to this parent */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <SorryCard
+                        show={showSorry}
+                        onClose={() => {
+                          setShowSorry(false);
+                          crossBack();
+                        }}
+                      />
+                    </div>
                   </div>
                 ) : (
                   <video
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
-                    className="w-full object-contain  h-full cursor-pointer"
+                    className="w-full object-contain h-full cursor-pointer"
                     preload="metadata"
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
@@ -535,7 +539,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
         </div>
       </div>
 
-      <RecomendedAnime />
+      {/* <RecomendedAnime />/ */}
     </div>
   );
 };
