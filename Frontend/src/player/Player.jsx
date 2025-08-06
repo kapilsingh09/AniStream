@@ -16,7 +16,7 @@ const Player = () => {
           {}
         </span>
       </nav>
-
+    
       <section className="flex flex-col">
      
         <div className="w-full pl-6">
