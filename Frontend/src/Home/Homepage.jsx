@@ -38,10 +38,10 @@ import RecomendedAnime from '../components/RecomendedAnime';
 const Homepage = () => {
   return (
 
-    <div className="min-h-screen flex-1 shrink-1 bg-black   ">
+    <div className="min-h-screen flex-1 shrink-1    ">
 
 
-      {/* <AnimeSlider /> */}
+      <AnimeSlider />
        {/* <AviAnime /> */}
 
     
@@ -50,37 +50,35 @@ const Homepage = () => {
      <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} />
 
      {/* <RecomendedAnime />   */}
-{/*  */}
 <AviAnime />
-{/* 
+
        <div className="flex items-center justify-center ">
          <AnimeBanner />
-      </div>  */}
+      </div> 
+
 
       <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} />
 
+      {/* wholemf */}
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}
 
        {/* <div className="flex items-center justify-center"> */}
-        {/* <GhibliMovieBanner /> */}
-{/*       
-      </div>  
-      <AviAnime />
-      <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} /> */}
+        <GhibliMovieBanner />
+     
+      <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} /> 
 
-      {/* <AnimeSection  /> */}
 
-      {/* <AnimeSection  /> */}
+      <AnimeGrid />
 
-      {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
+      // {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
-      {/* Optional: More banners */}
-      {/* <div className="flex items-center justify-center">
+      // {/* Optional: More banners */}
+      <div className="flex items-center justify-center">
         <AnimeBanner />
       </div>
       <footer>
         <FactsSlider />
-      </footer> */}
+      </footer> 
     </div>
   );
 };

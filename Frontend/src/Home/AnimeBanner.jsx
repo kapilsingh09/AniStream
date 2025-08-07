@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Sparkle, Play } from 'lucide-react';
+import { Sparkle, Play, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getRandomAnime } from '../services/kitsuAnimeApi';
@@ -13,6 +13,8 @@ const AnimeBanner = () => {
   const [malId, setMalId] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [showSorry, setShowSorry] = useState(false);
+
+  const [showmore, Setshowmore] = useState(false)
 
   const fetchMalIdFromTitle = async (title) => {
     try {
@@ -33,10 +35,8 @@ const AnimeBanner = () => {
         const selectedAnime = animeData[0];
         setAnime(selectedAnime);
 
-        // Try multiple approaches to get the ID
         let fetchedMalId = null;
 
-        // First, check if Kitsu data already has a MAL mapping
         if (selectedAnime.attributes?.mappings) {
           const malMapping = selectedAnime.attributes.mappings.find(
             mapping => mapping.externalSite === 'myanimelist/anime'
@@ -46,17 +46,15 @@ const AnimeBanner = () => {
           }
         }
 
-        // If no direct mapping, try fetching by title
         if (!fetchedMalId) {
-          const title = selectedAnime.attributes?.canonicalTitle ||
-            selectedAnime.attributes?.titles?.en ||
+          const title = selectedAnime.attributes?.titles?.en ||
+            selectedAnime.attributes?.canonicalTitle ||
             selectedAnime.attributes?.titles?.en_jp;
           if (title) {
             fetchedMalId = await fetchMalIdFromTitle(title);
           }
         }
 
-        // Fallback: use Kitsu ID if no MAL ID found
         if (!fetchedMalId && selectedAnime.id) {
           fetchedMalId = selectedAnime.id;
         }
@@ -69,78 +67,113 @@ const AnimeBanner = () => {
     loadAnime();
   }, []);
 
-  // const getImage = () => {
-  //   if (!anime || !anime.attributes) return '';
-  //   const { bannerImage, coverImage, posterImage } = anime.attributes;
-  //   return (
-  //     bannerImage ||
-  //     coverImage?.original ||
-  //     coverImage?.large ||
-  //     posterImage?.original ||
-  //     posterImage?.large ||
-  //     'https://imgs.search.brave.com/-Eam3dmMfduDIKs-dhRpNWG0pIQCpETsgmaC5rH4-PQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTUv/MDU1LzQ3My9zbWFs/bC9hLWJsYWNrLWJh/Y2tncm91bmQtd2l0/aC1zbW9rZS1jb21p/bmctb3V0LW9mLWl0/LWZyZWUtcGhvdG8u/anBn'
-  //   );
-  // };
-
   const handleWatchClick = () => {
     if (malId) {
       navigate(`/kitsu/${malId}`);
-      // console.log(malId); q
+    } else {
+      setShowSorry(true);
+    }
+  };
 
-    } else {
-      setShowSorry(true);
-    }
+  const handleAddToWatchlist = () => {
+    // You can update this to actually store in a DB or global state
+    alert('Added to watchlist!');
   };
-  const handleWatchClickKitsuId = () => {
-    if (anime?.id) {
-      navigate(`/kitsu/${anime.id}`);
-    } else {
-      setShowSorry(true);
-    }
-  };
+
+  const genres = anime?.attributes?.genres || [];
+
+  // Get English title, fallback to canonical or JP if not available
+  const englishTitle =
+    anime?.attributes?.titles?.en ||
+    anime?.attributes?.canonicalTitle ||
+    anime?.attributes?.titles?.en_jp ||
+    'Unknown Title';
 
   return (
-    <div className="h-[60vh] mt-5 mb-5  bg-black flex overflow-hidden text-white relative">
-      {/* Left Side */}
-      <div className="w-[60%] bg-black flex flex-col justify-center p-6 md:p-12 z-10">
+    <div className="h-[65vh]  relative flex flex-col md:flex-row bg-black text-white  overflow-hidden shadow-2xl ">
+      {/* Text Content */}
+      <div className="w-full md:w-[55%] flex flex-col justify-center p-6 md:p-10 z-10 relative bg-black bg-opacity-70">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">
-          {loading ? 'Loading...' : anime?.attributes?.canonicalTitle || 'Unknown Title'}
+          {loading ? 'Loading...' : englishTitle}
         </h1>
-        <p className="text-sm md:text-lg text-slate-300 line-clamp-4">
+        <p className={`text-sm md:text-lg text-slate-300 mb-4  ${showmore ? '' : 'line-clamp-6'}`}>
           {anime?.attributes?.synopsis || 'No description available.'}
+          {anime?.attributes?.synopsis?.length > 200 && (
+            <button
+              onClick={() => Setshowmore(!showmore)}
+              className="ml-2 inline-block align-baseline text-xs px-3 py-0.5 rounded-full border border-pink-400 bg-pink-600/10 text-pink-300 hover:bg-pink-500/20 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400/50"
+              style={{
+                marginLeft: '10px',
+                fontWeight: 600,
+              }}
+            >
+              {showmore ? (
+                <>
+                  Show Less <span className="inline-block transform rotate-180">▼</span>
+                </>
+              ) : (
+                <>
+                  Show More <span className="inline-block">▼</span>
+                </>
+              )}
+            </button>
+          )}
         </p>
-        <div className="mt-10">
+
+        {/* Genres */}
+        {anime?.attributes?.genres && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {anime.attributes.genres.map((genre, index) => (
+              <span
+                key={index}
+                className="text-xs px-2 py-1 bg-pink-600/20 text-pink-300 border border-pink-400/30 rounded-full"
+              >
+                {genre}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={handleWatchClick}
             disabled={loading}
-            className={`relative inline-flex items-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 
-    bg-gradient-to-br from-purple-600 via-pink-600 to-yellow-500 
-    hover:from-purple-700 hover:to-pink-500 
-    shadow-lg hover:shadow-2xl 
-    transform hover:scale-[1.03] active:scale-95 
-    focus:outline-none focus:ring-4 focus:ring-pink-400/50 
-    disabled:opacity-50 disabled:cursor-not-allowed`}
+            className="relative inline-flex items-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 
+            bg-gradient-to-br from-blue-600 via-cyan-500 to-green-400
+            hover:from-blue-700 hover:to-green-500
+            shadow-lg hover:shadow-2xl 
+            transform hover:scale-105 active:scale-95 
+            focus:outline-none focus:ring-4 focus:ring-cyan-400/50 
+            disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Play className="w-5 h-5" />
             {loading ? 'Loading...' : 'Watch Now'}
           </button>
 
+          <button
+            onClick={handleAddToWatchlist}
+            className="inline-flex items-center gap-2 px-6 py-2 rounded-xl font-semibold text-white bg-gradient-to-br from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-xl"
+          >
+            <Plus className="w-5 h-5" />
+            Add to Watchlist
+          </button>
         </div>
       </div>
 
-
+      {/* Image Side */}
       <div
-        className="cursor-pointer w-full relative h-full"
+        className="w-full md:w-[45%] h-[300px] md:h-full relative cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleWatchClick}
       >
         <img
-          src={anime?.attributes?.coverImage?.original  || ''}
-          alt={anime?.attributes?.canonicalTitle || 'Anime'}
-          className="w-full h-full object-cover"
+          src={anime?.attributes?.coverImage?.original || ''}
+          alt={englishTitle}
+          className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent z-10" />
 
         <motion.div className="absolute top-3 right-3 z-20 flex items-center cursor-text bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white font-bold text-sm rounded-full py-1 px-3 overflow-hidden">
           <Sparkle className="w-4 mr-1" />
