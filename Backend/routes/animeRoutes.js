@@ -61,7 +61,7 @@ router.get('/:slug', async (req, res) => {
       posterImage: attributes.posterImage,
       coverImage: attributes.coverImage,
       youtubeVideoId: attributes.youtubeVideoId,
-      genres: [],
+      genres: attributes.genres,
     };
 
     // Fetch genres

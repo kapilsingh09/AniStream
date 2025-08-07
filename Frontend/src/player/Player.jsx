@@ -1,31 +1,36 @@
-import React from 'react'
+import React from 'react';
+import VideoPlayer from './VideoPlayer';
+import RecomendedAnime from '../components/RecomendedAnime';
 
-import VideoPlayer from './VideoPlayer'
-import RecomendedAnime from '../components/RecomendedAnime'
 const Player = () => {
   return (
-    <div className="mt-14 bg-transparent backdrop-blur-2xl">
-      {/* Navigation Bar */}
-      <nav className="flex items-center gap-2 ml-4 text-white text-sm font-medium py-3">
-        <span className="hover:underline cursor-pointer text-purple-300">Home</span>
-        <span className="mx-1 text-gray-400">/</span>
-        <span className="hover:underline cursor-pointer text-purple-300">TV</span>
-        <span className="mx-1 text-gray-400">/</span>
-        <span className="text-white font-semibold">
-          {/* Replace with dynamic anime name if available */}
-          {}
-        </span>
-      </nav>
-    
-      <section className="flex flex-col">
-     
-        <div className="w-full pl-6">
-          <VideoPlayer />
-        </div>
-      </section>
+    <div className="relative mt-16">
+      {/* Glass background layer */}
+      {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-3xl z-0"></div> */}
 
-      <RecomendedAnime />
+      {/* Main content layer */}
+      <div className="relative z-10">
+        {/* Navigation Bar */}
+        <nav className="flex items-center gap-2 ml-4 text-white  text-lg font-medium px-3 py-4   ">
+          <span className="hover:underline cursor-pointer text-white/50">Home</span>
+          <span className="mx-1 text-gray-400">/</span>
+          <span className="hover:underline cursor-pointer text-white/50">TV</span>
+          <span className="mx-1 text-gray-400">/</span>
+          <span className="text-white font-semibold text-lg">{/* Anime name */}anime name</span>
+        </nav>
+
+        {/* Video section - no blur */}
+        <section className="flex flex-col">
+          <div className="w-full pl-6">
+            <VideoPlayer />
+          </div>
+        </section>
+
+        {/* Recommendations - will have glass effect underneath */}
+        <RecomendedAnime />
+      </div>
     </div>
-)}
+  );
+};
 
-export default Player
+export default Player;

@@ -151,7 +151,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   }
 
   return (
-    <div className="w-full mx-auto h-auto min-h-screen  bg-gradient-to-br mt-14 from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
+    <div className="w-full mx-auto h-auto min-h-screen  bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
       {lightsOn && (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
@@ -221,11 +221,11 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
         <div className="flex-1 flex  flex-col lg:flex-row">
           {/* Video Section */}
           <div
-            className={`transition-all duration-500 ease-in-out flex-1 h-full ${
+            className={`transition-all duration-500 ease-in flex-1 h-full ${
               expandMode ? '' : 'lg:pr-0'
             }`}
           >
-            <div className="relative group h-[65vh]">
+            <div className="relative group h-[65vh] ">
               <div className="relative overflow-hidden bg-black shadow-2xl h-full">
                 {!currentEpisode ? (
                   <div className="flex flex-col items-center justify-center h-full p-8">
@@ -251,7 +251,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
-                    className="w-full object-contain h-full cursor-pointer"
+                    className="w-full h-full max-h-fit max-w-full  cursor-pointer"
                     preload="metadata"
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
