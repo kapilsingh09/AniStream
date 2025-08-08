@@ -1,94 +1,166 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle, Users } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Star, Calendar, Play, Info, PlayCircle, Users, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+
+const API_ENDPOINTS = {
+  trending:
+    'https://kitsu.io/api/edge/trending/anime?limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+  topRated:
+    'https://kitsu.io/api/edge/anime?sort=-averageRating&limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank,mappings',
+};
+
+async function fetchAnimeTopRated() {
+  const res = await fetch(API_ENDPOINTS.topRated);
+  if (!res.ok) throw new Error('Failed to fetch anime');
+  const response = await res.json();
+  const data = response.data;
+  if (!data || data.length === 0) {
+    return [];
+  }
+  return data.map((anime) => {
+    const attributes = anime.attributes;
+    return {
+      id: anime.id,
+      malId: attributes.mappings?.find(m => m.externalSite === 'myanimelist/anime')?.externalId,
+      image:
+        attributes.coverImage?.original ||
+        attributes.coverImage?.large ||
+        attributes.posterImage?.original ||
+        attributes.posterImage?.large ||
+        attributes.posterImage?.medium ||
+        'https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image',
+      title:
+        attributes.titles?.en ||
+        attributes.titles?.en_jp ||
+        attributes.titles?.ja_jp ||
+        attributes.canonicalTitle ||
+        'Unknown Title',
+      description: attributes.synopsis
+        ? attributes.synopsis.length > 200
+          ? attributes.synopsis.slice(0, 200) + '...'
+          : attributes.synopsis
+        : 'No description available.',
+      rating: attributes.averageRating
+        ? (parseFloat(attributes.averageRating) / 10).toFixed(1)
+        : 'N/A',
+      status: attributes.status,
+      startDate: attributes.startDate,
+      episodeCount: attributes.episodeCount,
+      ageRating: attributes.ageRating,
+      userCount: attributes.userCount,
+      favoritesCount: attributes.favoritesCount,
+      popularityRank: attributes.popularityRank,
+      category: 'topRated',
+    };
+  });
+}
+
+// Skeleton Loader for the slider
+function SliderSkeleton() {
+  // Show 1 skeleton slide
+  return (
+    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-15 bg-black">
+      {/* Category Selector Skeleton */}
+      <div className="absolute top-4 left-4 z-40 flex gap-2">
+        <div className="px-8 py-2 rounded-lg bg-white/10 animate-pulse" />
+      </div>
+      {/* Gradient Overlays */}
+      <div className="pointer-events-none absolute inset-0 z-10">
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/100 via-black/50 to-transparent" />
+        <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-black/90 via-black/10 to-transparent" />
+        <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-black/100 via-black/50 to-transparent" />
+      </div>
+      {/* Slide Skeleton */}
+      <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0">
+          <div className="w-full h-full bg-gray-800 animate-pulse" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30 z-10" />
+        {/* Content Skeleton */}
+        <div className="absolute inset-0 z-20 flex items-center">
+          <div className="max-w-lg ml-4 md:ml-8 text-white space-y-3">
+            {/* Status & Age Rating Skeleton */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-16 h-6 rounded-full bg-white/10 animate-pulse" />
+              <div className="w-10 h-6 rounded bg-white/10 animate-pulse" />
+              <div className="w-10 h-6 rounded bg-white/10 animate-pulse" />
+            </div>
+            {/* Title Skeleton */}
+            <div className="h-8 w-3/4 bg-white/10 rounded mb-3 animate-pulse" />
+            {/* Info Skeleton */}
+            <div className="flex items-center gap-4 mb-3 flex-wrap">
+              <div className="h-5 w-20 bg-white/10 rounded animate-pulse" />
+              <div className="h-5 w-16 bg-white/10 rounded animate-pulse" />
+              <div className="h-5 w-24 bg-white/10 rounded animate-pulse" />
+              <div className="h-5 w-20 bg-white/10 rounded animate-pulse" />
+            </div>
+            {/* Description Skeleton */}
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-white/10 rounded animate-pulse" />
+              <div className="h-4 w-5/6 bg-white/10 rounded animate-pulse" />
+              <div className="h-4 w-2/3 bg-white/10 rounded animate-pulse" />
+            </div>
+            {/* Buttons Skeleton */}
+            <div className="flex gap-3 pt-3">
+              <div className="h-10 w-28 bg-white/10 rounded-lg animate-pulse" />
+              <div className="h-10 w-28 bg-white/10 rounded-lg animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Navigation Skeleton */}
+      <div className="absolute bottom-[25%] right-4 z-30 flex flex-col space-y-2">
+        <div className="h-10 w-10 bg-white/10 rounded-lg animate-pulse" />
+        <div className="h-10 w-10 bg-white/10 rounded-lg animate-pulse" />
+      </div>
+      {/* Dots Skeleton */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="w-4 h-2 bg-white/20 rounded-full animate-pulse" />
+        ))}
+      </div>
+      {/* Progress Bar Skeleton */}
+      <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black/30 z-90 overflow-hidden">
+        <div className="h-full bg-white/20 w-1/2 animate-pulse" />
+      </div>
+    </div>
+  );
+}
 
 export default function Slider() {
-  const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
-  // Only show topRated anime
-  const [currentCategory] = useState('topRated');
-  const hasFetched = useRef(false);
+  const currentCategory = 'topRated';
 
-  // Only show top rated anime
-  const apiEndpoints = {
-    topRated: 'https://kitsu.io/api/edge/anime?sort=-averageRating&filter[status]=current&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank'
-  };
+  // TanStack Query for fetching anime, refetch every 24 hours (24*60*60*1000 ms)
+  const {
+    data: slides = [],
+    isLoading: loading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ['anime', currentCategory],
+    queryFn: fetchAnimeTopRated,
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours
+    cacheTime: 25 * 60 * 60 * 1000, // 25 hours, just to be safe
+    refetchOnWindowFocus: false,
+  });
 
+  // Reset current slide when slides change
   useEffect(() => {
-    const fetchAnime = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(apiEndpoints[currentCategory]);
-        const response = await res.json();
-        const data = response.data;
+    setCurrent(0);
+  }, [slides]);
 
-        if (!data || data.length === 0) {
-          console.warn('No anime data received');
-          setSlides([]);
-          setLoading(false);
-          return;
-        }
-
-        const formattedSlides = data.map((anime) => {
-          const attributes = anime.attributes;
-          
-          return {
-            id: anime.id,
-            malId: attributes.mappings?.find(m => m.externalSite === 'myanimelist/anime')?.externalId,
-            image: attributes.coverImage?.original ||
-              attributes.coverImage?.large ||
-              attributes.posterImage?.original ||
-              attributes.posterImage?.large ||
-              attributes.posterImage?.medium ||
-              'https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image',
-            title: attributes.titles?.en ||
-              attributes.titles?.en_jp ||
-              attributes.titles?.ja_jp ||
-              attributes.canonicalTitle ||
-              'Unknown Title',
-            description: attributes.synopsis ? 
-              (attributes.synopsis.length > 200 ? 
-                attributes.synopsis.slice(0, 200) + '...' : 
-                attributes.synopsis) : 
-              'No description available.',
-            rating: attributes.averageRating ? 
-              (parseFloat(attributes.averageRating) / 10).toFixed(1) : 
-              'N/A',
-            status: attributes.status,
-            startDate: attributes.startDate,
-            episodeCount: attributes.episodeCount,
-            ageRating: attributes.ageRating,
-            userCount: attributes.userCount,
-            favoritesCount: attributes.favoritesCount,
-            popularityRank: attributes.popularityRank,
-            category: currentCategory
-          };
-        });
-
-        setSlides(formattedSlides);
-        setCurrent(0); // Reset to first slide when changing category
-      } catch (error) {
-        console.error('Error fetching anime:', error);
-        setSlides([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnime();
-    // eslint-disable-next-line
-  }, [currentCategory]);
-
+  // Auto-advance slides
   useEffect(() => {
-    if (slides.length === 0) return;
+    if (!slides || slides.length === 0) return;
     const interval = setInterval(() => {
       setDirection(1);
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 8000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [slides]);
 
   const nextSlide = () => {
     setDirection(1);
@@ -105,15 +177,6 @@ export default function Slider() {
     setCurrent(index);
   };
 
-  // No category switching needed, but keep function for possible future use
-  // (not used, but left for possible future expansion)
-  // const changeCategory = (category) => {
-  //   if (category !== currentCategory) {
-  //     setCurrentCategory(category);
-  //     setLoading(true);
-  //   }
-  // };
-
   const formatDate = (dateString) => {
     if (!dateString) return 'TBA';
     return new Date(dateString).getFullYear();
@@ -128,36 +191,49 @@ export default function Slider() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'current': return 'bg-green-500';
-      case 'finished': return 'bg-blue-500';
-      case 'upcoming': return 'bg-yellow-500';
-      case 'tba': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'current':
+        return 'bg-green-500';
+      case 'finished':
+        return 'bg-blue-500';
+      case 'upcoming':
+        return 'bg-yellow-500';
+      case 'tba':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'current': return 'Airing';
-      case 'finished': return 'Completed';
-      case 'upcoming': return 'Upcoming';
-      case 'tba': return 'TBA';
-      default: return 'Unknown';
+      case 'current':
+        return 'Airing';
+      case 'finished':
+        return 'Completed';
+      case 'upcoming':
+        return 'Upcoming';
+      case 'tba':
+        return 'TBA';
+      default:
+        return 'Unknown';
     }
   };
 
-  // Only one category, so icon and title are simple
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'topRated': return <Star className="w-4 h-4" />;
-      default: return null;
+      case 'topRated':
+        return <Star className="w-4 h-4" />;
+      default:
+        return null;
     }
   };
 
   const getCategoryTitle = (category) => {
     switch (category) {
-      case 'topRated': return 'Top Rated';
-      default: return 'Anime';
+      case 'topRated':
+        return 'Top Rated';
+      default:
+        return 'Anime';
     }
   };
 
@@ -166,7 +242,7 @@ export default function Slider() {
     enter: (direction) => ({
       x: direction > 0 ? 300 : -300,
       opacity: 0,
-      scale: 0.98
+      scale: 0.98,
     }),
     center: {
       x: 0,
@@ -174,8 +250,8 @@ export default function Slider() {
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: [0.43, 0.13, 0.23, 0.96]
-      }
+        ease: [0.43, 0.13, 0.23, 0.96],
+      },
     },
     exit: (direction) => ({
       x: direction < 0 ? 300 : -300,
@@ -183,9 +259,9 @@ export default function Slider() {
       scale: 0.98,
       transition: {
         duration: 0.5,
-        ease: [0.43, 0.13, 0.23, 0.96]
-      }
-    })
+        ease: [0.43, 0.13, 0.23, 0.96],
+      },
+    }),
   };
 
   const contentVariants = {
@@ -195,10 +271,10 @@ export default function Slider() {
       x: 0,
       transition: {
         duration: 0.7,
-        ease: "easeOut",
-        staggerChildren: 0.15
-      }
-    }
+        ease: 'easeOut',
+        staggerChildren: 0.15,
+      },
+    },
   };
 
   const itemVariants = {
@@ -206,8 +282,8 @@ export default function Slider() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+      transition: { duration: 0.5, ease: 'easeOut' },
+    },
   };
 
   const buttonVariants = {
@@ -215,35 +291,35 @@ export default function Slider() {
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { delay: 0.6, duration: 0.3 }
+      transition: { delay: 0.6, duration: 0.3 },
     },
     hover: {
       scale: 1.05,
-      transition: { duration: 0.2 }
+      transition: { duration: 0.2 },
     },
-    tap: { scale: 0.95 }
+    tap: { scale: 0.95 },
   };
 
   if (loading) {
-    return (
-      <div className="w-full h-[70vh] bg-gray-900 flex items-center justify-center">
-        <motion.div
-          className="text-white text-xl flex items-center gap-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          Loading {getCategoryTitle(currentCategory).toLowerCase()} anime...
-        </motion.div>
-      </div>
-    );
+    // Show skeleton loader
+    return <SliderSkeleton />;
   }
 
-  if (slides.length === 0) {
+  if (isError || !slides || slides.length === 0) {
     return (
-      <div className="w-full h-[60vh] bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">No anime data available for {getCategoryTitle(currentCategory)}</div>
+      <div className="w-full h-[60vh] bg-gray-900 flex flex-col items-center justify-center">
+        <div className="text-white text-xl mb-4">
+          No anime data available for {getCategoryTitle(currentCategory)}
+        </div>
+        <motion.button
+          onClick={() => refetch()}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all duration-200"
+          whileHover={{ scale: 1.05, rotate: 3 }}
+          whileTap={{ scale: 0.95, rotate: -3 }}
+        >
+          <RefreshCw className="w-5 h-5 animate-spin-slow" />
+          Retry
+        </motion.button>
       </div>
     );
   }
@@ -289,7 +365,8 @@ export default function Slider() {
               className="w-full h-full object-cover object-center"
               loading="lazy"
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=Image+Not+Available';
+                e.target.src =
+                  'https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=Image+Not+Available';
               }}
             />
           </div>
@@ -305,7 +382,11 @@ export default function Slider() {
             >
               {/* Status & Age Rating */}
               <motion.div className="flex items-center gap-2 mb-2" variants={itemVariants}>
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getStatusColor(slides[current].status)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getStatusColor(
+                    slides[current].status
+                  )}`}
+                >
                   {getStatusText(slides[current].status)}
                 </span>
                 {slides[current].ageRating && (
@@ -321,7 +402,10 @@ export default function Slider() {
               </motion.div>
 
               {/* Title */}
-              <motion.h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3 drop-shadow-lg" variants={itemVariants}>
+              <motion.h1
+                className="text-2xl md:text-3xl font-bold leading-tight mb-3 drop-shadow-lg"
+                variants={itemVariants}
+              >
                 {slides[current].title}
               </motion.h1>
 
@@ -334,25 +418,34 @@ export default function Slider() {
                 {slides[current].startDate && (
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-gray-300" />
-                    <span className="text-gray-300 text-sm">{formatDate(slides[current].startDate)}</span>
+                    <span className="text-gray-300 text-sm">
+                      {formatDate(slides[current].startDate)}
+                    </span>
                   </div>
                 )}
                 {slides[current].episodeCount && (
                   <div className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-gray-300" />
-                    <span className="text-gray-300 text-sm">{slides[current].episodeCount} Episodes</span>
+                    <span className="text-gray-300 text-sm">
+                      {slides[current].episodeCount} Episodes
+                    </span>
                   </div>
                 )}
                 {slides[current].userCount && (
                   <div className="flex items-center gap-1">
                     <Users className="w-3 h-3 text-gray-300" />
-                    <span className="text-gray-300 text-sm">{formatNumber(slides[current].userCount)} Users</span>
+                    <span className="text-gray-300 text-sm">
+                      {formatNumber(slides[current].userCount)} Users
+                    </span>
                   </div>
                 )}
               </motion.div>
 
               {/* Description */}
-              <motion.p className="text-gray-200 text-sm leading-relaxed max-w-md line-clamp-3" variants={itemVariants}>
+              <motion.p
+                className="text-gray-200 text-sm leading-relaxed max-w-md line-clamp-3"
+                variants={itemVariants}
+              >
                 {slides[current].description}
               </motion.p>
 
@@ -409,7 +502,9 @@ export default function Slider() {
             key={index}
             onClick={() => goToSlide(index)}
             className={`transition-all duration-300 rounded-full ${
-              current === index ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/70'
+              current === index
+                ? 'w-4 h-2 bg-white'
+                : 'w-2 h-2 bg-white/50 hover:bg-white/70'
             }`}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.8 }}
@@ -418,14 +513,14 @@ export default function Slider() {
       </div>
 
       {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black/30 z-90 overflow-hidden">
+      {/* <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black/30 z-90 overflow-hidden">
         <motion.div
           className="h-full bg-white/50 relative"
           initial={{ width: 0 }}
           animate={{ width: `${((current + 1) / slides.length) * 100}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

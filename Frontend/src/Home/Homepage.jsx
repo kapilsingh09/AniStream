@@ -70,9 +70,9 @@ const Homepage = () => {
 
       <AnimeGrid />
 
-      // {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
+         {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
-      // {/* Optional: More banners */}
+       {/* Optional: More banners */}
       <div className="flex items-center justify-center">
         <AnimeBanner />
       </div>
