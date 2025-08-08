@@ -41,3 +41,15 @@ body{
     display: none;
   }
   
+
+  @layer base {
+    ::selection {
+      background: #ff6b35;
+      color: #fff;
+    }
+  
+    ::-moz-selection {
+      background: #ff6b35;
+      color: #fff;
+    }
+  }
