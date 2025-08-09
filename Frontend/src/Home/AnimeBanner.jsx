@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Sparkle, Play, Plus, Calendar, Film, ShieldAlert, Star } from 'lucide-react';
+import { Sparkle, Play, Calendar, Film, ShieldAlert, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getRandomAnime } from '../services/kitsuAnimeApi';
@@ -47,19 +47,16 @@ const AnimeBanner = () => {
           setAnime(selectedAnime);
 
           let fetchedMalId = null;
-          if (selectedAnime.attributes?.mappings) {
-            const malMapping = selectedAnime.attributes.mappings.find(
-              mapping => mapping.externalSite === 'myanimelist/anime'
-            );
-            if (malMapping) fetchedMalId = malMapping.externalId;
+          // Fix: mappings are not included by default in Kitsu API, so skip this block
+          // Instead, always try to get MAL ID from Jikan using the best available title
+          const title =
+            selectedAnime.attributes?.titles?.en ||
+            selectedAnime.attributes?.canonicalTitle ||
+            selectedAnime.attributes?.titles?.en_jp;
+          if (title) {
+            fetchedMalId = await fetchMalIdFromTitle(title);
           }
-          if (!fetchedMalId) {
-            const title =
-              selectedAnime.attributes?.titles?.en ||
-              selectedAnime.attributes?.canonicalTitle ||
-              selectedAnime.attributes?.titles?.en_jp;
-            if (title) fetchedMalId = await fetchMalIdFromTitle(title);
-          }
+          // If Jikan fails, fallback to Kitsu ID (for local navigation)
           if (!fetchedMalId && selectedAnime.id) {
             fetchedMalId = selectedAnime.id;
           }
@@ -83,7 +80,12 @@ const AnimeBanner = () => {
   const handleWatchClick = () => {
     if (loading) return;
     if (malId) {
-      navigate(`/kitsu/${malId}`);
+      // Fix: If malId is a number (from Jikan), use /mal/:id, else use /kitsu/:id
+      if (typeof malId === 'number' || /^\d+$/.test(malId)) {
+        navigate(`/mal/${malId}`);
+      } else {
+        navigate(`/kitsu/${malId}`);
+      }
     } else {
       setShowSorry(true);
     }
@@ -94,7 +96,11 @@ const AnimeBanner = () => {
     alert('Added to watchlist!');
   };
 
-  const genres = Array.isArray(anime?.attributes?.genres) ? anime.attributes.genres : [];
+  // Fix: genres are not included in Kitsu anime attributes by default, so handle gracefully
+  const genres = Array.isArray(anime?.attributes?.genres)
+    ? anime.attributes.genres
+    : [];
+
   const englishTitle =
     anime?.attributes?.titles?.en ||
     anime?.attributes?.canonicalTitle ||
@@ -109,7 +115,7 @@ const AnimeBanner = () => {
       <div className="w-full md:w-[45%] flex flex-col justify-center p-6 md:p-10 z-10 relative bg-black bg-opacity-70">
         
         {/* Title */}
-        <h1 className="text-2xl md:text-5xl font-bold mb-4 text-white/70 leading-tight">
+        <h1 className="text-2xl md:text-4xl font-bold mb-4 text-white/70 leading-tight">
           {loading ? <Skeleton className="h-14" /> : englishTitle}
         </h1>
 

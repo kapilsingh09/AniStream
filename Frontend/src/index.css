@@ -30,7 +30,7 @@ body{
   }
   
   .cool-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #8b5cf6; /* violet */
+    background: #a78bfa;
     border-radius: 10px;
     border: 2px solid transparent;
     background-clip: content-box;

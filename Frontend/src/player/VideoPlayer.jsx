@@ -48,7 +48,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
           'http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity'
         );
         setAnimeData(res.data);
-        console.log(res.data);
+        // console.log(res.data);
         
       } catch (error) {
         setFetchError('Error fetching anime data.');
