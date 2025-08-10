@@ -32,16 +32,7 @@ const dummyFunFacts = {
   ],
 };
 
-
-const cardColors = [
-  'bg-gradient-to-br from-purple-400/50 via-violet-500/40 to-purple-600/30',
-  'bg-gradient-to-br from-indigo-400/50 via-purple-500/40 to-pink-500/30',
-  'bg-gradient-to-br from-purple-300/50 via-purple-500/40 to-purple-700/30',
-  'bg-gradient-to-br from-violet-400/50 via-purple-600/40 to-indigo-600/30',
-  'bg-gradient-to-br from-purple-500/50 via-violet-600/40 to-purple-800/30',
-  'bg-gradient-to-br from-fuchsia-400/50 via-purple-500/40 to-violet-600/30',
-  'bg-gradient-to-br from-purple-400/50 via-indigo-500/40 to-purple-700/30',
-];
+// No need for cardColors array, we'll use inline style for the gradient
 
 const FactsSlider = () => {
   const animeTitles = Object.keys(dummyFunFacts);
@@ -116,21 +107,27 @@ const FactsSlider = () => {
 
   const handleTouchEnd = () => setIsDragging(false);
 
+  // Card style for the linear gradient background
+  const cardStyle = {
+    background: 'linear-gradient(180deg,rgba(255,255,255,.10126057258841037) 0,rgba(255,255,255,0) 100%)',
+    color: '#222',
+  };
+
   return (
-    <div className="py-12 bg-black   h-[60vh]">
-      <section className="bg-gradient-to-br from-zinc-800/90 to-zinc-900/90  flex h-full w-full overflow-hidden ">
+    <div className="bg-black h-[60vh]">
+      <section className="flex h-full w-full overflow-hidden">
         {/* Left Side Image */}
-        <div className="flex items-end justify-center w-[33%] relative overflow-hidden rounded-l-3xl bg-gradient-to-t from-purple-900/30 to-transparent">
+        <div className="flex items-end justify-center w-[33%] relative overflow-hidden bg-gradient-to-t from-purple-900/30 to-transparent">
           <img className="object-cover h-[45vh] w-fit" src={discussion} alt="Discussion" />
         </div>
 
         {/* Right Side (Title + Scroll Cards) */}
-        <div className="w-[67%] flex flex-col  pt-4">
-          <h2 className="text-white text-3xl font-semibold ml-6 ">Fun Facts About Anime </h2>
+        <div className="w-[67%] flex flex-col pt-4 mt-8">
+          <h2 className="text-white/60 text-4xl font-bold ml-6">Fun Facts About Anime </h2>
 
           <div
             ref={scrollRef}
-            className={`scroll-container w-full bg-gradient-to-t from-purple-900/30 to-transparent overflow-x-auto flex gap-6 px-6 py-6 items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`scroll-container w-full bg-gradient-to-t from-purple-900/30 to-transparent overflow-x-auto flex gap-6 px-6 py-6 items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} mt-15 `}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -142,14 +139,16 @@ const FactsSlider = () => {
             {animeTitles.map((title, i) => (
               <div
                 key={title}
-                className={`min-w-[300px] max-w-[320px]  h-[32vh] ${cardColors[i % cardColors.length]} rounded-3xl p-5 text-white shadow-xl backdrop-blur-xl flex-shrink-0 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 relative overflow-hidden`}
+                className={`min-w-[300px] max-w-[320px] h-[32vh] rounded-3xl p-5 shadow-xl backdrop-blur-xl flex-shrink-0 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 relative overflow-hidden`}
+                style={cardStyle}
               >
                 <div className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full blur-xl animate-pulse"></div>
                 <div className="absolute bottom-6 left-6 w-6 h-6 bg-white/5 rounded-full blur-lg animate-pulse delay-500"></div>
+
                 <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black/20 to-transparent z-0 pointer-events-none" />
 
                 <div className="relative z-44">
-                  <h2 className="text-xl font-bold mb-3 mr-6 flex items-center justify-between gap-3">
+                  <h2 className="text-xl font-bold mb-3 mr-6 flex items-center justify-between gap-3 text-white/60">
                     {animeImages[title] && (
                       <img
                         src={animeImages[title]}
@@ -161,7 +160,7 @@ const FactsSlider = () => {
                   </h2>
                   <div className="space-y-2 text-sm font-medium leading-snug">
                     {dummyFunFacts[title].map((fact, index) => (
-                      <p key={index} className="text-white drop-shadow-sm">
+                      <p key={index} className="drop-shadow-sm text-white/60">
                         {fact}
                       </p>
                     ))}
