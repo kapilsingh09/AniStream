@@ -91,11 +91,11 @@ const FactsSlider = () => {
   const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className="bg-gradient-to-b from-black  to-gray-900 min-h-[50vh]">
+    <div className="bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
       <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
         
         {/* Left Image */}
-        <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4 bg-gradient-to-b from-black to-purple-800/30  ">
+        <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4">
           <img 
             className="object-cover max-h-[40vh] sm:max-h-[45vh] absolute bottom-0 left-1/6"
             src={discussion}
@@ -111,7 +111,7 @@ const FactsSlider = () => {
 
           <div
             ref={scrollRef}
-            className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative transition-all duration-300 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative transition-all duration-300 scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={(e) => startDrag(e.pageX)}
             onMouseMove={(e) => onDrag(e.pageX)}
             onMouseUp={stopDrag}
@@ -123,13 +123,13 @@ const FactsSlider = () => {
             {animeTitles.map((title) => (
               <div
                 key={title}
-                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 shadow-xl flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-purple-300/20 relative"
+                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl relative"
                 style={{
-                  background: 'rgba(40, 20, 60, 0.35)',
-                  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
-                  backdropFilter: 'blur(18px) saturate(160%)',
-                  WebkitBackdropFilter: 'blur(18px) saturate(160%)',
-                  border: '1px solid rgba(255,255,255,0.13)',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                  backdropFilter: 'blur(16px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                  border: '1px solid rgba(255,255,255,0.18)',
                 }}
               >
                 {/* Decorative elements */}
