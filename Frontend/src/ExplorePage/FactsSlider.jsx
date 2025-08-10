@@ -91,7 +91,7 @@ const FactsSlider = () => {
   const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 via-black to-gray-900 min-h-[60vh]">
+    <div className="bg-gradient-to-b from-black  to-gray-900 min-h-[50vh]">
       <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
         
         {/* Left Image */}
@@ -123,7 +123,14 @@ const FactsSlider = () => {
             {animeTitles.map((title) => (
               <div
                 key={title}
-                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-xl flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-purple-300/20 relative overflow-hidden bg-gradient-to-b from-purple-500/10 via-transparent to-transparent"
+                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 shadow-xl flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-purple-300/20 relative"
+                style={{
+                  background: 'rgba(40, 20, 60, 0.35)',
+                  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+                  backdropFilter: 'blur(18px) saturate(160%)',
+                  WebkitBackdropFilter: 'blur(18px) saturate(160%)',
+                  border: '1px solid rgba(255,255,255,0.13)',
+                }}
               >
                 {/* Decorative elements */}
                 <div className="absolute top-3 right-3 w-8 h-8 sm:w-10 sm:h-10 bg-purple-300/10 rounded-full blur-lg animate-pulse"></div>
