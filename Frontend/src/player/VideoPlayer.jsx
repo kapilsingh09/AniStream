@@ -18,6 +18,7 @@ import {
 import axios from 'axios';
 import SorryCard from '../utils/SorryCard';
 import RecomendedAnime from '../components/RecomendedAnime';
+import SkeletonLoader from '../loader/SkeletonLoader';
 
 const VideoPlayer = ({ src, type = 'video/mp4' }) => {
   const videoRef = useRef(null);
@@ -136,9 +137,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
-        <div className="text-lg font-semibold animate-pulse">Loading...</div>
-      </div>
+     <SkeletonLoader />
     );
   }
 

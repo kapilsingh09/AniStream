@@ -50,7 +50,7 @@ const Homepage = () => {
      {/* <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} /> */}
 
      {/* <RecomendedAnime />   */}
-{/* <AviAnime /> */}
+<AviAnime />
 
        {/* <div className="flex items-center justify-center ">
          <AnimeBanner />

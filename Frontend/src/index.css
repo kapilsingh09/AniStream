@@ -44,12 +44,12 @@ body{
 
   @layer base {
     ::selection {
-      background: #ff6b35;
+      background: #a78bfa;
       color: #fff;
     }
   
     ::-moz-selection {
-      background: #ff6b35;
+      background: #a78bfa;
       color: #fff;
     }
   }

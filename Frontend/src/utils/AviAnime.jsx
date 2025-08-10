@@ -42,7 +42,7 @@ const AviAnime = () => {
   };
 
   return (
-    <div className="min-h-[50vh] border bg-black">
+    <div className="min-h-[50vh]  bg-black">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-bold text-white px-8 ">Local Anime Grid</h1>
