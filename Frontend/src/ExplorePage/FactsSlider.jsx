@@ -1,60 +1,58 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import discussion from '../assets/discussion.png';
 
 const dummyFunFacts = {
   'One Piece': [
-    'Oda can draw with both hands at the same time! That\'s some next-level multitasking! 😊',
-    'Over 500 million copies sold—record-shattering! Fans just can\'t get enough! 🤩',
+    'Oda can draw with both hands at the same time! 😊',
+    'Over 500 million copies sold—record-shattering! 🤩',
   ],
   'Naruto': [
-    'Naruto was almost named "Kumomaru"! Imagine that timeline! 😮',
-    'Ichiraku Ramen is a real place! Bet it\'s as delicious as it looks 😋',
+    'Naruto was almost named "Kumomaru"! 😮',
+    'Ichiraku Ramen is a real place! 😋',
   ],
   'Attack on Titan': [
-    'Titan movements are modeled after drunk people. Creepy... yet fascinating. 😰',
-    '"Eren" means "saint" in Turkish. A name with weight! 🤔',
+    'Titan movements are modeled after drunk people. 😰',
+    '"Eren" means "saint" in Turkish. 🤔',
   ],
   'My Hero Academia': [
-    'All Might = Japanese Superman! Truly the Symbol of Peace. 😄',
-    'The author wanted to make horror manga first. Talk about plot twist! 😱',
+    'All Might = Japanese Superman! 😄',
+    'The author wanted to make horror manga first. 😱',
   ],
   'Demon Slayer': [
-    'Zenitsu\'s bird is a sparrow, not a crow. So tiny and brave! 🥰',
-    'The whole manga was hand-drawn. That\'s dedication! 😤',
+    'Zenitsu\'s bird is a sparrow, not a crow. 🥰',
+    'The whole manga was hand-drawn. 😤',
   ],
   'Death Note': [
-    'L crouches to conserve energy. Weird? Genius? Maybe both. 🤨',
-    'Light\'s name isn\'t the Japanese word for "light"—clever detail! 😏',
+    'L crouches to conserve energy. 🤨',
+    'Light\'s name isn\'t the Japanese word for "light". 😏',
   ],
   'Dragon Ball': [
-    'Goku\'s voice is done by an 80+ year-old woman. Legendary! 🤯',
-    'Inspired by "Journey to the West"—an epic story reborn. 😌',
+    'Goku\'s voice is done by an 80+ year-old woman. 🤯',
+    'Inspired by "Journey to the West". 😌',
   ],
 };
-
-// No need for cardColors array, we'll use inline style for the gradient
 
 const FactsSlider = () => {
   const animeTitles = Object.keys(dummyFunFacts);
   const [animeImages, setAnimeImages] = useState({});
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 });
+  const dragStart = useRef({ x: 0, scrollLeft: 0 });
   const scrollRef = useRef(null);
 
-  useEffect(() => {
-    const fetchCovers = async () => {
-      const query = `
-        query ($search: String) {
-          Media(type: ANIME, search: $search) {
-            coverImage {
-              extraLarge
-            }
+  const fetchCovers = useCallback(async () => {
+    const query = `
+      query ($search: String) {
+        Media(type: ANIME, search: $search) {
+          coverImage {
+            extraLarge
           }
         }
-      `;
-      const results = {};
+      }
+    `;
 
-      for (const title of animeTitles) {
+    const results = {};
+    await Promise.all(
+      animeTitles.map(async (title) => {
         try {
           const res = await fetch('https://graphql.anilist.co', {
             method: 'POST',
@@ -62,105 +60,91 @@ const FactsSlider = () => {
             body: JSON.stringify({ query, variables: { search: title } }),
           });
           const json = await res.json();
-          results[title] = json.data.Media.coverImage.extraLarge;
+          results[title] = json.data?.Media?.coverImage?.extraLarge || '';
         } catch (error) {
-          console.error('Error fetching cover for', title);
+          console.error(`Error fetching cover for ${title}`, error);
         }
-      }
-      setAnimeImages(results);
-    };
+      })
+    );
+    setAnimeImages(results);
+  }, [animeTitles]);
 
+  useEffect(() => {
     fetchCovers();
-  }, []);
+  }, [fetchCovers]);
 
-  const handleMouseDown = (e) => {
+  const startDrag = (clientX) => {
     setIsDragging(true);
-    setDragStart({
-      x: e.pageX - scrollRef.current.offsetLeft,
+    dragStart.current = {
+      x: clientX - scrollRef.current.offsetLeft,
       scrollLeft: scrollRef.current.scrollLeft,
-    });
+    };
   };
 
-  const handleMouseMove = (e) => {
+  const onDrag = (clientX) => {
     if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - dragStart.x) * 2;
-    scrollRef.current.scrollLeft = dragStart.scrollLeft - walk;
+    const x = clientX - scrollRef.current.offsetLeft;
+    const walk = (x - dragStart.current.x) * 2;
+    scrollRef.current.scrollLeft = dragStart.current.scrollLeft - walk;
   };
 
-  const handleMouseUp = () => setIsDragging(false);
-  const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setDragStart({
-      x: e.touches[0].pageX - scrollRef.current.offsetLeft,
-      scrollLeft: scrollRef.current.scrollLeft,
-    });
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    const x = e.touches[0].pageX - scrollRef.current.offsetLeft;
-    const walk = (x - dragStart.x) * 2;
-    scrollRef.current.scrollLeft = dragStart.scrollLeft - walk;
-  };
-
-  const handleTouchEnd = () => setIsDragging(false);
-
-  // Card style for the linear gradient background
-  const cardStyle = {
-    background: 'linear-gradient(180deg,rgba(255,255,255,.10126057258841037) 0,rgba(255,255,255,0) 100%)',
-    color: '#222',
-  };
+  const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className="bg-black h-[60vh]">
-      <section className="flex h-full w-full overflow-hidden">
-        {/* Left Side Image */}
-        <div className="flex items-end justify-center w-[33%] relative overflow-hidden bg-gradient-to-t from-purple-900/30 to-transparent">
-          <img className="object-cover h-[45vh] w-fit" src={discussion} alt="Discussion" />
+    <div className="bg-gradient-to-b from-gray-900 via-black to-gray-900 min-h-[60vh]">
+      <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
+        
+        {/* Left Image */}
+        <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4 bg-gradient-to-b from-black to-purple-800/30  ">
+          <img 
+            className="object-cover max-h-[40vh] sm:max-h-[45vh] absolute bottom-0 left-1/6"
+            src={discussion}
+            alt="Anime discussion illustration"
+          />
         </div>
 
-        {/* Right Side (Title + Scroll Cards) */}
-        <div className="w-[67%] flex flex-col pt-4 mt-8">
-          <h2 className="text-white/60 text-4xl font-bold ml-6">Fun Facts About Anime </h2>
+        {/* Right Content */}
+        <div className="w-full lg:w-2/3 flex flex-col pt-4 lg:mt-8">
+          <h2 className="text-white/80 text-2xl sm:text-3xl md:text-4xl font-bold px-4 mb-4">
+            Fun Facts About Anime
+          </h2>
 
           <div
             ref={scrollRef}
-            className={`scroll-container w-full bg-gradient-to-t from-purple-900/30 to-transparent overflow-x-auto flex gap-6 px-6 py-6 items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} mt-15 `}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative transition-all duration-300 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            onMouseDown={(e) => startDrag(e.pageX)}
+            onMouseMove={(e) => onDrag(e.pageX)}
+            onMouseUp={stopDrag}
+            onMouseLeave={stopDrag}
+            onTouchStart={(e) => startDrag(e.touches[0].pageX)}
+            onTouchMove={(e) => onDrag(e.touches[0].pageX)}
+            onTouchEnd={stopDrag}
           >
-            {animeTitles.map((title, i) => (
+            {animeTitles.map((title) => (
               <div
                 key={title}
-                className={`min-w-[300px] max-w-[320px] h-[32vh] rounded-3xl p-5 shadow-xl backdrop-blur-xl flex-shrink-0 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 relative overflow-hidden`}
-                style={cardStyle}
+                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-xl flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-purple-300/20 relative overflow-hidden bg-gradient-to-b from-purple-500/10 via-transparent to-transparent"
               >
-                <div className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute bottom-6 left-6 w-6 h-6 bg-white/5 rounded-full blur-lg animate-pulse delay-500"></div>
+                {/* Decorative elements */}
+                <div className="absolute top-3 right-3 w-8 h-8 sm:w-10 sm:h-10 bg-purple-300/10 rounded-full blur-lg animate-pulse"></div>
+                <div className="absolute bottom-4 left-4 w-4 h-4 sm:w-6 sm:h-6 bg-purple-200/5 rounded-full blur-md animate-pulse delay-500"></div>
+                <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
-                <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black/20 to-transparent z-0 pointer-events-none" />
-
-                <div className="relative z-44">
-                  <h2 className="text-xl font-bold mb-3 mr-6 flex items-center justify-between gap-3 text-white/60">
+                {/* Card Content */}
+                <div className="relative z-10">
+                  <h3 className="text-lg sm:text-xl font-bold mb-3 flex items-center gap-3 text-purple-200">
                     {animeImages[title] && (
                       <img
                         src={animeImages[title]}
-                        alt={title}
-                        className="w-15 h-15 rounded-full object-cover ring-2 ring-white/20"
+                        alt={`${title} cover`}
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-purple-300/30"
                       />
                     )}
                     {title}
-                  </h2>
-                  <div className="space-y-2 text-sm font-medium leading-snug">
-                    {dummyFunFacts[title].map((fact, index) => (
-                      <p key={index} className="drop-shadow-sm text-white/60">
+                  </h3>
+                  <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm font-medium leading-snug">
+                    {dummyFunFacts[title].map((fact, idx) => (
+                      <p key={idx} className="text-white/70">
                         {fact}
                       </p>
                     ))}
@@ -172,13 +156,13 @@ const FactsSlider = () => {
         </div>
       </section>
 
-      {/* Stylish Scrollbar */}
+      {/* Custom scrollbar */}
       <style jsx>{`
         .scroll-container::-webkit-scrollbar {
           height: 4px;
         }
         .scroll-container::-webkit-scrollbar-thumb {
-          background: #a78bfa;
+          background: linear-gradient(90deg, #a78bfa, #f472b6);
           border-radius: 9999px;
         }
       `}</style>
