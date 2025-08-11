@@ -39,6 +39,8 @@ const FactsSlider = () => {
   const dragStart = useRef({ x: 0, scrollLeft: 0 });
   const scrollRef = useRef(null);
 
+
+
   const fetchCovers = useCallback(async () => {
     const query = `
       query ($search: String) {
@@ -84,17 +86,18 @@ const FactsSlider = () => {
   const onDrag = (clientX) => {
     if (!isDragging) return;
     const x = clientX - scrollRef.current.offsetLeft;
-    const walk = (x - dragStart.current.x) * 2;
+    // Remove the *2 multiplier for more natural scroll speed
+    const walk = x - dragStart.current.x;
     scrollRef.current.scrollLeft = dragStart.current.scrollLeft - walk;
   };
 
   const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className="bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
+    <div className=" border rm-selection bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
       <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
         
-        {/* Left Image */}
+        {/* Left Image */}  
         <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4">
           <img 
             className="object-cover max-h-[40vh] sm:max-h-[45vh] absolute bottom-0 left-1/6"
@@ -111,7 +114,8 @@ const FactsSlider = () => {
 
           <div
             ref={scrollRef}
-            className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative transition-all duration-300 scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            // Remove 'transition-all duration-300' for more responsive drag
+            className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={(e) => startDrag(e.pageX)}
             onMouseMove={(e) => onDrag(e.pageX)}
             onMouseUp={stopDrag}
@@ -123,19 +127,13 @@ const FactsSlider = () => {
             {animeTitles.map((title) => (
               <div
                 key={title}
-                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 flex-shrink-0 border border-white/10 transition-transform duration-300 hover:scale-105 hover:shadow-2xl relative"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                  backdropFilter: 'blur(16px) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
-                  border: '1px solid rgba(255,255,255,0.18)',
-                }}
+                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 flex-shrink-0 border border-white/10 transition-transform duration-300  relative"
+           
               >
                 {/* Decorative elements */}
-                <div className="absolute top-3 right-3 w-8 h-8 sm:w-10 sm:h-10 bg-purple-300/10 rounded-full blur-lg animate-pulse"></div>
+                {/* <div className="absolute top-3 right-3 w-8 h-8 sm:w-10 sm:h-10 bg-purple-300/10 rounded-full blur-lg animate-pulse"></div>
                 <div className="absolute bottom-4 left-4 w-4 h-4 sm:w-6 sm:h-6 bg-purple-200/5 rounded-full blur-md animate-pulse delay-500"></div>
-                <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" /> */}
 
                 {/* Card Content */}
                 <div className="relative z-10">

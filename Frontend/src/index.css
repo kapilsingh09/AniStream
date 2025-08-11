@@ -53,3 +53,13 @@ body{
       color: #fff;
     }
   }
+
+  .rm-selection {
+    /* background: #a78bfa; */
+    color: #fff;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;
+  }
+  
