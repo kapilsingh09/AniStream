@@ -6,10 +6,11 @@ import Login from '../routes/Login';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const NavLink = ({ to, children, className, onClick }) => {
+// Modified NavLink: remove bottom slider for login button
+const NavLink = ({ to, children, className, onClick, noSlider }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
-  
+
   return (
     <Link
       to={to}
@@ -20,8 +21,11 @@ const NavLink = ({ to, children, className, onClick }) => {
           : "text-white/80 hover:text-white hover:bg-white/10"
       } relative`}
     >
+      {/* Shhh... let the children play by themselves! */}
       {children}
-      {isActive && (
+
+
+      {isActive && !noSlider && (
         <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-2xl bg-white" />
       )}
     </Link>
@@ -154,6 +158,8 @@ export default function Navbar() {
               {user ? (
                 <div className="flex items-center gap-4">
                   <span className="text-white/80 text-sm">👋{user.name}</span>
+                  console.log(user.name);
+                  
                   <button
                     onClick={handleLogout}
                     className="px-3 py-1 rounded-full border border-white/30 hover:border-red-400 hover:bg-red-500/20 transition-all duration-300 text-sm text-white/80 hover:text-white"
@@ -165,6 +171,7 @@ export default function Navbar() {
                 <NavLink
                   to="/login"
                   className="px-4 py-2 rounded-full border border-white/30 hover:border-violet-400 hover:bg-gradient-to-r hover:from-pink-500/20 hover:to-violet-500/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
+                  noSlider={true}
                 >
                   <User size={16} />
                   Login
@@ -238,6 +245,7 @@ export default function Navbar() {
                     to="/login"
                     onClick={closeMobileMenu}
                     className=" px-3 py-2 rounded-md text-base font-medium flex items-center gap-3"
+                    noSlider={true}
                   >
                     <User size={18} />
                     Login

@@ -82,7 +82,7 @@ const AnimeBanner = () => {
     if (malId) {
       // Fix: If malId is a number (from Jikan), use /mal/:id, else use /kitsu/:id
       if (typeof malId === 'number' || /^\d+$/.test(malId)) {
-        navigate(`/mal/${malId}`);
+        navigate(`/play/${malId}`);
       } else {
         navigate(`/kitsu/${malId}`);
       }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import discussion from '../assets/discussion.png';
 
 const dummyFunFacts = {
@@ -32,48 +32,23 @@ const dummyFunFacts = {
   ],
 };
 
+// Temporary placeholder images from Unsplash (replace with your own later)
+const animeImages = {
+  'One Piece': 'https://via.placeholder.com/100x100.png?text=One+Piece',
+  'Naruto': 'https://via.placeholder.com/100x100.png?text=Naruto',
+  'Attack on Titan': 'https://via.placeholder.com/100x100.png?text=AoT',
+  'My Hero Academia': 'https://via.placeholder.com/100x100.png?text=MHA',
+  'Demon Slayer': 'https://via.placeholder.com/100x100.png?text=DS',
+  'Death Note': 'https://via.placeholder.com/100x100.png?text=Death+Note',
+  'Dragon Ball': 'https://via.placeholder.com/100x100.png?text=DB',
+};
+
 const FactsSlider = () => {
   const animeTitles = Object.keys(dummyFunFacts);
-  const [animeImages, setAnimeImages] = useState({});
+  const [loaded, setLoaded] = useState({});
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, scrollLeft: 0 });
   const scrollRef = useRef(null);
-
-
-
-  const fetchCovers = useCallback(async () => {
-    const query = `
-      query ($search: String) {
-        Media(type: ANIME, search: $search) {
-          coverImage {
-            extraLarge
-          }
-        }
-      }
-    `;
-
-    const results = {};
-    await Promise.all(
-      animeTitles.map(async (title) => {
-        try {
-          const res = await fetch('https://graphql.anilist.co', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, variables: { search: title } }),
-          });
-          const json = await res.json();
-          results[title] = json.data?.Media?.coverImage?.extraLarge || '';
-        } catch (error) {
-          console.error(`Error fetching cover for ${title}`, error);
-        }
-      })
-    );
-    setAnimeImages(results);
-  }, [animeTitles]);
-
-  useEffect(() => {
-    fetchCovers();
-  }, [fetchCovers]);
 
   const startDrag = (clientX) => {
     setIsDragging(true);
@@ -86,7 +61,6 @@ const FactsSlider = () => {
   const onDrag = (clientX) => {
     if (!isDragging) return;
     const x = clientX - scrollRef.current.offsetLeft;
-    // Remove the *2 multiplier for more natural scroll speed
     const walk = x - dragStart.current.x;
     scrollRef.current.scrollLeft = dragStart.current.scrollLeft - walk;
   };
@@ -94,7 +68,7 @@ const FactsSlider = () => {
   const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className=" border rm-selection bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
+    <div className="rm-selection bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
       <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
         
         {/* Left Image */}  
@@ -108,13 +82,18 @@ const FactsSlider = () => {
 
         {/* Right Content */}
         <div className="w-full lg:w-2/3 flex flex-col pt-4 lg:mt-8">
-          <h2 className="text-white/80 text-2xl sm:text-3xl md:text-4xl font-bold px-4 mb-4">
+        <div className=' flex items-center justify-between'>
+        <h2 className="text-white/80 text-2xl sm:text-3xl md:text-4xl font-bold px-4 mb-4">
             Fun Facts About Anime
           </h2>
 
+          <button className="flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg">
+          View All
+        </button>
+        </div>
+
           <div
             ref={scrollRef}
-            // Remove 'transition-all duration-300' for more responsive drag
             className={`scroll-container flex gap-4 sm:gap-6 px-4 py-4 sm:py-6 overflow-x-auto items-start relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={(e) => startDrag(e.pageX)}
             onMouseMove={(e) => onDrag(e.pageX)}
@@ -127,24 +106,19 @@ const FactsSlider = () => {
             {animeTitles.map((title) => (
               <div
                 key={title}
-                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 flex-shrink-0 border border-white/10 transition-transform duration-300  relative"
-           
+                className="min-w-[260px] sm:min-w-[300px] max-w-[320px] h-[28vh] sm:h-[32vh] rounded-2xl p-4 sm:p-5 flex-shrink-0 border border-white/10 relative bg-black/20"
               >
-                {/* Decorative elements */}
-                {/* <div className="absolute top-3 right-3 w-8 h-8 sm:w-10 sm:h-10 bg-purple-300/10 rounded-full blur-lg animate-pulse"></div>
-                <div className="absolute bottom-4 left-4 w-4 h-4 sm:w-6 sm:h-6 bg-purple-200/5 rounded-full blur-md animate-pulse delay-500"></div>
-                <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" /> */}
-
-                {/* Card Content */}
                 <div className="relative z-10">
                   <h3 className="text-lg sm:text-xl font-bold mb-3 flex items-center gap-3 text-purple-200">
-                    {animeImages[title] && (
-                      <img
-                        src={animeImages[title]}
-                        alt={`${title} cover`}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-purple-300/30"
-                      />
+                    {!loaded[title] && (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-300/20 animate-pulse"></div>
                     )}
+                    <img
+                      src={animeImages[title]}
+                      alt={`${title} cover`}
+                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-purple-300/30 transition-opacity duration-300 ${loaded[title] ? 'opacity-100' : 'opacity-0'}`}
+                      onLoad={() => setLoaded((prev) => ({ ...prev, [title]: true }))}
+                    />
                     {title}
                   </h3>
                   <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm font-medium leading-snug">
@@ -169,6 +143,12 @@ const FactsSlider = () => {
         .scroll-container::-webkit-scrollbar-thumb {
           background: linear-gradient(90deg, #a78bfa, #f472b6);
           border-radius: 9999px;
+        }
+        .rm-selection {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
         }
       `}</style>
     </div>

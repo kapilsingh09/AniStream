@@ -14,14 +14,12 @@
     "@tanstack/react-query": "^5.84.0",
     "@tanstack/react-query-devtools": "^5.81.2",
     "axios": "^1.10.0",
-    "framer-motion": "^12.19.1",
     "hls.js": "^1.6.5",
     "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-player": "^2.16.0",
     "react-router-dom": "^7.6.2",
-    "tailwindcss": "^4.1.10",
     "video.js": "^8.23.3",
     "videojs-contrib-quality-levels": "^4.1.0",
     "videojs-http-source-selector": "^1.1.6"
@@ -31,10 +29,14 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
+    "clsx": "^2.1.1",
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "framer-motion": "^12.23.12",
     "globals": "^16.2.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11",
     "vite": "^6.3.5"
   }
 }

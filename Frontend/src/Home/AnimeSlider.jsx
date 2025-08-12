@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 
 const API_ENDPOINTS = {
-  trending:
-    'https://kitsu.io/api/edge/trending/anime?limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+  // trending:
+  //   'https://kitsu.io/api/edge/trending/anime?limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
   topRated:
     'https://kitsu.io/api/edge/anime?sort=-averageRating&limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank,mappings',
 };
@@ -396,7 +396,7 @@ export default function Slider() {
                 )}
                 {slides[current].popularityRank && (
                   <span className="px-2 py-1 bg-yellow-600 rounded text-xs font-medium">
-                    #{slides[current].popularityRank}
+                    #spotlight:{current + 1}
                   </span>
                 )}
               </motion.div>

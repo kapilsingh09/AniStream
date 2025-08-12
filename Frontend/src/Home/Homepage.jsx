@@ -47,7 +47,7 @@ const Homepage = () => {
     
     {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
     {/* <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={fetchFantasyAnime} /> */}
-     {/* <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} /> */}
+     <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} />
 
      {/* <RecomendedAnime />   */}
 <AviAnime />
@@ -57,7 +57,7 @@ const Homepage = () => {
       </div>  */}
 
 
-      {/* <SectionComponentKitsu title="Trending Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} /> */}
+      <SectionComponentKitsu title="Trendin/g Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} />
 
       {/* wholemf */}
       {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}

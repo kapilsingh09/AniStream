@@ -41,7 +41,7 @@ const App = () => {
           <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
           {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
           <Route path="/genres/:id" element={<Demo />} />
-            <Route path="/watch/:id" element={<Player />} animeName="Naruto" />
+            <Route path="/watch/:id" element={<Player animeName="Naruto" />}  />
           {/* 404 */}
           <Route path="*" element={<SorryCard />} />
         </Route>
