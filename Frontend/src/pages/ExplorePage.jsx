@@ -35,13 +35,14 @@ export default function ExplorePage() {
            error={errors?.kitsuTrending}
            refetch={refetch}
          />
+         <SeasonalAnime />
         {/* <SeasonalAnime /> */}
-        {/* <Filter /> */}
+        <Filter />
         
-        {/* <TrendingManga /> */}
+        <TrendingManga />
       
-        {/* <Spotlight /> */}
-        {/* <Trending /> */}
+        <Spotlight />
+        <Trending />
         {/* <FactsSlider /> */}
  
     </div>

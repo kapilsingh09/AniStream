@@ -43,7 +43,7 @@ const SeasonalAnime = () => {
       } finally {
        
         setLoading(false);
-        console.log(uniqueAnime);
+        // console.log(uniqueAnime);
         
       }
     };
