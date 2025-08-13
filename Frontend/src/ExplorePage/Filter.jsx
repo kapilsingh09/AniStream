@@ -174,7 +174,7 @@ const FeaturedSection = () => {
           ))}
         </div>
 
-        {/* <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <span>{currentFilter?.icon}</span>
             {currentFilter?.label}
@@ -187,9 +187,9 @@ const FeaturedSection = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </button>
-        </div> */}
+        </div> 
 
-        {/* <div className="bg-gray-800 rounded-lg p-6">
+         <div className="bg-gray-800 rounded-lg p-6">
           {loading && (
             <div className="text-center py-12">
               <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500 mb-2" />
@@ -271,10 +271,10 @@ const FeaturedSection = () => {
 
             </>
           )}
-        </div> */}
+        </div> 
 
         {/* Modal */}
-        {/* {selectedAnime && (
+        {selectedAnime && (
           <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setSelectedAnime(null)}>
             <div className="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="p-6">
@@ -312,7 +312,7 @@ const FeaturedSection = () => {
               </div>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

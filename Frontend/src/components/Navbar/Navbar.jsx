@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Home, Search, Compass, User, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import Searchbar from '../utils/Searchbar';
-import Login from '../routes/Login';
-import { useAuth } from '../context/AuthContext';
+import Searchbar from './Searchbar';
+import Login from '../../routes/Login';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-// Modified NavLink: remove bottom slider for login button
 const NavLink = ({ to, children, className, onClick, noSlider }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -21,6 +20,7 @@ const NavLink = ({ to, children, className, onClick, noSlider }) => {
           : "text-white/80 hover:text-white hover:bg-white/10"
       } relative`}
     >
+      
       {/* Shhh... let the children play by themselves! */}
       {children}
 

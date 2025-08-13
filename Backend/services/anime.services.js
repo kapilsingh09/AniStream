@@ -2,7 +2,6 @@ import Anime from "../models/anime.model.js";
 import axios from "axios";
 
 export const fetchAndCacheAnime = async () => {
-  // Fetch romantic anime from Jikan API
   const url = `https://api.jikan.moe/v4/anime?genres=22&order_by=popularity&sort=asc&limit=25`;
   
   const response = await axios.get(url);

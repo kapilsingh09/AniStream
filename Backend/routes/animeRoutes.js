@@ -4,6 +4,7 @@ import path from 'path';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { log } from 'console';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -85,6 +86,9 @@ router.get('/:slug', async (req, res) => {
       const filePath = path.join(__dirname, '..', 'videos', filename);
       const fileExists = fs.existsSync(filePath);
 
+      // console.log(filePath);
+      // console.log(fileExists);
+      
       return {
         id: ep.id,
         episode: epNum,

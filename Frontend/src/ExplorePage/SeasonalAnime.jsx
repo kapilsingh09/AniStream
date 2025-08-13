@@ -27,7 +27,6 @@ const SeasonalAnime = () => {
       setError(null);
       try {
         const data = await FetchSeasonalAnime(currentYear, selectedSeason, 12);
-  console.log(data);
   
         const uniqueAnimeMap = new Map();
         data.forEach((anime) => {

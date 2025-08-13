@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, Search, X, Star, Calendar, Clock, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 const Searchbar = ({ onClose }) => {
-  const [search, setSearch] = useState('naruto');
+  const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,7 +41,6 @@ const Searchbar = ({ onClose }) => {
     'bg-gradient-to-r from-emerald-500 to-teal-500',
   ];
 
-  // Debounce logic
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (search.trim()) {
@@ -80,13 +79,13 @@ const Searchbar = ({ onClose }) => {
   const handleSearch = (e, keyword) => {
     e.stopPropagation();
   
-    // Check if keyword is an object and has a title
+   
     const title =
       typeof keyword === "string"
         ? keyword
         : keyword?.title || keyword?.title_english || "";
   
-    if (!title) return; // Prevent navigation if no title found
+    if (!title) return; 
   
     navigate(`/find?keyword=${encodeURIComponent(title)}`);
     onClose?.();
@@ -107,11 +106,11 @@ const Searchbar = ({ onClose }) => {
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
+    <div className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-2xl p-6 shadow-2xl">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-white">Search Anime</h2>
-        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-          <X size={20} className="text-white" />
+        <button onClick={onClose} className="p-2 hover:bg-white/10 border cursor-pointer border-white/20er rounded-full transition-colors">
+          <X size={20} className="text-red-500" />
         </button>
       </div>
 
@@ -126,23 +125,46 @@ const Searchbar = ({ onClose }) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search for anime, characters, or genres..."
-            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:border-violet-400 "
             autoFocus
           />
         </div>
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-gradient-to-r from-violet-500 to-pink-500 text-white py-3 px-6 rounded-xl font-medium hover:from-violet-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
-        >
-          Search
-        </button>
+        <div className='flex items-center justify-center'>
+  <button
+    onClick={handleSubmit}
+    className="w-full bg-violet-600 text-white text-2xl py-3 px-6 rounded-xl font-medium
+               border border-violet-700/40 shadow-lg 
+               transition-all duration-300 transform hover:bg-violet-700
+               focus:outline-none hover:cursor-pointer "
+  >
+    Search Anime
+  </button>
+</div>
+
+       
       </form>
       </div>
 
       {/* Results */}
       {loading && (
-        <div className="flex justify-center items-center mt-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-400"></div>
+        <div className="mt-4 space-y-4">
+          {/* Skeleton for search result cards */}
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="flex gap-4 bg-white/5 rounded-xl p-4 border border-white/10 animate-pulse"
+            >
+              {/* Image skeleton */}
+              <div className="w-20 h-28 rounded-lg bg-gray-700/40" />
+              {/* Text skeleton */}
+              <div className="flex-1 space-y-3 py-2">
+                <div className="h-5 w-2/3 bg-gray-700/40 rounded" />
+                <div className="h-4 w-1/2 bg-gray-700/30 rounded" />
+                <div className="h-3 w-1/3 bg-gray-700/20 rounded" />
+                <div className="h-3 w-1/4 bg-gray-700/20 rounded" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
       
@@ -177,9 +199,9 @@ const Searchbar = ({ onClose }) => {
                           className="w-full h-full object-cover transition-transform duration-300 "
                         />
                         <div className="absolute inset-0  flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="bg-transparent  border-2 border-black rounded-full p-2 transform hover:scale-110 transition-transform duration-200">
+                          {/* <div className="bg-transparent  border-2 border-black rounded-full p-2 transform hover:scale-110 transition-transform duration-200">
                             <Play className="text-black h-4 w-4" />
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                       
@@ -199,17 +221,19 @@ const Searchbar = ({ onClose }) => {
                     {/* Enhanced Info Section */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-bold text-lg leading-tight text-white group-hover:text-violet-300 transition-colors">
+                        <h3 className="font-bold text-lg leading-relaxed text-white group-hover:text-violet-300 transition-colors">
                           {anime.title_english || anime.title || "Unknown"}
                         </h3>
-                        {anime.episodes && (
-                          <span className="text-xs text-gray-400 bg-white/10 px-2 py-1 rounded-full">
+
+                        {anime.episodes && anime.type !== "Movie" && (
+                          <span className="text-xs text-white font-semibold bg-yellow-400 px-2 py-1 rounded-2xl">
                             {anime.episodes} eps
                           </span>
+
                         )}
                       </div>
                       
-                      <p className="text-sm text-gray-300 mb-3 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-white mb-3 line-clamp-2 leading-relaxed">
                         {anime.synopsis
                           ? anime.synopsis.length > 120
                             ? `${anime.synopsis.substring(0, 120)}...`
@@ -217,33 +241,51 @@ const Searchbar = ({ onClose }) => {
                           : 'No description available'}
                       </p>
 
-                      {/* Enhanced Metadata */}
                       <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-1 rounded-full font-medium">
+                        <span
+                          className={
+                            `px-2 py-1 rounded-2xl font-medium text-white ` +
+                            (
+                              anime.type === "TV"
+                                ? "bg-gradient-to-r from-violet-500 to-indigo-500"
+                                : anime.type === "Movie"
+                                ? "bg-gradient-to-r from-pink-500 to-red-500"
+                                : anime.type === "OVA"
+                                ? "bg-gradient-to-r from-green-500 to-emerald-500"
+                                : anime.type === "Special"
+                                ? "bg-gradient-to-r from-yellow-500 to-orange-500"
+                                : anime.type === "ONA"
+                                ? "bg-gradient-to-r from-fuchsia-500 to-purple-500"
+                                : anime.type === "Music"
+                                ? "bg-gradient-to-r from-cyan-500 to-blue-500"
+                                : "bg-gradient-to-r from-gray-500 to-gray-700"
+                            )
+                          }
+                        >
                           {anime.type || 'Unknown'}
                         </span>
                         
                         {anime.duration && (
-                          <span className="bg-white/10 text-gray-300 px-2 py-1 rounded-full flex items-center gap-1">
+                          <span className="bg-green-600/80 text-white px-2 py-1 rounded-2xl flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {anime.duration}
                           </span>
                         )}
                         
                         {anime.aired?.from && (
-                          <span className="bg-white/10 text-gray-300 px-2 py-1 rounded-full flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
+                          <span className="bg-rose-500 text-white px-2 py-1 rounded-2xl flex items-center gap-1 shadow">
+                            <Calendar className="h-3 w-3 text-white" />
                             {new Date(anime.aired.from).getFullYear()}
                           </span>
                         )}
                         
                         {anime.status && (
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          <span className={`px-2 py-1 rounded-2xl text-xs font-medium ${
                             anime.status === 'Finished Airing' 
-                              ? 'bg-green-500/20 text-green-400' 
+                              ? 'bg-emerald-600/20 text-emerald-300' 
                               : anime.status === 'Currently Airing'
-                              ? 'bg-blue-500/20 text-blue-400'
-                              : 'bg-gray-500/20 text-gray-400'
+                              ? 'bg-orange-500/20 text-orange-300'
+                              : 'bg-fuchsia-700/20 text-fuchsia-300'
                           }`}>
                             {anime.status}
                           </span>
