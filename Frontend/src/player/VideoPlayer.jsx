@@ -20,7 +20,7 @@ import SorryCard from '../utils/SorryCard';
 import RecomendedAnime from '../components/RecomendedAnime';
 import SkeletonLoader from '../loader/SkeletonLoader';
 
-const VideoPlayer = ({ src, type = 'video/mp4' }) => {
+const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
@@ -42,11 +42,13 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
 
   useEffect(() => {
     const fetchAnime = async () => {
+      if (!animeId) return;
+      
       setLoading(true);
       setFetchError(null);
       try {
         const res = await axios.get(
-          'http://localhost:3000/api/anime/the%20flower%20blooms%20with%20dignity'
+          `http://localhost:3000/api/anime/${animeId}`
         );
         setAnimeData(res.data);
         // console.log(res.data);
@@ -58,7 +60,7 @@ const VideoPlayer = ({ src, type = 'video/mp4' }) => {
       }
     };
     fetchAnime();
-  }, []);
+  }, [animeId]);
 
   useEffect(() => {
     const video = videoRef.current;

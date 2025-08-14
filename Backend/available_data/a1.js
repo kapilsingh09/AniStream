@@ -1,21 +1,16 @@
-// import img from '../public/images/wagari sama.jpg'
-// C:\Users\karan\Desktop\Project-2\Frontend\src\assets\wagari sama.jpg
-const available_data = [
+
+const available_data =  [
     {
         "id": "kaoru-hana-wa-rin-to-saku",
         "title": "The Fragrant Flower Blooms with Dignity",
         "original_title": "薫る花は凛と咲く",
         "synopsis": "When the intimidating Rintaro meets the open‑minded Kaoruko, the unlikely duo grows closer despite their rival high schools.",
         "type": "TV Anime",
-        "status": "ongoing",
+        "status": "Ongoing",
         "episodes_aired": 2,
         "total_episodes": null,
         "start_date": "2025-07-06",
-        // The current path is incorrect for use on a web page.
-        // For a React/Vite app, use a relative import path from the public folder or src/assets.
-        // Example if the image is in 'public/assets/wagari sama.jpg':
-        "img":"https://media.kitsu.app/anime/49205/poster_image/2f9c5da04cea44def6cf75be21e894c2.jpg",
-        // Or if you import it in React, you would use: import wagariSama from '../assets/wagari sama.jpg'
+        "img": "https://media.kitsu.app/anime/49205/poster_image/2f9c5da04cea44def6cf75be21e894c2.jpg",
         "genres": [
             "Romantic Comedy",
             "Drama",
@@ -84,7 +79,7 @@ const available_data = [
         "external": {
             "netflix_id": "82024665",
             "imdb_id": "tt36592690",
-            "kitsu_id": "49661"  // verified Kitsu anime ID
+            "kitsu_id": "49661"
         },
         "manga": {
             "author": "Saka Mikami",
@@ -100,21 +95,6 @@ const available_data = [
                 "Manga Academy Recognition"
             ]
         },
-        "episodes": [
-            {
-                "number": 1,
-                "video_url": "/videos/Kaoru_Hana_wa_Rin_to_Saku_-_01_1080p_KawaSubs.mp4"
-            },
-            {
-                "number": 2,
-                "video_url": "/videos/Kaoru_Hana_wa_Rin_to_Saku_-_02_1080p_KawaSubs.mp4"
-            },
-            {
-                "number": 3,
-                "air_date": "2025-07-20",
-                "video_url": null
-            }
-        ],
         "reception": {
             "early_buzz": [
                 "2.4M+ trailer views on YouTube",
@@ -126,7 +106,101 @@ const available_data = [
                 "kitsu_rank": "Popular"
             }
         }
+    },
+    {
+        "id": "tokopi-no-genzai",
+        "title": "Tokopi's Original Sin",
+        "original_title": "トコピの原罪",
+        "synopsis": "A heartwarming yet dark story about Tokopi, a cheerful alien from the planet Happy, who comes to Earth to spread happiness. Tokopi befriends a troubled girl named Shizuka, but soon discovers the complexities and pain of human emotions as he tries to help her.",
+        "type": "Manga",
+        "status": "Finished", // status intentionally omitted
+        "episodes_aired": null,
+        "total_episodes": null,
+        "start_date": "2021-12-20",
+        "img":  "https://cdn.myanimelist.net/images/anime/1182/149879.jpg",
+        "genres": [
+            "Drama",
+            "Psychological",
+            "Sci-Fi"
+        ],
+        "studios": [],
+        "licensor": "",
+        "cast": [
+            {
+                "character": "Tokopi",
+                "voice_actor": "N/A"
+            },
+            {
+                "character": "Shizuka",
+                "voice_actor": "N/A"
+            }
+        ],
+        "staff": {
+            "director": [],
+            "writer": "Taiyo Matsumoto",
+            "character_design": [],
+            "music": ""
+        },
+        "themes": {
+            "opening": null,
+            "ending": null
+        },
+        "streaming": {},
+        "external": {
+            "kitsu_id": "148857",
+            "mal_id": "145964",
+            "anilist_id": "143282"
+        },
+        "manga": {
+            "author": "Taiyo Matsumoto",
+            "publisher": "Shueisha",
+            "serialization": "Shonen Jump+",
+            "volumes": 2,
+            "status": "finished",
+            "start_year": 2021,
+            "copies_sold": "1.2 million+",
+            "awards": [
+                "Manga Taisho 2023 Nominee",
+                "Next Manga Award 2022 Winner",
+                "Kono Manga ga Sugoi! 2023 Top 10"
+            ]
+        },
+        "reception": {
+            "early_buzz": [
+                "Praised for emotional depth and unique premise",
+                "Viral on Twitter and manga forums",
+                "Critically acclaimed for tackling heavy themes"
+            ],
+            "ratings": {
+                "kitsu_average": 87,
+                "kitsu_rank": "Highly Rated"
+            }
+        }
     }
-]
+];
+
+// Example function to fetch and send Kitsu anime data
+// async function fetchAndSendKitsuAnime(res) {
+//     const response = await fetch('https://kitsu.io/api/edge/anime?page[limit]=5&sort=-popularityRank');
+//     const data = await response.json();
+//     const animeList = data.data.map(anime => ({
+//         key: anime.id,
+//         title: anime.attributes.titles.en_jp,
+//         original_title: anime.attributes.titles.ja_jp,
+//         synopsis: anime.attributes.synopsis,
+//         type: anime.attributes.showType,
+//         status: anime.attributes.status,
+//         episodes_aired: anime.attributes.episodeCount,
+//         start_date: anime.attributes.startDate,
+//         img: anime.attributes.posterImage?.original,
+//         studios: [],
+//         licensor: "",
+//         cast: []
+//     }));
+//     res.json(animeList);
+// }
+
+// app.get('/api/kitsu-anime', (req, res) => fetchAndSendKitsuAnime(res));
+
 
 export default available_data;

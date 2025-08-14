@@ -11,16 +11,16 @@ const connectDB = async () => {
     // console.log(connectionInstance);
     
   } catch (error) {
-    console.error('❌ Failed to connect to MongoDB');
+    console.error(' Failed to connect to MongoDB');
 
     if (error.message.includes('ECONNREFUSED')) {
-      console.log('🔴 MongoDB is not running');
+      console.log(' MongoDB is not running');
       process.exit(12); // Custom code for connection refused
     } else if (!process.env.MONGO_URI) {
-      console.log('🔴 MONGO_URI is missing');
+      console.log(' MONGO_URI is missing');
       process.exit(13); // Missing environment variable
     } else {
-      console.log('🔴 Unknown MongoDB connection error:', error);
+      console.log(' Unknown MongoDB connection error:', error);
       process.exit(1); // Generic failure
     }
   }

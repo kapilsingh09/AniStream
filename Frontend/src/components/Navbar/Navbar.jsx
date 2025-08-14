@@ -157,8 +157,8 @@ export default function Navbar() {
             <div className="hidden md:flex items-center">
               {user ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-white/80 text-sm">👋{user.name}</span>
-                  console.log(user.name);
+                  <span className="text-white/80 text-sm">👋{user.username}</span>
+{/* {console.log(user)} */}
                   
                   <button
                     onClick={handleLogout}

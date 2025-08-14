@@ -7,7 +7,7 @@ const getStatusBadgeClass = (status) => {
     case "ongoing":
       return "bg-green-600 text-white";
     case "finished":
-      return "bg-gray-600 text-white";
+      return "bg-blue-700 text-white";
     case "upcoming":
       return "bg-yellow-500 text-black";
     default:
@@ -39,6 +39,8 @@ const AviAnime = () => {
 
   const handleClick = (id) => {
     navigate(`/watch/${id}`);
+    // console.log(id);
+    
   };
 
   return (
@@ -47,12 +49,12 @@ const AviAnime = () => {
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-bold text-white px-8 ">Local Anime Grid</h1>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 px-8 py-2">
+        <div className="flex flex-wrap gap-5 px-2 sm:px-4 md:px-8 py-2 ">
           {loading
             ? [...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="animate-pulse h-[55vh] bg-white/10 rounded-xl"
+                  className="animate-pulse h-[55vh] w-[90vw] sm:w-[45vw] md:w-[22vw] lg:w-[14vw] bg-white/10 rounded-xl"
                 ></div>
               ))
             : animeData.map((anime) => {
@@ -76,7 +78,7 @@ const AviAnime = () => {
                   <div
                     key={id}
                     onClick={() => handleClick(id)}
-                    className="min-w-[14vw] max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group h-[50vh]"
+                    className="w-[90vw] sm:w-[45vw] md:w-[22vw] lg:min-w-[14vw] lg:max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group h-[50vh]"
                   >
                     <div className="relative h-[44vh] w-full">
                       <img
@@ -104,9 +106,9 @@ const AviAnime = () => {
                         </div>
                       )}
                       {/* Ongoing Badge */}
-                      {status && status.toLowerCase() === "ongoing" && (
+                      {status && status.toLowerCase() && (
                         <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeClass(status)} z-30`}>
-                          Ongoing
+                          {status}
                         </div>
                       )}
                     </div>

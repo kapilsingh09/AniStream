@@ -1,8 +1,11 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import VideoPlayer from './VideoPlayer';
 import RecomendedAnime from '../components/RecomendedAnime';
 
 const Player = () => {
+  const { id } = useParams();
+
   return (
     <div className="relative mt-16">
       {/* Glass background layer */}
@@ -22,7 +25,7 @@ const Player = () => {
         {/* Video section - no blur */}
         <section className="flex flex-col">
           <div className="w-full pl-6">
-            <VideoPlayer />
+            <VideoPlayer animeId={id} />
           </div>
         </section>
 

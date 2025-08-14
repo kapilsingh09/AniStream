@@ -136,7 +136,7 @@ const FactsSlider = () => {
       </section>
 
       {/* Custom scrollbar */}
-      <style jsx>{`
+      {/* <style jsx>{`
         .scroll-container::-webkit-scrollbar {
           height: 4px;
         }
@@ -150,7 +150,7 @@ const FactsSlider = () => {
           -ms-user-select: none;
           user-select: none;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 };
