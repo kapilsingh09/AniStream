@@ -47,7 +47,7 @@ const Homepage = () => {
     
     {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
     {/* <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={fetchFantasyAnime} /> */}
-     <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} />
+     {/* <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} /> */}
 
      {/* <RecomendedAnime />   */}
 <AviAnime />
@@ -73,9 +73,7 @@ const Homepage = () => {
          {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
        {/* Optional: More banners */}
-      <div className="flex items-center justify-center">
         <AnimeBanner />
-      </div>
       <footer>
         <FactsSlider />
       </footer> 

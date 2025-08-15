@@ -53,17 +53,17 @@ const SectionComponentKitsu = ({
     isFetching,
     isSuccess,
   } = useQuery({
-    queryKey: ['kitsuAnime', title, subtitle],
+    queryKey: [`${title}`],
     queryFn: async () => {
       if (!fetchFunction) throw new Error('No fetch function provided');
       const data = await fetchFunction();
       return filterAndDedupAnime(data);
     },
-    enabled: !!fetchFunction, // only run if fetchFunction is provided
-    staleTime: 24 * 60 * 60 * 1000, // cache forever unless manually invalidated
+    enabled: !!fetchFunction, 
+    // staleTime: 24 * 60 * 60 * 1000, // cache forever unless manually invalidated
+    staleTime:3*60*1000,
     cacheTime: Infinity,
     retry: (failureCount, err) => {
-      // Stop retrying if we already have data
       if (failureCount > 3) return false;
       if (err?.message?.includes('No fetch function')) return false;
       return true;

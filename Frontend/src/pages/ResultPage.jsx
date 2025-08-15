@@ -1,15 +1,29 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Star, Calendar, Play, Users, Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import Genres from "../utils/Geners";
+import { useQuery } from "@tanstack/react-query";
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
-const SearchPage = () => {
+
+const fetchSearchResults = async (searchQuery, page) => {
+  if (!searchQuery.trim()) {
+    return { data: [], pagination: { items: { total: 0 }, last_visible_page: 1 } };
+  }
+  const response = await fetch(
+    `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(
+      searchQuery
+    )}&order_by=score&sort=desc&limit=12&page=${page}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch search results");
+  return response.json();
+};
+
+const ResultPage = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
-  const [animeData, setAnimeData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [totalResults, setTotalResults] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [page, setPage] = useState(1);
+  const [paginationWindow, setPaginationWindow] = useState(4);
+
   const genreColors = [
     "bg-pink-500", "bg-purple-500", "bg-blue-500", "bg-green-500",
     "bg-yellow-500", "bg-orange-500", "bg-red-500", "bg-teal-500",
@@ -17,34 +31,23 @@ const SearchPage = () => {
     "bg-cyan-500", "bg-fuchsia-500", "bg-violet-500", "bg-emerald-500",
   ];
 
-  const fetchSearchResults = async (searchQuery) => {
-    if (!searchQuery.trim()) {
-      setAnimeData([]);
-      setLoading(false);
-      return;
-    }
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["searchResults", query, page],
+    queryFn: () => fetchSearchResults(query, page),
+    enabled: !!query.trim(),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    keepPreviousData: true
+  });
 
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(searchQuery)}&order_by=score&sort=desc&limit=20`
-      );
-      if (!response.ok) throw new Error("Failed to fetch search results");
-      const data = await response.json();
-      setAnimeData(data.data || []);
-      setTotalResults(data.pagination?.items?.total || 0);
-      setVisibleCount(12);
-    } catch (err) {
-      console.error("Error fetching search results:", err);
-      setAnimeData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSearchResults(query);
-  }, [query]);
+  const animeData = data?.data || [];
+  const totalResults = data?.pagination?.items?.total || 0;
+  const totalPages = data?.pagination?.last_visible_page || 1;
 
   const renderSkeletonCard = () => (
     <div className="animate-pulse">
@@ -62,8 +65,31 @@ const SearchPage = () => {
     </div>
   );
 
+  // Calculate which page numbers to show
+  let startPage = 1;
+  let endPage = Math.min(totalPages, paginationWindow);
+
+  // If current page is near the end, shift the window
+  if (page > endPage) {
+    startPage = page - Math.floor(paginationWindow / 2);
+    endPage = startPage + paginationWindow - 1;
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - paginationWindow + 1);
+    }
+  }
+
+  // On click, set page and if 3rd button, increase window size
+  const handlePageClick = (clickedPage, idxInWindow) => {
+    setPage(clickedPage);
+    // If the user clicks on the 3rd button (index 2 in window), increase window size by 2
+    if (idxInWindow === 2 && paginationWindow < totalPages) {
+      setPaginationWindow((prev) => Math.min(prev + 2, totalPages));
+    }
+  };
+
   return (
-    <div className="min-h-screen p-6 bg-slate-900    mt-14 pl-20 pr-20">
+    <div className="min-h-screen p-6 bg-slate-900 mt-14 pl-20 pr-20">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -77,7 +103,6 @@ const SearchPage = () => {
               )}
             </div>
           </div>
-          {/* <h2 className="text-white text-3xl font-bold">Genres</h2> */}
         </div>
 
         {!query.trim() && (
@@ -90,11 +115,21 @@ const SearchPage = () => {
         {query.trim() && (
           <div className="flex gap-6">
             <div className="flex-1">
-              {loading ? (
-                <div className="grid grid-cols-4 gap-6">
+              {isLoading ? (
+                <div className="grid grid-cols-6 gap-6">
                   {[...Array(8)].map((_, i) => (
                     <div key={i}>{renderSkeletonCard()}</div>
                   ))}
+                </div>
+              ) : isError ? (
+                <div className="text-center py-20">
+                  <Search className="w-16 h-16 text-white/50 mx-auto mb-4" />
+                  <p className="text-white/70 text-xl">
+                    Failed to fetch search results.
+                  </p>
+                  <p className="text-white/50 text-sm mt-2">
+                    Please try again later.
+                  </p>
                 </div>
               ) : animeData.length === 0 ? (
                 <div className="text-center py-20">
@@ -109,10 +144,10 @@ const SearchPage = () => {
               ) : (
                 <>
                   <div className="grid grid-cols-6 bg-slate-900 gap-6">
-                    {animeData.slice(0, visibleCount).map((anime, i) => {
+                    {animeData.map((anime, i) => {
                       const title = anime.title_english || anime.title || "Unknown Title";
                       const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
-                      const score = anime.score?.toFixed(1) || "N/A";
+                      const score = typeof anime.score === "number" ? anime.score.toFixed(1) : "N/A";
                       const year = anime.year || (anime.aired?.from ? new Date(anime.aired.from).getFullYear() : null);
                       const episodes = anime.episodes || "?";
                       const status = anime.status || "Unknown";
@@ -120,30 +155,24 @@ const SearchPage = () => {
 
                       return (
                         <div
-                          
-                        key={anime.mal_id || i}
-                          className="group relative cursor-pointer bg-slate-800   backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                          key={anime.mal_id || i}
+                          className="group relative cursor-pointer bg-slate-800 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
                         >
                           <div className="relative overflow-hidden">
-                              <div className="h-56 w-full bg-black ">
-
-                            <img
-                              src={image}
-                              alt={title}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              onError={(e) => {
-                                e.target.src =
-                                  "https://via.placeholder.com/300x400/1f2937/6b7280?text=No+Image";
-                              }}
-                            />
-                              </div>
+                            <div className="h-56 w-full bg-black">
+                              <img
+                                src={image}
+                                alt={title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
+                            </div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             {year && (
-                              <div className="absolute top-2 left-2 bg-gradient-to-l from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+                              <div className="absolute top-2 left-2 bg-gradient-to-l from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-2 rounded-xl shadow-md">
                                 {year}
                               </div>
                             )}
-                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                            <div className="absolute top-2 right-2 bg-red-500 backdrop-blur-sm text-white text-xs font-bold px-2 py-2 rounded-xl shadow-md flex items-center gap-1">
                               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                               {score}
                             </div>
@@ -159,7 +188,7 @@ const SearchPage = () => {
                               {title}
                             </h3>
 
-                            {/* 🎨 Genre Tags */}
+                            {/* Genre Tags */}
                             {anime.genres && (
                               <div className="flex flex-wrap gap-1 mt-2 mb-1">
                                 {anime.genres.map((genre, index) => {
@@ -213,24 +242,62 @@ const SearchPage = () => {
                       );
                     })}
                   </div>
-                  {animeData.length > visibleCount && (
-                    <div className="w-full mt-4 flex justify-center">
-                      <button
-                        className="px-6 py-2 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition"
-                        onClick={() => setVisibleCount(animeData.length)}
-                      >
-                        Show More
-                      </button>
-                    </div>
-                  )}
+                  
+                  {/* Pagination */}
+                 <div className="flex justify-center mt-8 space-x-2 flex-wrap">
+  {/* Prev Button */}
+  <button
+    onClick={() => handlePageClick(page - 1)}
+    disabled={page === 1}
+    className="flex items-center gap-1 px-3 py-1 border hover:cursor-pointer border-purple-500/50 rounded-full 
+               text-white/70 bg-transparent hover:bg-purple-500/10 
+               transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+  >
+    <ChevronLeft size={25} className="flex items-center justify-center" />
+    {/* Prev */}
+  </button>
+
+  {/* Page Number Buttons */}
+  {Array.from({ length: endPage - startPage + 1 }, (_, idx) => {
+    const pageNum = startPage + idx;
+    return (
+      <button
+        key={pageNum}
+        onClick={() => handlePageClick(pageNum, idx)}
+        className={`transition-all duration-200 hover:cursor-pointer font-semibold border rounded-full px-4 py-1.5
+          ${
+            pageNum === page
+              ? "bg-gradient-to-l from-purple-500 to-pink-500 text-white shadow-lg  border-purple-500/50  box-border border scale-105"
+              : "border-purple-500/50 bg-transparent text-white/70 hover:bg-purple-500/10"
+          }
+        `}
+      >
+        {pageNum}
+      </button>
+    );
+  })}
+
+  {/* Ellipsis */}
+  {endPage < totalPages && (
+    <span className="mx-2 text-white/40 text-lg font-bold select-none">...</span>
+  )}
+
+  {/* Next Button */}
+  <button
+    onClick={() => handlePageClick(page + 1)}
+    disabled={page === totalPages}
+    className="flex items-center justify-center gap-1 hover:cursor-pointer px-3 py-1 border border-purple-500/50 rounded-full 
+               text-white/70 bg-transparent hover:bg-purple-500/10 
+               transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+  >
+    {/* Next */}
+    <ChevronRight size={25} />
+  </button>
+</div>
+                  
                 </>
               )}
             </div>
-
-            {/* Right Sidebar */}
-            {/* <div className="w-[25%]">
-              <Genres />
-            </div> */}
           </div>
         )}
       </div>
@@ -238,4 +305,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default ResultPage;

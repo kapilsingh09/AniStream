@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
+import { asyncHandler} from '../utils/asyncHandler.js'
 
 //  should use process.env.JWT_SECRET in production
 const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET || "your_secret_keydsfjkalsdjfodjsiofj121io8936217846hkhfkjdsaf fklsjdfoief fnasf.HIUY689q3wfY(^(3u jfoijofhgaU967w3r9uiofji)) weur37u28547fjY(^&#%(#&$($ #($&# R OHFK#(*RY FH( #Y$(#&FFFFF";
@@ -36,7 +37,9 @@ export const register = async (req, res) => {
 };
 
 // export const reg = () =>{
-
+export const registerUser = asyncHandler(async (req,res)=>{
+    res.status(200).json({message:"ok"})
+})
 // }
 
 // Login Controller

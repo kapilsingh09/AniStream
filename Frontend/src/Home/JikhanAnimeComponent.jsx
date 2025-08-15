@@ -30,7 +30,8 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     refetch,
   } = useQuery({
     queryKey: [`${title}`],
-    staleTime: 24 * 60 * 60 * 1000,
+    // staleTime: 24 * 60 * 60 * 1000,
+     staleTime:3*60*1000,
     // enabled:false,
     queryFn: async () => {
       if (!fetchFunction) throw new Error('No fetch function provided');

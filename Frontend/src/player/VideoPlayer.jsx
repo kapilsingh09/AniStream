@@ -252,6 +252,8 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
+                    autoPlay
+                    muted
                     className="w-full h-full max-h-fit max-w-full  cursor-pointer"
                     preload="metadata"
                   >
