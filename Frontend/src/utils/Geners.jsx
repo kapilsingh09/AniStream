@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const genres = [
   "Action", "Adventure", "Cars", "Comedy", "Dementia", "Demons", "Drama",
@@ -14,53 +15,88 @@ const genres = [
 const GenreList = () => {
   const [showAll, setShowAll] = useState(false);
   const [shrink, setShrink] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const initialCount = 26;
   const displayedGenres = showAll ? genres : genres.slice(0, initialCount);
 
   const handleClick = (genre) => {
     setShrink(true);
-    navigate(`/genres/${genre}`); 
-    console.log("Navigating to genre:", genre);
+    navigate(`/search?query=${genre}`);
+    // i have to show all onto result page
     setTimeout(() => setShrink(false), 700);
   };
 
   return (
     <div
-      className={`rounded-2xl p-6 max-h-screen flex  flex-col bg-gradient-to-br from-orange-100 via-rose-200 to-pink-300 shadow-lg border border-gray-200 transition-all duration-300 ease-in-out  ${
-        shrink ? "h-[80vh]" : "h-[90vh]"
-      }`}
+      className={`rounded-2xl p-6 flex flex-col
+      bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 backdrop-blur-lg transition-all duration-300 ease-in-out
+      ${showAll ? "h-screen " : "h-[70vh]"}`}
     >
+      <h2 className="text-xl font-bold text-white mb-4 tracking-wide">
+        Browse Genres
+      </h2>
+
       {/* Genre Grid */}
       <div
-        className={`overflow-hidden ${
-          showAll ? "overflow-y-auto" : ""
-        } genre-scroll transition-all duration-300 flex-1`}
+        className={`transition-all duration-300 flex-1 ${
+          showAll ? "overflow-y-auto pr-1" : "overflow-hidden"
+        }`}
       >
-        <div className="grid grid-cols-2 gap-3 pr-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {displayedGenres.map((genre) => (
             <button
               key={genre}
               onClick={() => handleClick(genre)}
-              className="bg-white/50 text-gray-800 cursor-pointer hover:underline font-medium text-xs px-3 py-2 rounded-lg backdrop-blur-sm shadow-sm border border-gray-300 hover:bg-white hover:text-indigo-700 hover:shadow-md transition-all duration-200"
+              className="bg-white/5 text-white cursor-pointer 
+              hover:bg-white/15 hover:scale-105 hover:shadow-lg
+              font-medium text-xs px-3 py-2 rounded-lg border border-white/10
+              transition-all duration-200 ease-out
+              flex items-center justify-center"
             >
               <span className="truncate">{genre}</span>
             </button>
           ))}
         </div>
       </div>
+
       {/* Show More/Less */}
       <div className="mt-5">
         <button
           onClick={() => setShowAll(!showAll)}
-          className="bg-indigo-200 hover:bg-indigo-300 text-indigo-900 px-4 py-2 rounded-lg text-sm font-semibold w-full shadow-sm transition-all"
+          className="flex items-center justify-center gap-2
+          bg-purple-600
+          text-white px-4 py-2 rounded-lg text-sm font-semibold w-full
+          shadow-md hover:shadow-lg transform hover:scale-[1.02]
+          transition-all duration-200"
         >
-          {showAll ? "Show Less" : `Show All (${genres.length - initialCount} more)`}
+          {showAll ? (
+            <>
+              Show Less <ChevronUp className="w-4 h-4" />
+            </>
+          ) : (
+            <>
+              Show All ({genres.length - initialCount} more){" "}
+              <ChevronDown className="w-4 h-4" />
+            </>
+          )}
         </button>
       </div>
-      {/* Hide Scrollbar */}
-  
+
+      <style>
+        {`
+          .overflow-y-auto::-webkit-scrollbar {
+            width: 4px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+          }
+        `}
+      </style>
     </div>
   );
 };

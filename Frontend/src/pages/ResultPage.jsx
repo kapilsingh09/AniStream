@@ -3,7 +3,7 @@ import { Star, Calendar, Play, Users, Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react"
-
+import { useParams } from "react-router-dom";
 
 const fetchSearchResults = async (searchQuery, page) => {
   if (!searchQuery.trim()) {

@@ -1,35 +1,46 @@
-import { useState, useEffect } from "react";
-import { Star, Calendar, Play, Users, Info } from "lucide-react";
-import { motion, AnimatePresence, hover } from "framer-motion";
+import { useState } from "react";
+import { Star, Calendar, Play, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Genres from "../utils/Geners";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRomanceAnimeForAnimeGrid } from "../services/JikhanAnimeApi";
+
+
 
 const AnimeGrid = () => {
-  const [animeData, setAnimeData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Remove unused state variables for animeData and loading, use TanStack Query instead
+  // const [animeData, setAnimeData] = useState([]);
+  // const [loading, setLoading] = useState(true);
   const [hoveredAnime, setHoveredAnime] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const [hoverTimer, setHoverTimer] = useState(null);
 
-  const fetchRomanceAnime = async () => {
-    try {
-      const response = await fetch(
-        `https://api.jikan.moe/v4/anime?genres=22&order_by=score&sort=desc&limit=8`
-      );
-      if (!response.ok) throw new Error("Failed to fetch anime data");
-      const data = await response.json();
-      setAnimeData(data.data || []);
-    } catch (err) {
-      console.error("Error fetching anime:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchRomanceAnime();
-  }, []);
+  const genreColors = [
+    'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
+    'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
+    'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
+    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
+  ];
+
+  // Use TanStack Query for fetching and caching
+  const { data: animeData = [], isLoading: loading } = useQuery({
+    queryKey: ["romance-anime"],
+    queryFn: fetchRomanceAnimeForAnimeGrid,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    cacheTime: 1000 * 60 * 30, // 30 minutes
+  });
 
   const handleMouseEnter = (anime, e) => {
+    // Clear any existing timer
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      setHoverTimer(null);
+    }
     setHoveredAnime(anime);
+
     setHoverPosition({ x: e.clientX + 20, y: e.clientY - 20 });
   };
 
@@ -38,12 +49,11 @@ const AnimeGrid = () => {
   };
 
   const handleMouseLeave = () => {
-    setTimeout(() => {
-  if(hoveredAnime == true){
-    setHoveredAnime(false)
-  }
-}, 200);
-    setHoveredAnime(null);
+    // Set a 2-second timer to hide the card
+    const timer = setTimeout(() => {
+      setHoveredAnime(null);
+    }, 2000);
+    setHoverTimer(timer);
   };
 
   const renderSkeletonCard = () => (
@@ -95,15 +105,17 @@ const AnimeGrid = () => {
                     <div
                       key={anime.mal_id || i}
                       className="group relative cursor-pointer bg-slate-900 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
-                      onMouseEnter={(e) => handleMouseEnter(anime, e)}
-                      onMouseMove={handleMouseMove}
-                      onMouseLeave={handleMouseLeave}
+                      // onMouseEnter={(e) => handleMouseEnter(anime, e)}
+                      // onMouseMove={handleMouseMove}
+                      // onMouseLeave={handleMouseLeave}
+                      onClick={() =>
+                        navigate(`/play/${anime.mal_id}`)}
                     >
                       <div className="relative overflow-hidden">
                         <img
                           src={image}
                           alt={title}
-                          className="w-full h-65 object-cover object-center transition-transform duration-700"
+                          className="w-full h-56 object-cover object-center transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         {year && (
@@ -126,6 +138,24 @@ const AnimeGrid = () => {
                         <h3 className="text-white font-medium text-sm mb-1 line-clamp-2 leading-snug group-hover:text-gray-300 transition-colors duration-300">
                           {title}
                         </h3>
+
+                        {/* Genre Tags */}
+                        {anime.genres && (
+                          <div className="flex flex-wrap gap-1 mt-2 mb-1">
+                            {anime.genres.slice(0, 3).map((genre, index) => {
+                              const color = genreColors[index % genreColors.length];
+                              return (
+                                <span
+                                  key={genre.mal_id}
+                                  className={`text-[10px] text-white px-2 py-0.5 rounded-full ${color}`}
+                                >
+                                  {genre.name}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+
                         <div className="flex items-center justify-between text-[10px] text-white/70 mb-1">
                           <div className="flex items-center gap-1">
                             <Play className="w-3 h-3" />
@@ -171,13 +201,19 @@ const AnimeGrid = () => {
       </div>
 
       {/* Hover Card */}
-      <AnimatePresence>
-     {    hoveredAnime && (
+      {/* <AnimatePresence>
+        {hoveredAnime && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, duration: 0.3, scale: 0.8 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            transition={{ 
+              duration: 0.3, 
+              ease: "easeOut",
+              type: "spring",
+              stiffness: 300,
+              damping: 25
+            }}
             className="fixed z-[60] w-80 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-none p-4"
             style={{
               left: `${hoverPosition.x}px`,
@@ -185,44 +221,61 @@ const AnimeGrid = () => {
             }}
           >
             {/* Title & Score */}
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-white font-bold text-lg">{hoveredAnime.title}</h3>
+            {/* <div className="flex justify-between items-start mb-2">
+              <h3 className="text-white font-bold text-lg line-clamp-2">{hoveredAnime.title_english || hoveredAnime.title}</h3>
               {hoveredAnime.score && (
                 <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
                   <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  {hoveredAnime.score}
+                  {hoveredAnime.score.toFixed(1)}
                 </div>
               )}
             </div>
 
-            {/* Year & Status */}
-            <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
-              {hoveredAnime.year && (
-                <span className="bg-white/10 px-2 py-0.5 rounded-full">{hoveredAnime.year}</span>
-              )}
-              {hoveredAnime.status && (
-                <span
-                  className={`px-2 py-0.5 rounded-full ${hoveredAnime.status === "Finished Airing"
-                      ? "bg-green-500/20 text-green-400"
-                      : hoveredAnime.status === "Currently Airing"
-                        ? "bg-blue-500/20 text-blue-400"
-                        : "bg-gray-500/20 text-gray-400"
-                    }`}
-                >
-                  {hoveredAnime.status}
-                </span>
-              )}
-            </div>
+            // {/* Year & Status */}
+            {/* // <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+            //   {hoveredAnime.year && (
+            //     <span className="bg-white/10 px-2 py-0.5 rounded-full">{hoveredAnime.year}</span>
+            //   )}
+            //   {hoveredAnime.status && (
+            //     <span
+            //       className={`px-2 py-0.5 rounded-full ${hoveredAnime.status === "Finished Airing"
+            //           ? "bg-green-500/20 text-green-400"
+            //           : hoveredAnime.status === "Currently Airing"
+            //             ? "bg-blue-500/20 text-blue-400"
+            //             : "bg-gray-500/20 text-gray-400"
+            //         }`}
+            //     >
+            //       {hoveredAnime.status}
+            //     </span>
+            //   )}
+            // </div>
 
             {/* Synopsis */}
-            {hoveredAnime.synopsis && (
+            {/* {hoveredAnime.synopsis && (
               <p className="text-gray-300 text-sm mb-3 line-clamp-4">
                 {hoveredAnime.synopsis}
               </p>
-            )}
+            )} */}
+
+            {/* Genres in hover card */}
+            {/* {hoveredAnime.genres && (
+              <div className="flex flex-wrap gap-1 mb-3">
+                {hoveredAnime.genres.slice(0, 4).map((genre, index) => {
+                  const color = genreColors[index % genreColors.length];
+                  return (
+                    <span
+                      key={genre.mal_id}
+                      className={`text-[10px] text-white px-2 py-0.5 rounded-full ${color}`}
+                    >
+                      {genre.name}
+                    </span>
+                  );
+                })}
+              </div>
+            )} */}
 
             {/* Extra Info */}
-            <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
+            {/* <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
               {hoveredAnime.episodes && (
                 <div>
                   Episodes: <span className="text-white">{hoveredAnime.episodes}</span>
@@ -237,12 +290,11 @@ const AnimeGrid = () => {
                       : hoveredAnime.members}
                   </span>
                 </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-
-      </AnimatePresence>
+              )} */}
+            {/* </div>
+          </motion.div> */} 
+        {/* )} */}
+      {/* // </AnimatePresence> */} 
     </div>
   );
 };

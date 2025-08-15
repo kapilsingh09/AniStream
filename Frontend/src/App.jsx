@@ -40,7 +40,7 @@ const App = () => {
             <Route path="/find" element={<JikhanAnimeCard />} />
             <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
             {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
-            <Route path="/genres/:id" element={<Demo />} />
+            <Route path="/genres" element={<ResultPage />} />
 
             <Route path="/watch/:id" element={<Player animeName="Naruto" />} />
             {/* 404 */}

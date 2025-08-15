@@ -17,6 +17,14 @@ export const FetchTrendingRomanceComedyAnime = async (limit = DEFAULT_LIMIT) => 
   });
   return res.data.data;
 };
+export const fetchRomanceAnimeForAnimeGrid = async () => {
+  const response = await fetch(
+    `https://api.jikan.moe/v4/anime?genres=22&order_by=score&sort=desc&limit=8`
+  );
+  if (!response.ok) throw new Error("Failed to fetch anime data");
+  const data = await response.json();
+  return data.data || [];
+};
 
 // ✅ Trending Anime (based on popularity)
 export const FetchTrendingAnime = async (limit = DEFAULT_LIMIT) => {

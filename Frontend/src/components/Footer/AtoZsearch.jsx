@@ -48,7 +48,6 @@ const AtoZSearch = ({ onResults }) => {
           </button>
         ))}
       </div>
-
       {/* Loading Indicator */}
       {/* {loading && (
         <div className="mt-4 text-purple-500 font-semibold">
