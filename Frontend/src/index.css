@@ -63,3 +63,16 @@ body{
     user-select: none;
   }
   
+      .scroll-container::-webkit-scrollbar {
+          height: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+          background: linear-gradient(90deg, #a78bfa, #f472b6);
+          border-radius: 9999px;
+        }
+        .rm-selection {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }

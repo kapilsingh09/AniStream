@@ -36,8 +36,8 @@ const AtoZSearch = ({ onResults }) => {
           <button
             key={letter}
             onClick={() => handleAlphabet(letter)}
-            aria-label={`Search for ${letter}`}
-            disabled={loading}
+            // aria-label={`Search for ${letter}`}
+            // disabled={loading}
             className={`h-8 w-8 hover:cursor-pointer hover:underline rounded-[9px] font-semibold text-[2vh] transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 ${
               loading
                 ? "bg-gray-500 cursor-not-allowed"

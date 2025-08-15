@@ -68,8 +68,8 @@ const FactsSlider = () => {
   const stopDrag = () => setIsDragging(false);
 
   return (
-    <div className="rm-selection bg-gradient-to-b from-black to-purple-800/30 min-h-[50vh]">
-      <section className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
+    <div className="rm-selection bg-gradient-to-b from-black to-slate-900 min-h-[50vh]">
+      <section className="flex flex-col lg:flex-row h-full w-full v overflow-hidden scroll-container  ">
         
         {/* Left Image */}  
         <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4">
@@ -80,7 +80,7 @@ const FactsSlider = () => {
           />
         </div>
 
-        {/* Right Content */}
+        {/* Right Content */} 
         <div className="w-full lg:w-2/3 flex flex-col pt-4 lg:mt-8">
         <div className=' flex items-center justify-between'>
         <h2 className="text-white/80 text-2xl sm:text-3xl md:text-4xl font-bold px-4 mb-4">
@@ -137,19 +137,7 @@ const FactsSlider = () => {
 
       {/* Custom scrollbar */}
       {/* <style jsx>{`
-        .scroll-container::-webkit-scrollbar {
-          height: 4px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-          background: linear-gradient(90deg, #a78bfa, #f472b6);
-          border-radius: 9999px;
-        }
-        .rm-selection {
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
+  
       `}</style> */}
     </div>
   );

@@ -47,7 +47,7 @@ const Homepage = () => {
     
     {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
     {/* <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={fetchFantasyAnime} /> */}
-     {/* <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} /> */}
+     <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} />
 
      {/* <RecomendedAnime />   */}
 <AviAnime />
@@ -57,10 +57,10 @@ const Homepage = () => {
       </div>  */}
 
 
-      <SectionComponentKitsu title="Trendin/g Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} />
+      {/* <SectionComponentKitsu title="Trendin/g Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} /> */}
 
       {/* wholemf */}
-      {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}
+      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} />
 
        {/* <div className="flex items-center justify-center"> */}
         {/* <GhibliMovieBanner /> */}
@@ -68,12 +68,12 @@ const Homepage = () => {
       {/* <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} />  */}
 
 
-      {/* <AnimeGrid /> */}
+      <AnimeGrid />
 
          {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
 
        {/* Optional: More banners */}
-        <AnimeBanner />
+        {/* <AnimeBanner /> */}
       <footer>
         <FactsSlider />
       </footer> 

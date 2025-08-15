@@ -29,7 +29,6 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-
             {/* Auth */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -38,7 +37,7 @@ const App = () => {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/search" element={<ResultPage />} />
             <Route path="/play/:id" element={<JikhanAnimeCard />} />
-            {/* <Route path="/find" element={<JikhanAnimeCard />} /> */}
+            <Route path="/find" element={<JikhanAnimeCard />} />
             <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
             {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
             <Route path="/genres/:id" element={<Demo />} />

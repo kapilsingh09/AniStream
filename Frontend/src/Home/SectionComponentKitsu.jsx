@@ -114,9 +114,7 @@ const SectionComponentKitsu = ({
     setTimeout(checkScrollPosition, 300);
   };
 
-  const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/300x400/374151/ffffff?text=No+Image';
-  };
+
 
   const handleMoreInfo = (anime, e) => {
     e.stopPropagation();
@@ -392,7 +390,7 @@ const getAgeRatingInfo = (rating) => {
                   <img
                     src={attr?.posterImage?.large || attr?.posterImage?.medium}
                     alt={attr?.titles?.en_jp || attr?.titles?.en || 'Anime'}
-                    onError={handleImageError}
+                    
                     className="w-full h-full object-cover rounded-xl group-hover:brightness-110 transition-all duration-300"
                     loading="lazy"
                   />
@@ -443,7 +441,7 @@ const getAgeRatingInfo = (rating) => {
               transition={{ duration: 0.2 }}
               onMouseEnter={handleOverlayMouseEnter}
               onMouseLeave={handleOverlayMouseLeave}
-              className="fixed z-[60] w-80 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-auto"
+              className="fixed z-[60] w-80 bg-gradient-to-br from-zinc-900 via-gray-900 to-black rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-auto"
               style={{
                 left: `${hoverPosition.x}px`,
                 top: `${hoverPosition.y}px`,

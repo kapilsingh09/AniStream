@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Star, Calendar, Play, Users } from "lucide-react";
+import { Star, Calendar, Play, Users, Info } from "lucide-react";
+import { motion, AnimatePresence, hover } from "framer-motion";
 import Genres from "../utils/Geners";
 
 const AnimeGrid = () => {
   const [animeData, setAnimeData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [hasTriedOnce, setHasTriedOnce] = useState(false); // track if initial load attempted
+  const [hoveredAnime, setHoveredAnime] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
 
   const fetchRomanceAnime = async () => {
     try {
@@ -19,22 +21,30 @@ const AnimeGrid = () => {
       console.error("Error fetching anime:", err);
     } finally {
       setLoading(false);
-      setHasTriedOnce(true);
     }
   };
 
   useEffect(() => {
     fetchRomanceAnime();
-    // Optional: retry every 15 seconds in background until data loads
-    const retryInterval = setInterval(() => {
-      if (animeData.length === 0) {
-        fetchRomanceAnime();
-      } else {
-        clearInterval(retryInterval);
-      }
-    }, 15000);
-    return () => clearInterval(retryInterval);
   }, []);
+
+  const handleMouseEnter = (anime, e) => {
+    setHoveredAnime(anime);
+    setHoverPosition({ x: e.clientX + 20, y: e.clientY - 20 });
+  };
+
+  const handleMouseMove = (e) => {
+    setHoverPosition({ x: e.clientX + 20, y: e.clientY - 20 });
+  };
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+  if(hoveredAnime == true){
+    setHoveredAnime(false)
+  }
+}, 200);
+    setHoveredAnime(null);
+  };
 
   const renderSkeletonCard = () => (
     <div className="animate-pulse">
@@ -56,10 +66,8 @@ const AnimeGrid = () => {
     <div className="min-h-screen p-6">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-bold text-white">Romance Anime</h1>
-          </div>
-          <h2 className="text-white text-3xl mr-65 font-bold">Genres</h2>
+          <h1 className="text-4xl font-bold text-white">Romance Anime</h1>
+          <h2 className="text-white text-3xl font-bold">Genres</h2>
         </div>
 
         <div className="flex gap-6">
@@ -86,17 +94,16 @@ const AnimeGrid = () => {
                   return (
                     <div
                       key={anime.mal_id || i}
-                      className="group relative cursor-pointer bg-gradient-to-l from-purple-500/90 to-pink-500/80 bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10  hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                      className="group relative cursor-pointer bg-slate-900 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                      onMouseEnter={(e) => handleMouseEnter(anime, e)}
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
                     >
                       <div className="relative overflow-hidden">
                         <img
                           src={image}
                           alt={title}
-                          className="w-full h-65 object-cover transition-transform duration-700 group-hover:scale-110"
-                          onError={(e) => {
-                            e.target.src =
-                              "https://via.placeholder.com/300x400/1f2937/6b7280?text=No+Image";
-                          }}
+                          className="w-full h-65 object-cover object-center transition-transform duration-700"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         {year && (
@@ -110,7 +117,7 @@ const AnimeGrid = () => {
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <div className="rounded-full p-4 border-4 border-white/30 transform scale-75 px-6 py-6 group-hover:scale-100 transition-transform duration-300">
-                            <Play className="w-4 h-4 scale-220 text-white fill-white" />
+                            <Play className="w-7 h-7 text-white fill-white" />
                           </div>
                         </div>
                       </div>
@@ -162,6 +169,80 @@ const AnimeGrid = () => {
           </div>
         </div>
       </div>
+
+      {/* Hover Card */}
+      <AnimatePresence>
+     {    hoveredAnime && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, duration: 0.3, scale: 0.8 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="fixed z-[60] w-80 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-white/20 overflow-hidden pointer-events-none p-4"
+            style={{
+              left: `${hoverPosition.x}px`,
+              top: `${hoverPosition.y}px`,
+            }}
+          >
+            {/* Title & Score */}
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="text-white font-bold text-lg">{hoveredAnime.title}</h3>
+              {hoveredAnime.score && (
+                <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  {hoveredAnime.score}
+                </div>
+              )}
+            </div>
+
+            {/* Year & Status */}
+            <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+              {hoveredAnime.year && (
+                <span className="bg-white/10 px-2 py-0.5 rounded-full">{hoveredAnime.year}</span>
+              )}
+              {hoveredAnime.status && (
+                <span
+                  className={`px-2 py-0.5 rounded-full ${hoveredAnime.status === "Finished Airing"
+                      ? "bg-green-500/20 text-green-400"
+                      : hoveredAnime.status === "Currently Airing"
+                        ? "bg-blue-500/20 text-blue-400"
+                        : "bg-gray-500/20 text-gray-400"
+                    }`}
+                >
+                  {hoveredAnime.status}
+                </span>
+              )}
+            </div>
+
+            {/* Synopsis */}
+            {hoveredAnime.synopsis && (
+              <p className="text-gray-300 text-sm mb-3 line-clamp-4">
+                {hoveredAnime.synopsis}
+              </p>
+            )}
+
+            {/* Extra Info */}
+            <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
+              {hoveredAnime.episodes && (
+                <div>
+                  Episodes: <span className="text-white">{hoveredAnime.episodes}</span>
+                </div>
+              )}
+              {hoveredAnime.members && (
+                <div>
+                  Members:{" "}
+                  <span className="text-white">
+                    {hoveredAnime.members > 1000
+                      ? `${Math.round(hoveredAnime.members / 1000)}k`
+                      : hoveredAnime.members}
+                  </span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
     </div>
   );
 };
