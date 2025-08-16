@@ -1,22 +1,21 @@
-import React , {useRef} from 'react';
+import React from 'react';
 import AnimeSlider from './AnimeSlider';
-// import AnimeSection from './AnimeSection';
 import AnimeBanner from './AnimeBanner';
 import SectionComponentKitsu from './SectionComponentKitsu';
 import GhibliMovieBanner from './GhibliBanner';
 import AnimeGrid from '../Home/AnimeGrid';
-import { 
-  FetchUpcomingAnime,
-  FetchTopRatedAnime,
-  FetchTopAnime,
-  FetchCurrentSeasonAnime,
-  FetchSeasonalAnime,
-  FetchTrendingRomanceComedyAnime
-} from '../services/JikhanAnimeApi';
+import FactsSlider from '../ExplorePage/FactsSlider';
+import FullAnimeBanner from './FullAnimeBanner';
+import GenreList from '../utils/Geners';
+import JikhanAnimeComponent from './JikhanAnimeComponent';
+import AviAnime from '../utils/AviAnime';
+import Player from '../player/Player';
+import SorryCard from '../utils/SorryCard';
+import RecomendedAnime from '../components/RecomendedAnime';
 
-import { 
+// Kitsu API imports
+import {
   fetchTrendingAnime,
-  // fetchRomanceAnime,
   fetchActionAnime,
   fetchHorrorAnime,
   fetchDramaAnime,
@@ -25,60 +24,204 @@ import {
   fetchRomanceticAnime,
   fetchRomanceAnime,
   fetchRomanceComedyAnime,
+  fetchSeasonalAnime,
+  fetchAllAnime,
+  fetchNewArrivals,
+  fetchRandomRomcomAnime,
+  fetchCategories,
+  fetchSportsAnime,
+  fetchSliceOfLifeAnime,
+  searchAnime,
+  getRandomAnime,
+  fetchAnimeByCategory,
 } from '../services/kitsuAnimeApi';
-import FactsSlider from '../ExplorePage/FactsSlider';
-// import Vdplayer from '../videoJs/Vdplayer';
-import JikhanAnimeComponent from './JikhanAnimeComponent';
-import AviAnime from '../utils/AviAnime';
-import Player from '../player/Player';
-import SorryCard from '../utils/SorryCard';
-import RecomendedAnime from '../components/RecomendedAnime';
 
+// Jikhan API imports
+import {
+  FetchUpcomingAnime,
+  FetchTopRatedAnime,
+  FetchTopAnime,
+  FetchCurrentSeasonAnime,
+  FetchSeasonalAnime,
+  FetchTrendingRomanceComedyAnime,
+  FetchTrendingAnime,
+  FetchRomanceAnime,
+  fetchRomanceAnimeForAnimeGrid,
+} from '../services/JikhanAnimeApi';
+
+// Custom fetch for Adventure anime if not exported
+const fetchAdventureAnime = async (limit = 12) => {
+  const { default: axios } = await import('axios');
+  const BASE_URL = 'https://kitsu.io/api/edge';
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[categories]': 'adventure',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};
 
 const Homepage = () => {
   return (
-
-    <div className="min-h-screen flex-1 shrink-1  bg-black  ">
-
-
+    <div className="min-h-screen flex-1 bg-gradient-to-b from-gray-900 via-black to-gray-950 text-white">
+      {/* Hero Slider */}
       <AnimeSlider />
-       {/* <AviAnime /> */}
+
+      {/* Jikhan: Top Anime */}
+      <JikhanAnimeComponent
+        title="All-Time Top Anime"
+        fetchFunction={FetchTopAnime}
+        sectionName="all-time-top"
+        />
+        {/* Kitsu: Seasonal Highlights */}
+      <SectionComponentKitsu
+        title="🌸 Seasonal Highlights"
+        fetchFunction={fetchSeasonalAnime}
+      />
+    <AnimeBanner />
+      {/* Jikhan: Trending Now */}
+      <JikhanAnimeComponent
+        title="Trending Now"
+        fetchFunction={FetchTopRatedAnime}
+        sectionName="trending-now"
+      />
+
+      <SectionComponentKitsu
+        title="Romantic Movies for Your Heart"
+        fetchFunction={fetchRomanceticAnime}
+      />
+      {/* Kitsu: Adventure Anime
+      <SectionComponentKitsu
+        title="🌍 Adventure Picks"
+        fetchFunction={fetchComedyAnime}
+      /> */}
+
+      {/* Jikhan: Romance Anime Grid */}
+      <AnimeGrid
+        fetchFn={fetchRomanceAnimeForAnimeGrid}
+        queryKey={["romance-anime"]}
+        title="💖 Romance Anime"
+      />
+
+    <FullAnimeBanner />
+      {/* Kitsu: Romantic Movies */}
+
+      {/* Kitsu: Comedy & Romance Mix */}
+      {/* <SectionComponentKitsu
+        title="💕 Romance & Comedy Mix"
+        fetchFunction={fetchRomanceComedyAnime}
+      /> */}
+
+      {/* Kitsu: Action Anime */}
+      {/* <SectionComponentKitsu
+        title="⚔️ Action Anime"
+        fetchFunction={fetchActionAnime}
+      /> */}
+
+      {/* Kitsu: Fantasy Worlds */}
+      {/* <SectionComponentKitsu
+        title="🧚‍♂️ Fantastical Worlds"
+        fetchFunction={fetchFantasyAnime}
+      /> */}
+
+      {/* Kitsu: Horror Anime */}
+      <SectionComponentKitsu
+        title="👻 Horror Anime"
+        fetchFunction={fetchHorrorAnime}
+      />
+
+      {/* Kitsu: Drama */}
+      {/* <SectionComponentKitsu
+        title="🎭 Dramatic Masterpieces"
+        fetchFunction={fetchDramaAnime}
+      /> */}
+
+      {/* Kitsu: Comedy */}
+      {/* <SectionComponentKitsu
+        title="😂 Comedy Gold"
+        fetchFunction={fetchComedyAnime}
+      /> */}
+
+      {/* Kitsu: Sports */}
+      {/* <SectionComponentKitsu
+        title="🏅 Sports Spirit"
+        fetchFunction={fetchSportsAnime}
+      /> */}
+
+      {/* Kitsu: Slice of Life */}
+      {/* <SectionComponentKitsu
+        title="🍃 Slice of Life"
+        fetchFunction={fetchSliceOfLifeAnime}
+      /> */}
+
+      {/* Ghibli Banner */}
+      <div className="my-8">
+        <GhibliMovieBanner />
+      </div>
+
+      {/* Kitsu: New Arrivals */}
+      <SectionComponentKitsu
+        title="🆕 New Arrivals"
+        fetchFunction={fetchNewArrivals}
+      />
+
+      {/* Kitsu: Random Romcom */}
+      <SectionComponentKitsu
+        title="🎲 Random Romcom"
+        fetchFunction={fetchRandomRomcomAnime}
+      />
+
+      {/* Jikhan: Popular Picks */}
+      <JikhanAnimeComponent
+        title="⭐ Popular Picks"
+        fetchFunction={FetchTrendingAnime}
+        sectionName="popular-picks"
+      />
+
+      {/* Jikhan: Upcoming Anime */}
+      <JikhanAnimeComponent
+        title=" Upcoming Anime (Peak Next Seasons)"
+        fetchFunction={FetchUpcomingAnime}
+        sectionName="upcoming-anime-peak"
+      />
+
 
     
-    {/* <JikhanAnimeComponent  title="Current Season Highlights" fetchFunction={FetchCurrentSeasonAnime} /> */}
-    {/* <JikhanAnimeComponent  title="Trending Romance & Comedy" fetchFunction={fetchFantasyAnime} /> */}
-     <JikhanAnimeComponent  title="Trending Now" fetchFunction={FetchTopRatedAnime} />
 
-     {/* <RecomendedAnime />   */}
-<AviAnime />
+      {/* Jikhan: Romance & Comedy */}
+      {/* <JikhanAnimeComponent
+        title="💞 Romance & Comedy"
+        fetchFunction={FetchTrendingRomanceComedyAnime}
+        sectionName="romance-comedy"
+      /> */}
 
+      {/* Jikhan: Romance */}
+      <JikhanAnimeComponent
+        title="Pure Romance"
+        fetchFunction={FetchRomanceAnime}
+        sectionName="pure-romance"
+      />
 
+      {/* Full Anime Banner */}
+      <div className="">
+        <FullAnimeBanner />
+      </div>
 
-       {/* <div className="flex items-center justify-center ">
-         <AnimeBanner />
-      </div>  */}
-
-
-      {/* <SectionComponentKitsu title="Trendin/g Now – Kitsu Picks" fetchFunction={fetchRomanceComedyAnime} /> */}
-
-      {/* wholemf */}
-      <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} />
-
-       {/* <div className="flex items-center justify-center"> */}
-        {/* <GhibliMovieBanner /> */}
      
-      {/* <SectionComponentKitsu title="Peak Love: Top-Tier Romance Anime" fetchFunction={fetchRomanceticAnime} />  */}
+
+      <div className="">
+        <RecomendedAnime />
+      </div>
+
+    
 
 
-      <AnimeGrid />
-
-         {/* <SectionComponentKitsu title="Action & Adventure Picks" fetchFunction={fetchActionAnime} /> */}
-
-       {/* Optional: More banners */}
-        {/* <AnimeBanner /> */}
-      <footer>
+      {/* Footer with Facts Slider */}
+      <footer className="mt-12">
         <FactsSlider />
-      </footer> 
+      </footer>
     </div>
   );
 };

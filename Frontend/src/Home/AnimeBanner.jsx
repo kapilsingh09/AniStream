@@ -67,13 +67,14 @@ const fetchMalIdFromTitle = async (title) => {
   }
 };
 
-export default function AnimeBanner() {
+export default function AnimeBanner({ uniqueId }) {
   const navigate = useNavigate();
   const [malId, setMalId] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [showSorry, setShowSorry] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
+  // Only fetch MAL ID after anime is loaded, to avoid double API requests
   const {
     data: anime,
     isLoading,
@@ -81,28 +82,45 @@ export default function AnimeBanner() {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ['randomAnime'],
+    queryKey: [`animebanner-${uniqueId}`],
     queryFn: async () => {
       const animeData = await getRandomAnime();
       if (!Array.isArray(animeData) || animeData.length === 0) return null;
-
-      const selectedAnime = animeData[0];
-      const title =
-        selectedAnime?.attributes?.titles?.en ||
-        selectedAnime?.attributes?.canonicalTitle ||
-        selectedAnime?.attributes?.titles?.en_jp;
-
-      let fetchedMalId = title ? await fetchMalIdFromTitle(title) : null;
-      if (!fetchedMalId && selectedAnime?.id) fetchedMalId = selectedAnime.id;
-      setMalId(fetchedMalId);
-
-      return selectedAnime;
+      return animeData[0];
     },
     refetchOnWindowFocus: false,
     staleTime: 4000,
     retry: 1,
     keepPreviousData: true,
   });
+
+  // Fetch MAL ID only when anime changes, not in the queryFn
+  useEffect(() => {
+    let ignore = false;
+    const fetchMalId = async () => {
+      if (!anime) {
+        setMalId(null);
+        return;
+      }
+      const title =
+        anime?.attributes?.titles?.en ||
+        anime?.attributes?.canonicalTitle ||
+        anime?.attributes?.titles?.en_jp;
+
+      let fetchedMalId = null;
+      if (title) {
+        try {
+          fetchedMalId = await fetchMalIdFromTitle(title);
+        } catch (e) {
+          fetchedMalId = null;
+        }
+      }
+      if (!fetchedMalId && anime?.id) fetchedMalId = anime.id;
+      if (!ignore) setMalId(fetchedMalId);
+    };
+    fetchMalId();
+    return () => { ignore = true; };
+  }, [anime]);
 
   const handleWatchClick = () => {
     if (isLoading) return;
@@ -121,6 +139,7 @@ export default function AnimeBanner() {
   const genres = useMemo(() => {
     return Array.isArray(anime?.attributes?.genres) ? anime.attributes.genres : [];
   }, [anime]);
+  // console.log(anime);
 
   const englishTitle =
     anime?.attributes?.titles?.en ||

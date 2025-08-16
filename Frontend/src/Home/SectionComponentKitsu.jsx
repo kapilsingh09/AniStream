@@ -105,12 +105,12 @@ const SectionComponentKitsu = ({
   }, [checkScrollPosition]);
 
   const scrollLeft = () => {
-    sliderRef.current?.scrollBy({ left: -300, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: -900, behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
 
   const scrollRight = () => {
-    sliderRef.current?.scrollBy({ left: 300, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: 900, behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
 
@@ -286,16 +286,17 @@ const getAgeRatingInfo = (rating) => {
 
 
 
-
-  // Loading state
+  // Loading skeleton state
   if (loading || isFetching) {
     return (
-      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
-        <div className="flex flex-col items-center space-y-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <div className="text-white text-lg">
-            {retrying ? `Retrying ${title.toLowerCase()}...` : `Loading ${title.toLowerCase()}...`}
-          </div>
+      <div className={`h-[60vh] py-3 flex items-center justify-center bg-black ${className}`}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 px-8 md:grid-cols-3 xl:grid-cols-6 gap-6 w-full mt-4">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="h-75  bg-white/10 rounded-xl animate-pulse"
+            ></div>
+          ))}
         </div>
       </div>
     );
@@ -422,8 +423,19 @@ const getAgeRatingInfo = (rating) => {
                 </div>
                 
                 <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
-                  <div className="line-clamp-2 group-hover:text-yellow-400 transition-colors" title={attr?.titles?.en_jp || attr?.titles?.en}>
-                    {attr?.titles?.en_us || attr?.titles?.en || 'Unknown Title'}
+                  <div
+                    className="line-clamp-2 group-hover:text-yellow-400 transition-colors"
+                    title={
+                      attr?.titles?.en_jp ||
+                      attr?.canonicalTitle ||
+                      attr?.titles?.en ||
+                      attr?.titles?.en_us
+                    }
+                  >
+                    {attr?.titles?.en_us ||
+                      attr?.titles?.en ||
+                      attr?.canonicalTitle ||
+                      'Unknown Title'}
                   </div>
                 </div>
               </motion.div>

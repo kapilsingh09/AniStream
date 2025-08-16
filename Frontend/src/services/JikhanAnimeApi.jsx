@@ -1,14 +1,14 @@
 // services/api.js
+import { noop } from '@tanstack/react-query';
 import axios from 'axios';
 
 const BASE_URL = 'https://api.jikan.moe/v4';
-const DEFAULT_LIMIT = 10;
-
-// ✅ Trending Romance Comedy Anime (currently airing, sorted by popularity)
+const DEFAULT_LIMIT = 11;
+// noop
 export const FetchTrendingRomanceComedyAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
-      genres: '22,4',
+      genres: '22',
       status: 'airing',
       order_by: 'popularity',
       sort: 'desc',
@@ -26,7 +26,7 @@ export const fetchRomanceAnimeForAnimeGrid = async () => {
   return data.data || [];
 };
 
-// ✅ Trending Anime (based on popularity)
+// ✅ 
 export const FetchTrendingAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/top/anime`, {
     params: {
@@ -37,7 +37,7 @@ export const FetchTrendingAnime = async (limit = DEFAULT_LIMIT) => {
   return res.data.data;
 };
 
-// ✅ Top Rated Anime (currently airing only)
+// ✅ 
 export const FetchTopRatedAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/top/anime`, {
     params: {
@@ -48,19 +48,19 @@ export const FetchTopRatedAnime = async (limit = DEFAULT_LIMIT) => {
   return res.data.data;
 };
 
-// ✅ Popular Anime (not necessarily trending or top rated)
 export const FetchPopularAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       order_by: 'popularity',
       sort: 'desc',
+      filter: 'airing',
       limit,
     },
   });
   return res.data.data;
 };
 
-// ✅ Overall Top Anime (all-time best)
+// ✅ 
 export const FetchTopAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/top/anime`, {
     params: { limit },
@@ -68,22 +68,18 @@ export const FetchTopAnime = async (limit = DEFAULT_LIMIT) => {
   return res.data.data;
 };
 
-// ✅ Search Anime by Text
-export const SearchAnime = async (query, limit = DEFAULT_LIMIT) => {
-  const res = await axios.get(`${BASE_URL}/anime`, {
-    params: {
-      q: query,
-      limit,
-    },
-  });
-  return res.data.data;
-};
+// forSearching
+// export const SearchAnime = async (query, limit = DEFAULT_LIMIT) => {
+//   const res = await axios.get(`${BASE_URL}/anime`, {
+//     params: {
+//       q: query,
+//       limit,
+//     },
+//   });
+//   return res.data.data;
+// };
 
-// ✅ Anime Details by ID
-export const FetchAnimeDetails = async (id) => {
-  const res = await axios.get(`${BASE_URL}/anime/${id}`);
-  return res.data.data;
-};
+
 
 // ✅ Anime Episodes by ID
 export const FetchAnimeEpisodes = async (id) => {
@@ -91,7 +87,7 @@ export const FetchAnimeEpisodes = async (id) => {
   return res.data.data;
 };
 
-// ✅ Seasonal Anime by year and season
+// using somewheres
 export const FetchSeasonalAnime = async (year, season, limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/seasons/${year}/${season}`, {
     params: { limit },
@@ -99,7 +95,7 @@ export const FetchSeasonalAnime = async (year, season, limit = DEFAULT_LIMIT) =>
   return res.data.data;
 };
 
-// ✅ Current Season Anime
+// ✅
 export const FetchCurrentSeasonAnime = async (limit = DEFAULT_LIMIT) => {
   const res = await axios.get(`${BASE_URL}/seasons/now`, {
     params: { limit },

@@ -99,7 +99,7 @@ const TrendingAnime = () => {
           </div>
         ) : error ? (
           <div className="text-center text-red-400 py-10 bg-slate-800/50 rounded-xl border border-slate-700/30 m-6">
-            <p className="text-lg font-semibold">{error}</p>
+            {/* <p className="text-lg font-semibold">{error}</p> */}
             <button className="mt-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300">
               Try Again
             </button>

@@ -5,6 +5,11 @@ import EploaderJikhan from '../utils/EploaderJikhan';
 import { useQuery } from '@tanstack/react-query';
 import GenreList from '../utils/Geners';
 import AnimeGrid from '../Home/AnimeGrid';
+import { flushKeyframeResolvers } from 'framer-motion';
+import SectionComponent from '../Home/JikhanAnimeComponent';
+import { fetchActionAnime, fetchComedyAnime, fetchFantasyAnime, fetchNewArrivals, fetchSliceOfLifeAnime } from '../services/kitsuAnimeApi';
+import SectionComponentKitsu from '../Home/SectionComponentKitsu';
+import { fetchNewlyAddedAnime } from '../services/anilistApi';
 
 const fetchAnimeDetails = async ({ queryKey }) => {
     const [_key, { id, keyword }] = queryKey;
@@ -35,7 +40,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isFavorited, setIsFavorited] = useState(false);
     const [isWatched, setIsWatched] = useState(false);
-    const [showFullDescription, setShowFullDescription] = useState(false);
+    const [showFullDescription, setShowFullDescription] = useState(true);
     const [isEpOpen, setIsEpOpen] = useState(false);
 
     const { data: anime, isLoading: loading, error, refetch } = useQuery({
@@ -172,8 +177,8 @@ const JikanAnimeCard = ({ onNavigate }) => {
     const truncatedDescription = anime?.synopsis?.substring(0, 300) + '...';
 
     return (
-        <div className="min-h-screen flex bg-black mt-14 py-4 px-4">
-            <div className="max-w-none w-[70%] mx-auto">
+        <div className="min-h-screen  bg-slate-900 mt-14 px-4 py-4">
+            <div className="max-w-none w-[80%] mx-auto">
                 <div className="bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                     <div className="h-64 md:h-80 lg:h-96 w-full relative overflow-hidden">
                         <button
@@ -409,8 +414,9 @@ const JikanAnimeCard = ({ onNavigate }) => {
                     />
                 )}
             </div>
-            <GenreList />
-            
+            {/* <GenreList /> */}
+            {/* <SectionComponentKitsu title="Romantic Drama" subtitle="Suggested by Anime-X" fetchFunction={fetchDramaAnime} /> */}
+            {/* <SectionComponentKitsu fetchFunction={fetchSliceOfLifeAnime} title="Romantic Drama" /> */}
         </div>
     );
 };
