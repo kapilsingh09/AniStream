@@ -90,7 +90,6 @@ export default function FullAnimeBanner() {
     };
     fetchNewAnime();
   };
-
   return (
     <div className="relative w-full h-[70vh] overflow-hidden bg-black">
       {/* Animated background particles */}
@@ -129,9 +128,7 @@ export default function FullAnimeBanner() {
             <img
               src={anime.img}
               alt={anime.title}
-              className={`w-full h-full object-cover object-center transition-all duration-700 ${
-                imageLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
-              }`}
+              className={`w-full h-full object-cover object-center transition-all duration-700 `}
               onLoad={() => setImageLoaded(true)}
             />
           ) : (
@@ -149,16 +146,16 @@ export default function FullAnimeBanner() {
         </div>
 
         {/* Content overlay */}
-        <div className={`absolute inset-0 flex items-center transition-all duration-500 ${isHovered ? 'translate-x-2' : 'translate-x-0'}`}>
+        <div className={`absolute inset-0 flex items-center transition-all duration-500 ${isHovered ? 'translate-x-0' : 'translate-x-0'}`}>
           <div className="max-w-2xl ml-8 md:ml-16 space-y-6">
             {/* Title with glowing effect */}
             <h1 className={`text-2xl md:text-4xl font-black text-white leading-tight transition-all duration-500 ${
               isHovered ? 'text-shadow-glow' : ''
             }`} 
             style={{
-              textShadow: isHovered 
-                ? '0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3)' 
-                : '2px 2px 4px rgba(0, 0, 0, 0.8)'
+              // textShadow: isHovered 
+              //   ? '0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3)' 
+              //   : '2px 2px 4px rgba(0, 0, 0, 0.8)'
             }}>
               {anime?.title || "Loading..."}
             </h1>
@@ -187,7 +184,9 @@ export default function FullAnimeBanner() {
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-4 pt-4">
-              <button className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25">
+              <button
+              
+              className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25">
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 <div className="cursor-pointer  relative flex items-center space-x-2">
                   <Play className="w-6 h-6 fill-white" />

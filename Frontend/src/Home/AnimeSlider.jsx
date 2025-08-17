@@ -7,7 +7,7 @@ const API_ENDPOINTS = {
   // trending:
   //   'https://kitsu.io/api/edge/trending/anime?limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
   topRated:
-    'https://kitsu.io/api/edge/anime?sort=-averageRating&limit=20&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank,mappings',
+    'https://kitsu.io/api/edge/trending/anime?limit=10&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
 };
 
 async function fetchAnimeTopRated() {
@@ -325,7 +325,7 @@ export default function Slider() {
   }
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-15 bg-black">
+    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-14 bg-black">
       {/* Category Selector */}
       <div className="absolute top-4 left-4 z-40 flex gap-2">
         <motion.button

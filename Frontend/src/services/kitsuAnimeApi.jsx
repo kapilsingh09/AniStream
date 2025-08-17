@@ -258,3 +258,74 @@ export const fetchSliceOfLifeAnime = async (limit = 12) => {
   });
   return res.data.data;         
 };
+
+// Popular anime by rating (highest rated)
+export const fetchTopRatedAnime = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'page[limit]': limit,
+      'sort': 'ratingRank',
+    },
+  });
+  return res.data.data;
+};
+
+// Currently airing anime
+export const fetchCurrentlyAiringAnime = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[status]': 'current',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};
+
+// Upcoming anime
+export const fetchUpcomingAnime = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[status]': 'upcoming',
+      'page[limit]': limit,
+      'sort': 'startDate',
+    },
+  });
+  return res.data.data;
+};
+
+// Finished anime (completed series)
+export const fetchFinishedAnime = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[status]': 'finished',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};
+
+// Movies only
+export const fetchAnimeMovies = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[subtype]': 'movie',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};
+
+// TV series only
+export const fetchAnimeTVSeries = async (limit = 12) => {
+  const res = await axios.get(`${BASE_URL}/anime`, {
+    params: {
+      'filter[subtype]': 'TV',
+      'page[limit]': limit,
+      'sort': '-popularityRank',
+    },
+  });
+  return res.data.data;
+};

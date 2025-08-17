@@ -50,22 +50,11 @@ import {
 } from '../services/JikhanAnimeApi';
 
 // Custom fetch for Adventure anime if not exported
-const fetchAdventureAnime = async (limit = 12) => {
-  const { default: axios } = await import('axios');
-  const BASE_URL = 'https://kitsu.io/api/edge';
-  const res = await axios.get(`${BASE_URL}/anime`, {
-    params: {
-      'filter[categories]': 'adventure',
-      'page[limit]': limit,
-      'sort': '-popularityRank',
-    },
-  });
-  return res.data.data;
-};
+
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen flex-1 bg-gradient-to-b from-gray-900 via-black to-gray-950 text-white">
+    <div className="min-h-screen flex-3">
       {/* Hero Slider */}
       <AnimeSlider />
 
@@ -162,10 +151,10 @@ const Homepage = () => {
       </div>
 
       {/* Kitsu: New Arrivals */}
-      <SectionComponentKitsu
+      {/* <SectionComponentKitsu
         title="🆕 New Arrivals"
         fetchFunction={fetchNewArrivals}
-      />
+      /> */}
 
       {/* Kitsu: Random Romcom */}
       <SectionComponentKitsu
@@ -174,11 +163,11 @@ const Homepage = () => {
       />
 
       {/* Jikhan: Popular Picks */}
-      <JikhanAnimeComponent
+      {/* <JikhanAnimeComponent
         title="⭐ Popular Picks"
         fetchFunction={FetchTrendingAnime}
         sectionName="popular-picks"
-      />
+      /> */}
 
       {/* Jikhan: Upcoming Anime */}
       <JikhanAnimeComponent
@@ -210,16 +199,16 @@ const Homepage = () => {
       </div>
 
      
-
+{/* 
       <div className="">
         <RecomendedAnime />
-      </div>
+      </div> */}
 
     
 
 
       {/* Footer with Facts Slider */}
-      <footer className="mt-12">
+      <footer >
         <FactsSlider />
       </footer>
     </div>

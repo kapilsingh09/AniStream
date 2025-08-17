@@ -1,22 +1,52 @@
-import React, { useEffect, useContext } from 'react';
-import { Flame, Star, Calendar, Film } from 'lucide-react';
-import { ApiDataContext } from '../context/ApiContext';
+import React from 'react';
+import { Star, Calendar, Film } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-const Spotlight = () => {
-  const { featuredAnime, loading, error, fetchTrendingAnime } = useContext(ApiDataContext);
+import { useQuery } from '@tanstack/react-query';
 
-  // Retry on error
-  useEffect(() => {
-    let retryTimeout;
-    if (error && fetchTrendingAnime) {
-      retryTimeout = setTimeout(() => {
-        fetchTrendingAnime();
-      }, 2000);
-    }
-    return () => {
-      if (retryTimeout) clearTimeout(retryTimeout);
+// Fetch top spotlight anime from the endpoint (using Kitsu trending as example)
+const fetchSpotlightAnime = async () => {
+  // Replace with your actual "top spotlight" endpoint if different
+  const res = await fetch('https://kitsu.io/api/edge/trending/anime?limit=8');
+  if (!res.ok) throw new Error('Failed to fetch spotlight anime');
+  const data = await res.json();
+  return data.data;
+};
+
+// Transform Kitsu API data to match component expectations
+const transformKitsuData = (kitsuData) => {
+  return kitsuData.map((anime) => {
+    const attributes = anime.attributes;
+    return {
+      id: anime.id,
+      title: attributes.canonicalTitle || attributes.titles?.en || attributes.titles?.en_jp || 'Unknown Title',
+      image: attributes.posterImage?.medium || attributes.posterImage?.small || 'https://via.placeholder.com/200x300/1f2937/9ca3af?text=No+Image',
+      status: attributes.status,
+      rating: attributes.averageRating ? Math.round(attributes.averageRating / 10) : 'N/A',
+      studio: attributes.studios?.data?.[0]?.attributes?.name || 'Studio Unknown',
+      year: attributes.startDate ? new Date(attributes.startDate).getFullYear() : 'N/A',
+      episodes: attributes.episodeCount || attributes.episodeLength || 'N/A',
+      genres: attributes.categories?.data?.map(cat => cat.attributes.name) || []
     };
-  }, [error, fetchTrendingAnime]);
+  });
+};
+
+const Spotlight = () => {
+  // Use TanStack Query for fetching spotlight anime
+  const {
+    data: kitsuData = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['spotlight-anime'],
+    queryFn: fetchSpotlightAnime,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 1,
+  });
+
+  // Transform the data
+  const featuredAnime = React.useMemo(() => transformKitsuData(kitsuData), [kitsuData]);
 
   // Status color
   const getStatusColor = (status) => {
@@ -62,20 +92,49 @@ const Spotlight = () => {
 
   const getGenreColor = (genre, idx) => genreColors[idx % genreColors.length];
 
+  // Error state with retry button
+  if (error) {
+    return (
+      <section className="space-y-6 px-6 min-h-screen border-b-2 w-full border-gray-700 p-6 bg-slate-900">
+        <div className="flex items-center justify-between">
+          <h2 className="text-4xl font-bold text-white flex items-center pl-3">
+            Spotlight
+          </h2>
+        </div>
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+          <div className="text-red-400 text-lg mb-4">
+            Failed to load spotlight anime
+          </div>
+          <button
+            onClick={fetchData}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors duration-200"
+          >
+            Try Again
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="space-y-6 px-6 min-h-screen  border-b-2 w-full border-gray-700  p-6 bg-slate-900 ">
+    <section className="space-y-6 px-6 min-h-screen border-b-2 w-full border-gray-700 p-6 bg-slate-900">
       {/* Title */}
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold text-white flex items-center pl-3">
           Spotlight
         </h2>
         <div className="flex justify-end px-6 mt-4">
-        <NavLink className='flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg' to='/manga/all'>View More</NavLink>
-          </div>
+          <NavLink 
+            className='flex items-center gap-2 cursor-pointer hover:underline text-white rounded-lg border border-gray-700 transition-all duration-300 text-sm px-4 py-2 transform hover:scale-105 shadow-lg' 
+            to='/manga/all'
+          >
+            View More
+          </NavLink>
+        </div>
       </div>
 
       {/* Content */}
-      {loading ? (
+      {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
           {Array.from({ length: 8 }).map((_, idx) => (
             <div
@@ -84,12 +143,12 @@ const Spotlight = () => {
             />
           ))}
         </div>
-      ) : error ? null : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 pl-3  min-h-screen pr-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4">
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 pl-3 min-h-screen pr-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4">
           {featuredAnime.map((anime, index) => (
             <div
               key={anime.id}
-              className="group relative border border-gray-700 hover:cursor-pointer  h-[47vh] backdrop-blur-md rounded-xl overflow-hidden hover:shadow-lg transition-all"
+              className="group relative border border-gray-700 hover:cursor-pointer h-[47vh] backdrop-blur-md rounded-xl overflow-hidden hover:shadow-lg transition-all"
             >
               {/* Spotlight Badge */}
               <div className="absolute top-2 left-2 z-20 bg-purple-600/90 text-white px-2 py-1 rounded-full text-[11px] font-semibold text-center flex items-center justify-center shadow-md">
@@ -99,7 +158,7 @@ const Spotlight = () => {
               {/* Rating Badge */}
               {anime.rating && anime.rating !== 'N/A' && (
                 <div className="absolute top-2 right-2 z-20 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-md">
-                  <Star size={10} fill="white " />
+                  <Star size={10} fill="white" />
                   {anime.rating}
                 </div>
               )}
@@ -129,7 +188,9 @@ const Spotlight = () => {
                 <h3 className="text-white text-xs font-semibold line-clamp-1 group-hover:text-purple-300 transition leading-tight">
                   {anime.title}
                 </h3>
-                <div className="text-[10px] text-gray-400 italic truncate">{anime.studio}</div>
+                <div className="text-[10px] text-gray-400 italic truncate">
+                  {anime.studio}
+                </div>
                 <div className="flex justify-between text-[11px] items-center text-gray-400 mt-1">
                   <div className="flex items-center gap-1">
                     <Calendar size={10} />
@@ -164,7 +225,6 @@ const Spotlight = () => {
           ))}
         </div>
       )}
-  
     </section>
   );
 };
