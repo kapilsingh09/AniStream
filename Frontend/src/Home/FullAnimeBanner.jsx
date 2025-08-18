@@ -14,24 +14,19 @@ export default function FullAnimeBanner() {
       try {
         setLoading(true);
 
-        // List of some popular genres from Kitsu (can be expanded)
         const genres = [
           "action", "adventure", "comedy", "drama", "fantasy", "horror", "mystery",
           "romance", "sci-fi", "slice-of-life", "sports", "supernatural", "thriller", "mecha"
         ];
-        // Pick a random genre
         const randomGenre = genres[Math.floor(Math.random() * genres.length)];
-        // Pick a random page offset (Kitsu allows up to 20,000+ anime, but let's keep it reasonable)
         const randomOffset = Math.floor(Math.random() * 100);
 
-        // Fetch anime from a random genre and random page
         const res = await fetch(
           `https://kitsu.io/api/edge/anime?filter[categories]=${randomGenre}&sort=ratingRank&page[limit]=6&page[offset]=${randomOffset}`
         );
         const data = await res.json();
 
         if (Array.isArray(data.data) && data.data.length > 0) {
-          // Pick a random anime from the returned list
           const animeObj = data.data[Math.floor(Math.random() * data.data.length)];
           const attrs = animeObj.attributes;
 

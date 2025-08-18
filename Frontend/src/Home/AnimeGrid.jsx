@@ -3,6 +3,7 @@ import { Star, Calendar, Play, Users } from "lucide-react";
 import Genres from "../utils/Geners";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import GenreList from "../utils/Geners";
 
 /**
  * How to use AnimeGrid
@@ -116,14 +117,13 @@ const AnimeGrid = ({
   );
 
   return (
-    <div className="min-h-screen p-6 bg-black">
+    <div className="min-h-screen p-6">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">{title}</h1>
-          {showGenres && <h2 className="text-white text-3xl font-bold">Genres</h2>}
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-4">
           <div className="flex-1">
             <div
               className="
@@ -131,13 +131,14 @@ const AnimeGrid = ({
                 grid-cols-1
                 sm:grid-cols-2
                 md:grid-cols-3
-                lg:grid-cols-4
+                lg:grid-cols-5
                 2xl:grid-cols-6
+
               "
             >
               {loading || animeData.length === 0
                 ? [...Array(skeletonCount)].slice(0,8).map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
-                : animeData.slice(0,8).map((anime, i) => {
+                : animeData.map((anime, i) => {
                     const animeTitle =
                       anime.title_english ||
                       anime.title ||
@@ -278,13 +279,7 @@ const AnimeGrid = ({
                   })}
             </div>
           </div>
-
      
-          {showGenres && (
-            <div className="w-[25%]">
-              <Genres />
-            </div>
-          )} 
         </div>
       </div>
     </div>
