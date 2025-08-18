@@ -16,6 +16,8 @@ import {
   fetchHorrorAnime
 } from "../services/kitsuAnimeApi";
 import AnimeGrid from "../Home/AnimeGrid";
+import Genres from "../utils/Geners";
+
 
 export default function ExplorePage() {
   const { kitsuTrendingAnime, loadingStates, errors, refetch } = useContext(DataContext);
@@ -45,12 +47,27 @@ export default function ExplorePage() {
         <SeasonalAnime />
         {/* <SeasonalAnime /> */}
         {/* <Filter /> */}
-        <AnimeGrid
-          queryKey={["currently-airing-anime"]}
-          title="💖 Currently Airing Anime"
-          fetchFn={fetchAnimeTVSeries}
-        />
-
+       
+   <div className="flex gap-3">
+          <div className="flex-1">
+          <AnimeGrid
+        fetchFn={fetchAnimeMovies}
+        queryKey={["romance-movies"]}
+        title="un-Romance Anime💖"
+      />
+          </div>
+          <div className="w-[25%]  mr-7 mt-6 ">
+          <div className="max-w-8xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          {/* <h1 className="text-4xl font-bold text-white">{title}</h1> */}
+         
+           <h1 className="text-white text-4xl font-bold">Genres<sub>-searches</sub></h1>
+        </div>
+        </div>
+        
+            <Genres />
+          </div>
+        </div>
         <TrendingManga />
 
         {/* <Spotlight /> */}
