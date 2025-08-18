@@ -31,7 +31,7 @@ const GenreList = () => {
     <div
       className={`rounded-2xl p-6 flex flex-col
       bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 backdrop-blur-lg transition-all duration-300 ease-in-out
-      ${showAll ? "h-screen " : "h-[70vh]"}`}
+      ${showAll ? "h-[calc(100vh-33px)]" : "h-[70vh]"}`}
     >
       <h2 className="text-xl font-bold text-white mb-4 tracking-wide">
         Browse Genres

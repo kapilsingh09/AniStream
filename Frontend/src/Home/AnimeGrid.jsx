@@ -3,7 +3,6 @@ import { Star, Calendar, Play, Users } from "lucide-react";
 import Genres from "../utils/Geners";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import GenreList from "../utils/Geners";
 
 /**
  * How to use AnimeGrid
@@ -121,9 +120,10 @@ const AnimeGrid = ({
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">{title}</h1>
+         
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           <div className="flex-1">
             <div
               className="
@@ -137,7 +137,8 @@ const AnimeGrid = ({
               "
             >
               {loading || animeData.length === 0
-                ? [...Array(skeletonCount)].slice(0,8).map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
+                ? [...Array(skeletonCount)].map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
+
                 : animeData.map((anime, i) => {
                     const animeTitle =
                       anime.title_english ||
@@ -279,6 +280,7 @@ const AnimeGrid = ({
                   })}
             </div>
           </div>
+
      
         </div>
       </div>

@@ -91,12 +91,27 @@ const Homepage = () => {
       /> */}
 
       {/* Jikhan: Romance Anime Grid */}
-      <AnimeGrid
+      
+   <div className="flex gap-3">
+          <div className="flex-1">
+          <AnimeGrid
         fetchFn={fetchRomanceAnimeForAnimeGrid}
         queryKey={["romance-anime"]}
-        title="💖 Romance Anime"
+        title="Romance Anime💖"
       />
-
+          </div>
+          <div className="w-[25%]  mr-7 mt-6 ">
+          <div className="max-w-8xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          {/* <h1 className="text-4xl font-bold text-white">{title}</h1> */}
+         
+           <h1 className="text-white text-4xl font-bold">Genres<sub>-searches</sub></h1>
+        </div>
+        </div>
+        
+            <Genres />
+          </div>
+        </div>
       <FullAnimeBanner />
       {/* Kitsu: Romantic Movies */}
 
@@ -154,15 +169,23 @@ const Homepage = () => {
       </div>
 
       <div>
-        <div className="flex gap-6">
-          <div className="flex-2">
+        <div className="flex gap-3">
+          <div className="flex-1">
             <AnimeGrid
               fetchFn={fetchComedyAnime}
               queryKey={["comedy-anime"]}
               title="Comedy Anime"
             />
           </div>
-          <div className="w-[25%] flex ">
+          <div className="w-[25%]  mr-7 mt-6 ">
+          <div className="max-w-8xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          {/* <h1 className="text-4xl font-bold text-white">{title}</h1> */}
+         
+           <h1 className="text-white text-4xl font-bold">Genres<sub>-searches</sub></h1>
+        </div>
+        </div>
+        
             <Genres />
           </div>
         </div>
