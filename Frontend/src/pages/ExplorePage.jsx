@@ -13,10 +13,14 @@ import {
   fetchCurrentlyAiringAnime, 
   fetchAnimeMovies,
   fetchAnimeTVSeries,
-  fetchHorrorAnime
+  fetchHorrorAnime,
+  fetchFinishedAnime,
+  fetchUpcomingAnime
 } from "../services/kitsuAnimeApi";
 import AnimeGrid from "../Home/AnimeGrid";
 import Genres from "../utils/Geners";
+import filters from "../ExplorePage/Filter"
+
 
 
 export default function ExplorePage() {
@@ -28,9 +32,8 @@ export default function ExplorePage() {
 
         {/* <Community /> */}
 
-        {/* Trending Anime - Main section */}
-      
-
+        {/* Trending Anime - Main se  ction */}
+        <Filter />
         {/* Top Rated Anime */}
         <TrendingKitsuAnime 
           fetchFunction={fetchTopRatedAnime}
@@ -51,8 +54,8 @@ export default function ExplorePage() {
    <div className="flex gap-3">
           <div className="flex-1">
           <AnimeGrid
-        fetchFn={fetchAnimeMovies}
-        queryKey={["romance-movies"]}
+        fetchFn={fetchUpcomingAnime}
+        queryKey={["Upcoming-movies"]}
         title="un-Romance Anime💖"
       />
           </div>

@@ -27,6 +27,7 @@ const GenreList = () => {
     setTimeout(() => setShrink(false), 700);
   };
 
+
   return (
     <div
       className={`rounded-2xl p-6 flex flex-col

@@ -284,6 +284,7 @@ export const fetchCurrentlyAiringAnime = async (limit = 12) => {
 
 // Upcoming anime
 export const fetchUpcomingAnime = async (limit = 12) => {
+  // This function fetches upcoming anime from the Kitsu API
   const res = await axios.get(`${BASE_URL}/anime`, {
     params: {
       'filter[status]': 'upcoming',

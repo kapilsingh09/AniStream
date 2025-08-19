@@ -4,40 +4,6 @@ import Genres from "../utils/Geners";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-/**
- * How to use AnimeGrid
- * --------------------
- * AnimeGrid is a reusable React component for displaying a grid of anime cards.
- * You use it when you want to show a list of anime fetched from an API, with hover previews and genre tags.
- * 
- * What you need:
- * - An API fetch function that returns a Promise resolving to an array of anime objects (from Kitsu API or similar).
- * - Optionally, a unique queryKey for react-query caching.
- * - (Optional) A title for the grid section.
- * 
- * Example API fetch function (using kitsuAnimeApi):
- * 
- * // In your services/kitsuAnimeApi.jsx:
- *
- * 
- * How to use AnimeGrid in your component:
- * 
- * import AnimeGrid from './AnimeGrid';
- * import { fetchRomanceAnime } from '../services/kitsuAnimeApi';
- * 
- * function RomanceSection() {
- *   return (
- *     <AnimeGrid
- *       fetchFn={fetchRomanceAnime}
- *       queryKey={["romance-anime"]}
- *       title="Romance Anime"
- *     />
- *   );
- * }
- * 
- * // You can use AnimeGrid for any genre or custom API function:
- * // <AnimeGrid fetchFn={fetchActionAnime} queryKey={["action-anime"]} title="Action Anime" />
- */
 const AnimeGrid = ({
   fetchFn,
   queryKey = ["anime-grid"],
@@ -57,7 +23,7 @@ const AnimeGrid = ({
     'bg-pink-500', 'bg-purple-500', 'bg-blue-500', 'bg-green-500',
     'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-teal-500',
     'bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-lime-500',
-    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500',
+    'bg-cyan-500', 'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500', 
   ];
 
   // Use TanStack Query for fetching and caching
@@ -98,7 +64,33 @@ const AnimeGrid = ({
       setHoveredAnime(null);
     }, 200); // Reduce delay to 200ms for better UX
   };
+ function getStatusColor(status) {
+  switch (status?.toLowerCase()) {
+    case "finished airing":
+    case "finished":
+    case "completed":
+      return "bg-green-500/20 text-green-400";
 
+    case "currently airing":
+    case "ongoing":
+    case "publishing":
+      return "bg-blue-500/20 text-blue-400";
+
+    case "not yet aired":
+    case "tba":
+    case "upcoming":
+      return "bg-yellow-500/20 text-yellow-400";
+
+    case "hiatus":
+      return "bg-orange-500/20 text-orange-400";
+
+    case "cancelled":
+      return "bg-red-500/20 text-red-400";
+
+    default:
+      return "bg-gray-500/20 text-gray-400";
+  }
+}
   const renderSkeletonCard = () => (
     <div className="animate-pulse">
       <div className="bg-white/10 rounded-xl overflow-hidden">
@@ -116,7 +108,7 @@ const AnimeGrid = ({
   );
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6 px-8">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">{title}</h1>
@@ -131,13 +123,13 @@ const AnimeGrid = ({
                 grid-cols-1
                 sm:grid-cols-2
                 md:grid-cols-3
-                lg:grid-cols-5
+                lg:grid-cols-4
                 2xl:grid-cols-6
 
               "
             >
               {loading || animeData.length === 0
-                ? [...Array(skeletonCount)].map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
+                ? [...Array(skeletonCount)].slice(0,8).map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
 
                 : animeData.map((anime, i) => {
                     const animeTitle =
@@ -260,11 +252,7 @@ const AnimeGrid = ({
 
                           <div className="flex items-center justify-between">
                             <span
-                              className={`text-[10px] px-2 py-0.5 rounded-full ${status === "Finished Airing"
-                                  ? "bg-green-500/20 text-green-400"
-                                  : status === "Currently Airing"
-                                    ? "bg-blue-500/20 text-blue-400"
-                                    : "bg-gray-500/20 text-gray-400"
+                              className={`text-[10px] px-2 py-0.5 rounded-full ${getStatusColor(status)
                                 }`}
                             >
                               {status}
