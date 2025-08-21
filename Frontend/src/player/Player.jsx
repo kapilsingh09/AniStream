@@ -4,7 +4,7 @@ import VideoPlayer from './VideoPlayer';
 import RecomendedAnime from '../components/RecomendedAnime';
 import UpcomingReleases from '../ExplorePage/UpcomingReleases';
 import Spotlight from '../ExplorePage/Spotlight';
-
+import Geners from '../utils/Geners'
 const Player = () => {
   const { id } = useParams();
 
@@ -35,6 +35,7 @@ const Player = () => {
         <RecomendedAnime />
         {/* <UpcomingReleases /> */}
         <Spotlight />
+        <Geners />
       </div>
     </div>
   );
