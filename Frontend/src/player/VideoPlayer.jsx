@@ -23,14 +23,18 @@ import SkeletonLoader from '../loader/SkeletonLoader';
 const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
+
+  // ❌ OLD: const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
+  // ✅ UPDATED: track current episode by ID, not by index
+  const [currentEpisodeId, setCurrentEpisodeId] = useState(null);
+
   const [expandMode, setExpandMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [animeData, setAnimeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [showSorry, setShowSorry] = useState(false);
-  const [setshowupcomingep, setSetshowupcomingep] = useState(false)
+  const [setshowupcomingep, setSetshowupcomingep] = useState(false);
 
   const [lightsOn, setLightsOn] = useState(false);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -40,10 +44,11 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const [selectedSub, setSelectedSub] = useState('hd-1');
   const [selectedDub, setSelectedDub] = useState('hd-1');
 
+  // ✅ fetch anime
   useEffect(() => {
     const fetchAnime = async () => {
       if (!animeId) return;
-      
+
       setLoading(true);
       setFetchError(null);
       try {
@@ -51,8 +56,11 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           `http://localhost:3000/api/anime/${animeId}`
         );
         setAnimeData(res.data);
-        // console.log(res.data);
-        
+
+        // ✅ set first episode as default if none selected
+        if (res.data?.episodes?.length > 0 && !currentEpisodeId) {
+          setCurrentEpisodeId(res.data.episodes[0].id);
+        }
       } catch (error) {
         setFetchError('Error fetching anime data.');
       } finally {
@@ -60,29 +68,22 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
       }
     };
     fetchAnime();
+    // eslint-disable-next-line
   }, [animeId]);
 
+  // ✅ reload video when currentEpisodeId changes
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
       video.load();
     }
-  }, [selectedEpisodeIndex]);
+  }, [currentEpisodeId]);
 
   // Show SorryCard if the current episode has no videoUrl
   useEffect(() => {
-    if (
-      !loading &&
-      animeData &&
-      animeData.episodes &&
-      animeData.episodes.length > 0
-    ) {
-      const filteredEpisodes = animeData.episodes.filter(
-        (ep) =>
-          (ep.episode?.toString().includes(searchQuery) ||
-            ep.id?.toString().includes(searchQuery))
-      );
-      const currentEpisode = filteredEpisodes[selectedEpisodeIndex] || null;
+    if (!loading && animeData && animeData.episodes?.length > 0) {
+      const currentEpisode =
+        animeData.episodes.find((ep) => ep.id === currentEpisodeId) || null;
       if (currentEpisode && !currentEpisode.videoUrl) {
         setShowSorry(true);
       } else {
@@ -91,12 +92,12 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     } else {
       setShowSorry(false);
     }
-  }, [loading, animeData, selectedEpisodeIndex, searchQuery]);
+  }, [loading, animeData, currentEpisodeId]);
 
   const togglePlay = () => {
     const video = videoRef.current;
     if (video?.paused) {
-      video.play();
+      video?.play();
       setIsPlaying(true);
     } else {
       video?.pause();
@@ -104,7 +105,6 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     }
   };
 
-  // Helper: get display episode number (1, 2, 3, ...)
   const getDisplayEpisodeNumber = (ep, idx) => {
     if (typeof ep.episode === 'number' && !isNaN(ep.episode)) {
       return ep.episode;
@@ -112,27 +112,42 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     if (typeof ep.episode === 'string' && !isNaN(Number(ep.episode))) {
       return Number(ep.episode);
     }
-    
     return idx + 1;
   };
 
+  // ✅ search only filters the display list, not the current playing ep
   const filteredEpisodes =
     animeData?.episodes?.filter(
       (ep) =>
-        (ep.episode?.toString().includes(searchQuery) ||
-         ep.id?.toString().includes(searchQuery))
+        ep.episode?.toString().includes(searchQuery) ||
+        ep.id?.toString().includes(searchQuery)
     ) || [];
 
-  const handleSelect = (idx) => {
-    setSelectedEpisodeIndex(idx);
+  // ✅ handle selecting episode by ID instead of index
+  const handleSelect = (episodeId) => {
+    setCurrentEpisodeId(episodeId);
     setIsPlaying(false);
   };
 
-  const currentEpisode = filteredEpisodes[selectedEpisodeIndex] || null;
+  // ✅ currentEpisode always from full animeData, not filtered list
+  const currentEpisode =
+    animeData?.episodes?.find((ep) => ep.id === currentEpisodeId) ||
+    animeData?.episodes?.[0] ||
+    null;
+
+  // Find the index of the current episode in the full episode list
+  const selectedEpisodeIndex = React.useMemo(() => {
+    if (!animeData?.episodes || !currentEpisodeId) return 0;
+    return animeData.episodes.findIndex((ep) => ep.id === currentEpisodeId);
+  }, [animeData, currentEpisodeId]);
 
   const crossBack = () => {
-    if (selectedEpisodeIndex > 0) {
-      setSelectedEpisodeIndex((prev) => prev - 1);
+    if (!animeData?.episodes) return;
+    const idx = animeData.episodes.findIndex(
+      (ep) => ep.id === currentEpisodeId
+    );
+    if (idx > 0) {
+      setCurrentEpisodeId(animeData.episodes[idx - 1].id);
       setIsPlaying(false);
     }
   };
@@ -154,11 +169,10 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   return (
     <div className="w-full mx-auto h-auto min-h-screen  bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
+      
       {lightsOn && (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
       )}
-
- 
 
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
@@ -199,9 +213,9 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                 .map((ep, i) => (
                   <div
                     key={ep.id || i}
-                    onClick={() => handleSelect(i)}
+                    onClick={() => handleSelect(ep.id)}
                     className={`cursor-pointer p-3 rounded mb-2 ${
-                      selectedEpisodeIndex === i
+                      ep.id === currentEpisodeId
                         ? 'bg-purple-500/30'
                         : 'bg-white/5 hover:bg-white/10'
                     }`}
@@ -223,7 +237,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           {/* Video Section */}
           <div
             className={`transition-all duration-500 ease-in flex-1 h-full ${
-              expandMode ? '' : 'lg:pr-0'
+              expandMode ? 'w-full' : 'lg:pr-0'
             }`}
           >
             <div className="relative group h-[65vh] ">
@@ -254,7 +268,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                     controls
                     autoPlay
                     muted
-                    className="w-full h-full max-h-fit max-w-full  cursor-pointer"
+                    className="w-full h-full max-h-fit max-w-full object-contain  object-center  cursor-pointer"
                     preload="metadata"
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
@@ -355,9 +369,6 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
               {/* Right-Aligned Watchlist Button */}
             </div>  
 
-
-        
-
             <div className= "h-[17vh] flex pl-4 pr-4 items-center text-white text-sm">
               {/* Left Info Box */}
               <div className=" h-full bg-slate-900  w-[65%] p-3 rounded-l-2xl flex flex-col justify-center text-center shadow-md">
@@ -418,34 +429,30 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
       
           </div>
             <div className='flex items-center justify-center '>
-
-
             {setshowupcomingep && (
-  <div className="w-[80%] mx-auto my-4 flex items-center justify-between bg-blue-600 text-white rounded-lg shadow-lg px-4 py-3 relative animate-fade-in">
-    <div className="flex items-center gap-2">
-      <span className="text-xl">🚀</span>
-      <p className="text-sm">
-        Next episode airs on{" "}
-        <span className="font-semibold underline">
-          8/2/2025, 8:00:00 PM
-        </span>
-      </p>
-    </div>
+              <div className="w-[80%] mx-auto my-4 flex items-center justify-between bg-blue-600 text-white rounded-lg shadow-lg px-4 py-3 relative animate-fade-in">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🚀</span>
+                  <p className="text-sm">
+                    Next episode airs on{" "}
+                    <span className="font-semibold underline">
+                      8/2/2025, 8:00:00 PM
+                    </span>
+                  </p>
+                </div>
 
-    <button
-      onClick={() => setSetshowupcomingep(false)}
-      className="text-white hover:text-gray-200 text-lg font-bold px-2 transition-colors"
-      title="Close"
-      aria-label="Close"
-    >
-      ×
-    </button>
-  </div>
-)}
-
+                <button
+                  onClick={() => setSetshowupcomingep(false)}
+                  className="text-white hover:text-gray-200 text-lg font-bold px-2 transition-colors"
+                  title="Close"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+            )}
             </div>
-
-</div>
+          </div>
             
           {/* Anime Details Panel */}
           {expandMode && (
@@ -458,8 +465,8 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                 <div className="h-[180px] w-[120px] rounded-lg">
                   <img
                     src={
-                      animeData?.posterImage.original
-                      // 'https://via.placeholder.com/300x400?text=No+Image'
+                      animeData?.posterImage?.original ||
+                      'https://via.placeholder.com/300x400?text=No+Image'
                     } 
                     alt="Anime Poster"
                     className="w-full h-full object-cover rounded-lg"
@@ -540,6 +547,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           )}
           
         </div>
+        
       </div>
 
       {/* <RecomendedAnime />/ */}

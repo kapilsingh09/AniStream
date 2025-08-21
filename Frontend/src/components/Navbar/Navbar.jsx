@@ -35,6 +35,8 @@ const NavLink = ({ to, children, className, onClick, noSlider }) => {
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  console.log(user);
+  
   
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,7 +51,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    // navigate('/');
     setIsMobileMenuOpen(false);
   };
 
@@ -73,7 +75,7 @@ export default function Navbar() {
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [useLocation().pathname]);
+  }, [location.pathname]);
   
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -157,7 +159,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center">
               {user ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-white/80 text-sm">👋{user.username}</span>
+                  <span className="text-white/80 text-sm">👋{user.name}</span>
 {/* {console.log(user)} */}
                   
                   <button
