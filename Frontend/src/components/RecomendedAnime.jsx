@@ -37,8 +37,9 @@ const RecomendedAnime = () => {
     ];
 
     return (
-        <div className='w-full h-[60vh] py-6 px-8  bg-slate-900 border text-white'>
-            <h2 className="text-2xl font-bold mb-4">Recommended Anime</h2>
+        <div className='w-full h-[60vh] py-6 px-8  bg-black text-white'>
+          <div className='h-full w-full'>
+          <h2 className="text-2xl font-bold mb-4">Recommended Anime   </h2>
             <div
         //   ref={sliderRef}
           className="w-full h-[50vh] grid grid-cols-2  lg:grid-cols-6 overflow-x-auto gap-6 scroll-smooth py-2 scrollbar-hide"
@@ -49,12 +50,8 @@ const RecomendedAnime = () => {
             // const attr = anime.attributes;
             return (
               <motion.div
-                // key={anime.id}
-                // onClick={() => {
-                //   handleCardClick(anime);
-                // }}
-                // onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
-                // onMouseLeave={handleCardMouseLeave}
+              // key={index}
+                key={anime.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -73,13 +70,13 @@ const RecomendedAnime = () => {
 
                   {/* {attr?.averageRating && ( */}
                     <motion.div className="absolute top-2 right-2 bg-red-600 text-xs px-2 py-1 rounded backdrop-blur-sm">
-                      ⭐ 
+                      ⭐NAN
                     </motion.div>
                 {/* //   )} */}
 
                   {/* {attr?.popularityRank && ( */}
                     <div className="absolute top-2 left-2 bg-purple-600 text-xs px-3 py-1 rounded backdrop-blur-sm">
-                      #
+                      #NAN
                     </div>
                 {/* //   )} */}
                 </div>
@@ -93,6 +90,9 @@ const RecomendedAnime = () => {
             );
           })}
         </div>
+          </div>
+           
+        <span className='text-yellow-300 text-sm text-right italic'>-It will be done soon when I learn ML</span>
         </div>
     );
 };

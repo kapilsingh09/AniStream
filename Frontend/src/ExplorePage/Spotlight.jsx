@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 // Fetch top spotlight anime from the endpoint (using Kitsu trending as example)
 const fetchSpotlightAnime = async () => {
   // Replace with your actual "top spotlight" endpoint if different
-  const res = await fetch('https://kitsu.io/api/edge/trending/anime?limit=8');
+  const res = await fetch('https://kitsu.io/api/edge/trending/anime?limit=12');
   if (!res.ok) throw new Error('Failed to fetch spotlight anime');
   const data = await res.json();
   return data.data;
@@ -95,7 +95,7 @@ const Spotlight = () => {
   // Error state with retry button
   if (error) {
     return (
-      <section className="space-y-6 px-6 min-h-screen border-b-2 w-full border-gray-700 p-6 bg-slate-900">
+      <section className="space-y-6 px-6 min-h-screen border-b-2 w-full  p-6 bg-black">
         <div className="flex items-center justify-between">
           <h2 className="text-4xl font-bold text-white flex items-center pl-3">
             Spotlight
@@ -117,7 +117,7 @@ const Spotlight = () => {
   }
 
   return (
-    <section className="space-y-6 px-6 min-h-screen border-b-2 w-full border-gray-700 p-6 bg-slate-900">
+    <section className="space-y-6 px-6 min-h-screen border-b-2 w-full border-gray-700 p-6 bg-black">
       {/* Title */}
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold text-white flex items-center pl-3">
@@ -148,7 +148,7 @@ const Spotlight = () => {
           {featuredAnime.map((anime, index) => (
             <div
               key={anime.id}
-              className="group relative border border-gray-700 hover:cursor-pointer h-[47vh] backdrop-blur-md rounded-xl overflow-hidden hover:shadow-lg transition-all"
+              className="group relative border border-gray-700 hover:cursor-pointer  h-[47vh] backdrop-blur-md rounded-xl overflow-hidden hover:shadow-lg transition-all"
             >
               {/* Spotlight Badge */}
               <div className="absolute top-2 left-2 z-20 bg-purple-600/90 text-white px-2 py-1 rounded-full text-[11px] font-semibold text-center flex items-center justify-center shadow-md">
@@ -157,8 +157,10 @@ const Spotlight = () => {
 
               {/* Rating Badge */}
               {anime.rating && anime.rating !== 'N/A' && (
-                <div className="absolute top-2 right-2 z-20 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-md">
-                  <Star size={10} fill="white" />
+                <div className="absolute top-2 right-2 z-20 bg-white/20 backdrop-blur-md
+                border-white/20 rounded-xl
+                text-white px-2 py-0.5  shadow-lg  text-[11px] font-bold flex items-center gap-1 ">
+                  <Star size={10} fill="#FFD700" className='text-yellow-400' />
                   {anime.rating}
                 </div>
               )}

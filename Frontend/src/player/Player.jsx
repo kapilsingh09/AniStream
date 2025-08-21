@@ -2,12 +2,14 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import VideoPlayer from './VideoPlayer';
 import RecomendedAnime from '../components/RecomendedAnime';
+import UpcomingReleases from '../ExplorePage/UpcomingReleases';
+import Spotlight from '../ExplorePage/Spotlight';
 
 const Player = () => {
   const { id } = useParams();
 
   return (
-    <div className="relative mt-16">
+    <div className="relative mt-16 bg-zinc-900">
       {/* Glass background layer */}
       {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-3xl z-0"></div> */}
 
@@ -31,6 +33,8 @@ const Player = () => {
 
         {/* Recommendations - will have glass effect underneath */}
         <RecomendedAnime />
+        {/* <UpcomingReleases /> */}
+        <Spotlight />
       </div>
     </div>
   );

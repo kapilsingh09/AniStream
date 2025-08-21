@@ -35,7 +35,7 @@ const NavLink = ({ to, children, className, onClick, noSlider }) => {
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  console.log(user);
+  // console.log(user);
   
   
   const [isSearchOpen, setIsSearchOpen] = useState(false);
