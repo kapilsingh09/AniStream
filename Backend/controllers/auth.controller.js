@@ -1,83 +1,142 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
-import { asyncHandler} from '../utils/asyncHandler.js'
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+
+const generateAccesTokenAndRefreshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccesToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Something went wrong while generating refresh and access token"
+    );
+  }
+};
 
 //  should use process.env.JWT_SECRET in production
-const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET || "your_secret_keydsfjkalsdjfodjsiofj121io8936217846hkhfkjdsaf fklsjdfoief fnasf.HIUY689q3wfY(^(3u jfoijofhgaU967w3r9uiofji)) weur37u28547fjY(^&#%(#&$($ #($&# R OHFK#(*RY FH( #Y$(#&FFFFF";
+const JWT_SECRET =
+  process.env.ACCESS_TOKEN_SECRET ||
+  "your_secret_keyds@@@fjkalsdjfodjsiofj121io8936217846hkhfkjdsaf fklsjdfoief fnasf.HIUY689q3wfY(^(3u jfoijofhgaU967w3r9uiofji)) weur37u28547fjY(^&#%(#&$($ #($&#heheh R OHFK#(*RY FH( #Y$(#&FFFFF";
 
 // Register Controller
 export const register = async (req, res) => {
-    try {
-        const { username, name, email, password } = req.body;
+  try {
+    const { username, name, email, password } = req.body;
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already registered" });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new User({
-            username,
-            name,
-            email,
-            password: hashedPassword,
-        });
-
-        await newUser.save();
-
-        console.log(newUser);
-
-        res.status(201).json({ message: "User registered successfully" });
-    } catch (err) {
-        console.error("Register error:", err);
-        res.status(500).json({ message: "Server error" });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
     }
+
+    const newUser = new User({
+      username,
+      name,
+      email,
+      password,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-// export const reg = () =>{
-export const registerUser = asyncHandler(async (req,res)=>{
-    res.status(200).json({message:"ok"})
-})
-// }
+export const registerUser = asyncHandler(async (req, res) => {
+  res.status(200).json({ message: "ok" });
+});
 
 // Login Controller
-export const login = async (req, res) => {
-    try {
-        const { email, password ,rememberMe } = req.body;
+export const login = asyncHandler(async (req, res) => {
+  const { email, password, rememberMe } = req.body;
 
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: "Invalid credentials" });
+  if (!email) {
+    throw new ApiError(400, "Email is required ");
+  }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+  const user = await User.findOne({
+    email,
+  });
 
-        const token = jwt.sign({ userId: user._id },JWT_SECRET, {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        });
+  if (!user) {
+    throw new ApiError(404, "Invalid credentials");
+  }
 
-        const cookieAge = rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+  const isPasswordValid = await user.isPasswordCorrect(password);
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // set true in prod
-            sameSite: "strict",
-            maxAge: cookieAge,
-        })
-        
-        res.status(200).json({
-            message: "Login successful",
-            token,
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                name: user.name,
-            },
-        });
-    } catch (err) {
-        console.error("Login error:", err);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid user credentials ");
+  }
+
+  const { accessToken, refreshToken } =
+    await generateAccesTokenAndRefreshTokens(user._id);
+
+  // ✅ added await to actually fetch user from DB
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken" // ✅ lowercase refreshToken (your code had capital R)
+  );
+
+  const cookieAge = rememberMe
+    ? 7 * 24 * 60 * 60 * 1000
+    : 60 * 60 * 1000;
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: cookieAge,
+  };
+
+  return res
+    .status(200)
+    // ✅ fixed typo `.cokkie` → `.cookie`
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in Successfully"
+      )
+    );
+});
+
+export const logOutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    { new: true } // ✅ fixed misplaced options
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    // ✅ clearCookie does NOT take rememberMe
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});

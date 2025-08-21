@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import loginvd from "../assets/loginVid.mp4";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 const Login = ({ onloginClose }) => {
   const [formData, setFormData] = useState({ email: "", password: "",rememberMe:false });
   const [message, setMessage] = useState("");
   const [currentQuote, setCurrentQuote] = useState(0);
   const navigate = useNavigate();
+  const { loginWithBackend } = useAuth();
 
   const animeQuotes = [
     { text: "Believe in yourself and create your own destiny!", anime: "Naruto" },
@@ -22,6 +24,7 @@ const Login = ({ onloginClose }) => {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -38,29 +41,14 @@ const Login = ({ onloginClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-  
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('user', JSON.stringify(data.user)); // ✅ add this
-        localStorage.setItem('token', data.token);               // ✅ add this
-        setMessage(" Login successful!");
-        window.location.href = "/";
-        setTimeout(() => {
-          if (onloginClose) onloginClose(true);
-        }, 1000);
-      } else {
-        setMessage(`❌ ${data.message}`);
-      }
-    } catch (error) {
-      setMessage("✅ Welcome to AniStream! (Demo mode)");
+      await loginWithBackend(formData);
+      setMessage(" Login successful!");
+      window.location.href = "/";
       setTimeout(() => {
         if (onloginClose) onloginClose(true);
-      }, 1000);
+      }, 500);
+    } catch (error) {
+      setMessage(` ${error.message || 'Login failed'}`);
     }
   };
   
@@ -262,7 +250,7 @@ const Login = ({ onloginClose }) => {
       </div>
 
       {/* Bottom Trending Section */}
-      {/* <div className="absolute bottom-8 left-8 right-8 lg:left-auto lg:right-8 lg:w-80">
+      {/* <div className="absolute bottom-[-6px] left-8 right-8 lg:left-auto lg:right-8 lg:w-80">
         <div className="bg-black/30 backdrop-blur-md rounded-xl p-4 border border-white/20">
           <div className="flex items-center space-x-3 mb-2">
             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
