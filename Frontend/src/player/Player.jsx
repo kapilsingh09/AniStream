@@ -5,6 +5,7 @@ import RecomendedAnime from '../components/RecomendedAnime';
 import UpcomingReleases from '../ExplorePage/UpcomingReleases';
 import Spotlight from '../ExplorePage/Spotlight';
 import Geners from '../utils/Geners'
+import AnimeGridPage from '../pages/AnimeGridPage';
 const Player = () => {
   const { id } = useParams();
 
@@ -36,6 +37,8 @@ const Player = () => {
         {/* <UpcomingReleases /> */}
         <Spotlight />
         <Geners />
+{/* as such no use of this may in future i will use this */}
+        {/* <AnimeGridPage /> */}
       </div>
     </div>
   );

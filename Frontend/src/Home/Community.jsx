@@ -7,26 +7,26 @@ const Community = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch data on mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [pollRes, reviewsRes] = await Promise.all([
-          fetch('/api/poll'),
-          fetch('/api/reviews'),
-        ]);
-        const pollData = await pollRes.json();
-        const reviewsData = await reviewsRes.json();
-        setPoll(pollData);
-        setReviews(reviewsData);
-      } catch (err) {
-        console.error("Error fetching community data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [pollRes, reviewsRes] = await Promise.all([
+  //         fetch('/api/poll'),
+  //         fetch('/api/reviews'),
+  //       ]);
+  //       const pollData = await pollRes.json();
+  //       const reviewsData = await reviewsRes.json();
+  //       setPoll(pollData);
+  //       setReviews(reviewsData);
+  //     } catch (err) {
+  //       console.error("Error fetching community data", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   if (loading) return <div className="text-center py-10 text-white">Loading Community Hub...</div>;
 

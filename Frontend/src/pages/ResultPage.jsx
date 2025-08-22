@@ -143,7 +143,7 @@ const ResultPage = () => {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-6 bg-slate-900 gap-6">
+                  <div className="grid  md:grid-cols-4 grid-cols-6 xl:grid-cols-6 bg-slate-900 gap-6">
                     {animeData.map((anime, i) => {
                       const title = anime.title_english || anime.title || "Unknown Title";
                       const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
@@ -168,11 +168,12 @@ const ResultPage = () => {
                             </div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             {year && (
-                              <div className="absolute top-2 left-2 bg-gradient-to-l from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-2 rounded-xl shadow-md">
+                              <div className="absolute top-2 left-2  text-xm   flex text-xs  items-center gap-1  bg-blue-500 text-white font-semibold  px-2 py-1 rounded-lg backdrop-blur-sm">
+                                <Calendar size={12} />
                                 {year}
                               </div>
                             )}
-                            <div className="absolute top-2 right-2 bg-red-500 backdrop-blur-sm text-white text-xs font-bold px-2 py-2 rounded-xl shadow-md flex items-center gap-1">
+                            <div className="absolute top-2 right-2  text-xm   flex text-xs  items-center gap-1  bg-red-500 text-white font-semibold  px-2 py-1 rounded-lg backdrop-blur-sm">
                               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                               {score}
                             </div>
