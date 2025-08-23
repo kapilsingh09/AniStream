@@ -65,7 +65,6 @@ function getRandomNames(count = 5) {
     "Mei Nakajima",
     "Shohei Ishikawa"
   ];
-  // Shuffle and return the requested number of names
   const shuffled = names.sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
@@ -81,7 +80,6 @@ const girlsImages = [
 
 const FactsSlider = () => {
   const animeTitles = Object.keys(dummyFunFacts);
-  // Assign a random person name to each anime title (memoized for stable display)
   const [personNames] = useState(() => {
     const randomNames = getRandomNames(animeTitles.length);
     const mapping = {};
@@ -91,7 +89,6 @@ const FactsSlider = () => {
     return mapping;
   });
 
-  // Assign a girl image to each anime title (by index, loop if not enough images)
   const getGirlImageForTitle = (idx) => {
     return girlsImages[idx % girlsImages.length];
   };
@@ -125,7 +122,7 @@ const FactsSlider = () => {
         {/* Left Image */}  
         <div className="flex items-center relative justify-center w-full lg:w-[30%] p-4">
           <img 
-            className="object-cover max-h-[40vh] sm:max-h-[45vh] absolute bottom-0 left-1/6"
+            className="object-center object-cover w-auto max-h-[40vh] sm:max-h-[45vh] absolute bottom-0 left-1/6"
             src={discussion}
             alt="Anime discussion illustration"
           />

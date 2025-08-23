@@ -513,14 +513,14 @@ export default function Slider() {
       </div>
 
       {/* Progress Bar */}
-      {/* <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black/30 z-90 overflow-hidden">
+      <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black/30 z-90 overflow-hidden">
         <motion.div
           className="h-full bg-white/50 relative"
           initial={{ width: 0 }}
           animate={{ width: `${((current + 1) / slides.length) * 100}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         />
-      </div> */}
+      </div>
     </div>
   );
 }

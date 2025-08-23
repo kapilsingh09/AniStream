@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ChevronLeft, Star,ChevronRight, Info, RefreshCw } from 'lucide-react';
+import { ChevronLeft, Star, ChevronRight, Info, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -30,6 +30,8 @@ const SectionComponentKitsu = ({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [retrying, setRetrying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   // Overlay state
   const [hoveredAnime, setHoveredAnime] = useState(null);
@@ -42,6 +44,18 @@ const SectionComponentKitsu = ({
   const isMouseOverOverlay = useRef(false);
 
   const navigate = useNavigate();
+
+  // Responsive breakpoint detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   // TanStack Query for fetching and caching
   const {
@@ -60,8 +74,7 @@ const SectionComponentKitsu = ({
       return filterAndDedupAnime(data);
     },
     enabled: !!fetchFunction, 
-    // staleTime: 24 * 60 * 60 * 1000, // cache forever unless manually invalidated
-    staleTime:3*60*1000,
+    staleTime: 3 * 60 * 1000,
     cacheTime: Infinity,
     retry: (failureCount, err) => {
       if (failureCount > 3) return false;
@@ -70,9 +83,7 @@ const SectionComponentKitsu = ({
     },
   });
 
-
   const animeData = animeRawData || [];
-  // console.log(animeData);
   
   // Retry handler
   const handleRetry = async () => {
@@ -104,17 +115,21 @@ const SectionComponentKitsu = ({
     }
   }, [checkScrollPosition]);
 
+  const getScrollAmount = () => {
+    if (isMobile) return 250;
+    if (isTablet) return 450;
+    return 900;
+  };
+
   const scrollLeft = () => {
-    sliderRef.current?.scrollBy({ left: -900, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
 
   const scrollRight = () => {
-    sliderRef.current?.scrollBy({ left: 900, behavior: 'smooth' });
+    sliderRef.current?.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
     setTimeout(checkScrollPosition, 300);
   };
-
-
 
   const handleMoreInfo = (anime, e) => {
     e.stopPropagation();
@@ -122,8 +137,8 @@ const SectionComponentKitsu = ({
   };
 
   const calculateHoverPosition = (rect) => {
-    const hoverCardWidth = 320;
-    const hoverCardHeight = 400;
+    const hoverCardWidth = isMobile ? 280 : 320;
+    const hoverCardHeight = isMobile ? 350 : 400;
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const padding = 20;
@@ -158,8 +173,10 @@ const SectionComponentKitsu = ({
     }
   };
 
-  // Show overlay with delay
+  // Show overlay with delay (only on desktop)
   const showOverlay = (anime, rect) => {
+    if (isMobile || isTablet) return; // Disable hover overlay on mobile/tablet
+    
     clearAllTimers();
 
     showOverlayTimer.current = setTimeout(() => {
@@ -173,14 +190,15 @@ const SectionComponentKitsu = ({
           setHoveredAnime(null);
         }
       }, 2000);
-    }, 300); // Show after 300ms
+    }, 300);
   };
 
   // Hide overlay immediately
   const hideOverlay = () => {
+    if (isMobile || isTablet) return;
+    
     clearAllTimers();
 
-    // Small delay to allow mouse to move to overlay
     setTimeout(() => {
       if (!isMouseOverCard.current && !isMouseOverOverlay.current) {
         setHoveredAnime(null);
@@ -189,24 +207,32 @@ const SectionComponentKitsu = ({
   };
 
   const handleCardMouseEnter = (anime, e) => {
+    if (isMobile || isTablet) return;
+    
     isMouseOverCard.current = true;
     const rect = e.currentTarget.getBoundingClientRect();
     showOverlay(anime, rect);
   };
 
   const handleCardMouseLeave = () => {
+    if (isMobile || isTablet) return;
+    
     isMouseOverCard.current = false;
     hideOverlay();
   };
 
   const handleOverlayMouseEnter = () => {
+    if (isMobile || isTablet) return;
+    
     isMouseOverOverlay.current = true;
-    clearAllTimers(); // Cancel auto-hide when hovering overlay
+    clearAllTimers();
   };
 
   const handleOverlayMouseLeave = () => {
+    if (isMobile || isTablet) return;
+    
     isMouseOverOverlay.current = false;
-    setHoveredAnime(null); // Hide immediately when leaving overlay
+    setHoveredAnime(null);
   };
 
   // Clean up timers on unmount
@@ -215,86 +241,109 @@ const SectionComponentKitsu = ({
       clearAllTimers();
     };
   }, []);
-
-  // console.log(animeRawData);
   
   const handleCardClick = (anime) => {
     navigate(`/kitsu/${anime.id}`);
   };
 
   const getSubtypeLabelClass = (subtype) => {
-  switch (subtype?.toLowerCase()) {
-    case "tv":
-      return "bg-indigo-600 text-white";
-    case "movie":
-      return "bg-red-600 text-white";
-    case "ova":
-      return "bg-purple-600 text-white";
-    case "ona":5
-      return "bg-teal-600 text-white";
-    case "special":
-      return "bg-pink-600 text-white";
-    case "music":
-      return "bg-yellow-600 text-black";
-    default:
-      return "bg-gray-400 text-white";
-  }
-};
+    switch (subtype?.toLowerCase()) {
+      case "tv":
+        return "bg-indigo-600 text-white";
+      case "movie":
+        return "bg-red-600 text-white";
+      case "ova":
+        return "bg-purple-600 text-white";
+      case "ona":
+        return "bg-teal-600 text-white";
+      case "special":
+        return "bg-pink-600 text-white";
+      case "music":
+        return "bg-yellow-600 text-black";
+      default:
+        return "bg-gray-400 text-white";
+    }
+  };
 
-const getAgeRatingInfo = (rating) => {
-  switch (rating?.toUpperCase()) {
-    case "G":
-      return {
-        className: "bg-green-500 text-white",
-        icon: "👶",
-        label: "G",
-      };
-    case "PG":
-      return {
-        className: "bg-blue-500 text-white",
-        icon: "👦",
-        label: "PG",
-      };
-    case "PG-13":
-      return {
-        className: "bg-yellow-500 text-black",
-        icon: "🧒",
-        label: "PG-13",
-      };
-    case "R":
-    case "R18":
-      return {
-        className: "bg-red-600 text-white",
-        icon: "⚠️",
-        label: "R",
-      };
-    case "R+":
-      return {
-        className: "bg-orange-600 text-white",
-        icon: "🔞",
-        label: "R+",
-      };
-    default:
-      return {
-        className: "bg-gray-500 text-white",
-        icon: "❓",
-        label: "N/A",
-      };
-  }
-};
+  const getAgeRatingInfo = (rating) => {
+    switch (rating?.toUpperCase()) {
+      case "G":
+        return {
+          className: "bg-green-500 text-white",
+          icon: "G",
+          label: "G",
+        };
+      case "PG":
+        return {
+          className: "bg-blue-500 text-white",
+          icon: "PG",
+          label: "PG",
+        };
+      case "PG-13":
+        return {
+          className: "bg-yellow-500 text-black",
+          icon: " ",
+          label: "PG-13",
+        };
+      case "R":
+      case "R18":
+        return {
+          className: "bg-red-600 text-white",
+          icon: "⚠️",
+          label: "R",
+        };
+      case "R+":
+        return {
+          className: "bg-orange-600 text-white",
+          icon: "🔞",
+          label: "R+",
+        };
+      default:
+        return {
+          className: "bg-gray-500 text-white",
+          icon: "❓",
+          label: "N/A",
+        };
+    }
+  };
 
+  // Get responsive card dimensions
+  const getCardDimensions = () => {
+    if (isMobile) {
+      return {
+        minWidth: 'min-w-[40vw]',
+        maxWidth: 'max-w-[38vw]',
+        height: 'h-[30vh]',
+        titleHeight: 'h-[3vh]'
+      };
+    }
+    if (isTablet) {
+      return {
+        minWidth: 'min-w-[25vw]',
+        maxWidth: 'max-w-[23vw]',
+        height: 'h-[35vh]',
+        titleHeight: 'h-[4vh]'
+      };
+    }
+    return {
+      minWidth: 'min-w-[14vw]',
+      maxWidth: 'max-w-[12vw]',
+      height: 'h-[44vh]',
+      titleHeight: 'h-[4.5vh]'
+    };
+  };
 
-
+  const cardDimensions = getCardDimensions();
 
   // Loading skeleton state
   if (loading || isFetching) {
     return (
-      <div className={`h-[60vh] py-3 flex items-center justify-center bg-black ${className}`}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 px-8 md:grid-cols-3 xl:grid-cols-6 gap-6 w-full mt-4">
-          {[...Array(6)].map((_, i) => (
+      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center bg-black ${className}`}>
+        <div className={`grid ${isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-6'} px-4 sm:px-6 md:px-8 gap-3 sm:gap-4 md:gap-6 w-full mt-4`}>
+          {[...Array(isMobile ? 4 : isTablet ? 6 : 6)].map((_, i) => (
             <div
               key={i}
-              className="h-75  bg-white/10 rounded-xl animate-pulse"
+              className={`${isMobile ? 'h-40' : isTablet ? 'h-60' : 'h-75'} bg-white/10 rounded-xl animate-pulse`}
             ></div>
           ))}
         </div>
@@ -305,19 +354,21 @@ const getAgeRatingInfo = (rating) => {
   // Error state
   if (isError) {
     return (
-      <div className={`h-[60vh]  to-black py-3 flex items-center justify-center ${className}`}>
-        <div className="text-white text-center">
+      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center ${className}`}>
+        <div className="text-white text-center px-4">
           <div className="text-4xl mb-4">❌</div>
-          <div className="text-lg mb-4">{error?.message || 'An error occurred'}</div>
+          <div className={`${isMobile ? 'text-base' : 'text-lg'} mb-4`}>
+            {error?.message || 'An error occurred'}
+          </div>
           <motion.button
             onClick={handleRetry}
             disabled={retrying}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             <RefreshCw
-              size={18}
+              size={isMobile ? 16 : 18}
               className={retrying ? 'animate-spin' : ''}
             />
             {retrying ? 'Retrying...' : 'Try Again'}
@@ -330,19 +381,19 @@ const getAgeRatingInfo = (rating) => {
   // No data state
   if (!animeData || animeData.length === 0) {
     return (
-      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
-        <div className="text-white text-center">
+      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center ${className}`}>
+        <div className="text-white text-center px-4">
           <div className="text-4xl mb-4">📺</div>
-          <div className="text-lg mb-4">No anime found</div>
+          <div className={`${isMobile ? 'text-base' : 'text-lg'} mb-4`}>No anime found</div>
           <motion.button
             onClick={handleRetry}
             disabled={retrying}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             <RefreshCw
-              size={18}
+              size={isMobile ? 16 : 18}
               className={retrying ? 'animate-spin' : ''}
             />
             {retrying ? 'Retrying...' : 'Retry'}
@@ -354,59 +405,71 @@ const getAgeRatingInfo = (rating) => {
 
   // Main render
   return (
-    <div className={`h-[60vh] bg-black py-3 ${className} relative text-white`}>
-      <div className="absolute left-0 top-0 bottom-0 w-30 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-30 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+    <div className={`${isMobile ? 'h-[50vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} bg-black py-2 sm:py-3 ${className} relative text-white`}>
+      {/* Gradient overlays - hide on mobile for better performance */}
+      {!isMobile && (
+        <>
+          <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-30 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-30 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+        </>
+      )}
 
-      <div className="flex items-center px-10 mb-2">
-        <h1 className="text-white text-2xl font-bold drop-shadow-lg">{title}</h1>
-        <div className="flex-1 h-px bg-white/30 ml-4"></div>
-        <div className="text-white/80 text-sm ml-4 drop-shadow">{animeData.length} items</div>
+      <div className="flex items-center px-4 sm:px-6 lg:px-10 mb-2">
+        <h1 className={`text-white ${isMobile ? 'text-lg' : isTablet ? 'text-xl' : 'text-2xl'} font-bold drop-shadow-lg`}>
+          {title}
+        </h1>
+        <div className="flex-1 h-px bg-white/30 ml-2 sm:ml-4"></div>
+        <div className={`text-white/80 ${isMobile ? 'text-xs' : 'text-sm'} ml-2 sm:ml-4 drop-shadow`}>
+          {animeData.length} items
+        </div>
       </div>
 
-      {/* <h3 className=" ml-10 text-red-300 text-sm  font-bold drop-shadow-lg">{subtitle}</h3> */}
-      <div className="relative px-8">
+      <div className="relative px-2 sm:px-4 lg:px-8">
+        {/* the card here */}
         <div
           ref={sliderRef}
-          className="w-full h-[55vh] flex overflow-x-auto gap-5 scroll-smooth py-2 scrollbar-hide"
+          className={`w-full ${isMobile ? 'h-[40vh]' : isTablet ? 'h-[45vh]' : 'h-[55vh]'} flex flex-nowrap overflow-x-auto gap-2 sm:gap-3 lg:gap-5 scroll-smooth py-2 scrollbar-hide`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {/* maincard component parent   of cards */}
           {animeData.map((anime, index) => {
             const attr = anime.attributes;
             return (
               <motion.div
                 key={anime.id}
-                onClick={() => {
-                  handleCardClick(anime);
-                }}
-                onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
-                onMouseLeave={handleCardMouseLeave}
+                onClick={() => handleCardClick(anime)}
+                onMouseEnter={!isMobile && !isTablet ? (e) => handleCardMouseEnter(anime, e) : undefined}
+                onMouseLeave={!isMobile && !isTablet ? handleCardMouseLeave : undefined}
+                
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="min-w-[14vw] max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group"
+                className={`${cardDimensions.minWidth} ${cardDimensions.maxWidth}  rounded-xl overflow-hidden transition-transform duration-300 cursor-pointer group ${
+                  !isMobile && !isTablet ? 'hover:scale-[1.03]' : 'active:scale-95'
+                }`}
               >
-                <div className="relative h-[44vh] w-full">
+                <div className={`relative ${cardDimensions.height} w-full`}>
+                  {/* img done */}
                   <img
                     src={attr?.posterImage?.large || attr?.posterImage?.medium}
                     alt={attr?.titles?.en_jp || attr?.titles?.en || 'Anime'}
-                    
-                    className="w-full h-full object-cover rounded-xl group-hover:brightness-110 transition-all duration-300"
+                    className={`w-full h-full object-cover rounded-xl transition-all duration-300 ${
+                      !isMobile && !isTablet ? 'group-hover:brightness-110' : ''
+                    }`}
                     loading="lazy"
                   />
 
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                  {/* Subtype label */}
+                  {!isMobile && !isTablet && (
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  )}
+
                   {/* Star Rating */}
                   {typeof attr?.averageRating === 'string' && (() => {
-                    // Kitsu averageRating is a string percentage, e.g. "87.65"
                     const rating = parseFloat(attr.averageRating);
                     if (isNaN(rating)) return null;
                     return (
-                      <div className="absolute top-2 right-2 flex items-center text-xm    gap-1  bg-red-500 text-white font-semibold  px-2 py-1 rounded-lg backdrop-blur-sm">
-                         <Star className="w-3 h-3" />
-                        <span className="font-semibold text-xs">{(rating / 10).toFixed(1) || 'N/A'}</span>
+                      <div className={`absolute top-1 sm:top-2 right-1 sm:right-2 flex items-center gap-1 bg-red-500 text-white font-semibold px-1 sm:px-2 py-1 rounded-lg backdrop-blur-sm ${isMobile ? 'text-xs' : 'text-xs'}`}>
+                        <Star className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'}`} />
+                        <span className="font-semibold">{(rating / 10).toFixed(1) || 'N/A'}</span>
                       </div>
                     );
                   })()}
@@ -415,16 +478,18 @@ const getAgeRatingInfo = (rating) => {
                   {attr?.ageRating && (() => {
                     const { className, label } = getAgeRatingInfo(attr.ageRating);
                     return (
-                      <div className={`absolute top-2 left-2 ${className}  text-xs px-3 py-1 rounded`}>
+                      <div className={`absolute top-1 sm:top-2 left-1 sm:left-2 ${className} ${isMobile ? 'text-xs px-2 py-0.5' : 'text-xs px-3 py-1'} rounded`}>
                         {label}
                       </div>
                     );
                   })()}
                 </div>
                 
-                <div className="py-2 ml-1 text-sm font-medium leading-tight h-[4.5vh]">
+                <div className={`py-1 sm:py-2 ml-1 ${isMobile ? 'text-xs' : 'text-sm'} font-medium leading-tight ${cardDimensions.titleHeight}`}>
                   <div
-                    className="line-clamp-2 group-hover:text-yellow-400 transition-colors"
+                    className={`line-clamp-2 transition-colors ${
+                      !isMobile && !isTablet ? 'group-hover:text-yellow-400' : ''
+                    }`}
                     title={
                       attr?.titles?.en_jp ||
                       attr?.canonicalTitle ||
@@ -443,9 +508,9 @@ const getAgeRatingInfo = (rating) => {
           })}
         </div>
 
-        {/* Simplified Overlay */}
+        {/* Hover Overlay - Only show on desktop */}
         <AnimatePresence>
-          {hoveredAnime && (
+          {hoveredAnime && !isMobile && !isTablet && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -467,7 +532,6 @@ const getAgeRatingInfo = (rating) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
 
-                {/* Auto-hide indicator */}
                 <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                   Auto-hide: 2s
                 </div>
@@ -533,23 +597,24 @@ const getAgeRatingInfo = (rating) => {
           )}
         </AnimatePresence>
 
+        {/* Navigation Buttons */}
         {canScrollLeft && (
           <motion.button
             onClick={scrollLeft}
-            className="absolute top-1/2 -translate-y-1/2 left-12 bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10"
+            className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-4' : 'left-12'} bg-gray-700/90 hover:bg-gray-600 ${isMobile ? 'p-2' : 'p-3'} rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
             aria-label="Scroll left"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={isMobile ? 20 : 24} />
           </motion.button>
         )}
 
         {canScrollRight && (
           <motion.button
             onClick={scrollRight}
-            className="absolute top-1/2 -translate-y-1/2 right-12 bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10"
+            className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-12'} bg-gray-700/90 hover:bg-gray-600 ${isMobile ? 'p-2' : 'p-3'} rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
             aria-label="Scroll right"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={isMobile ? 20 : 24} />
           </motion.button>
         )}
       </div>
