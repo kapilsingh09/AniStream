@@ -1,12 +1,13 @@
 // Footer.jsx
 import React from "react";
 import AtoZsearch from "./AtoZsearch";
-import { Github } from "lucide-react"; // Lucide icon
+import { Github } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 px-8 border-t border-white/10">
       {/* A-Z Search */}
+      
       <AtoZsearch />
 
       {/* About Project */}
@@ -20,7 +21,7 @@ const Footer = () => {
         </p>
       </div>
       {/* Footer Bottom */}
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4 pb-6">
+      <div className="container  flex flex-col md:flex-row justify-between items-center gap-4 pb-6">
         {/* Left */}
         <p className="text-xs text-gray-500">
           
@@ -28,14 +29,14 @@ const Footer = () => {
         </p>
 
         {/* Center Links */}
-        <div className="flex gap-4 text-sm">
-          <a href="/privacy" className="hover:text-white transition-colors">
+        <div className="flex gap-4 text-sm group">
+          <a href="/privacy" className="hover:text-white hover:underline transition-colors">
             Privacy
           </a>
-          <a href="/terms" className="hover:text-white transition-colors">
+          <a href="/terms" className="hover:text-white transition-colors hover:underline">
             Terms
           </a>
-          <a href="/contact" className="hover:text-white transition-colors">
+          <a href="/contact" className="hover:text-white transition-colors hover:underline">
             Contact
           </a>
         </div>

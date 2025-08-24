@@ -76,3 +76,177 @@
           -ms-user-select: none;
           user-select: none;
         }
+
+        
+        .progress-bar {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+          transition: height 0.2s ease;
+        }
+        .progress-fill {
+          position: absolute;
+          top: 21px;
+          left: 0;
+          height: 4px;
+          background: linear-gradient(90deg, #ffffff, #f0f0f0);
+          border-radius: 2px;
+          pointer-events: none;
+          transition: width 0.1s linear;
+          z-index: 1;
+          min-width: 0;
+          max-width: 100%;
+          box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-bar:hover {
+          height: 6px;
+        }
+        
+        .progress-bar::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #ffffff;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+          transition: all 0.2s ease;
+          transform: scale(0);
+        }
+        
+        .progress-bar:hover::-webkit-slider-thumb {
+          transform: scale(1);
+        }
+
+        .progress-bar::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #ffffff;
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+          transition: all 0.2s ease;
+          transform: scale(0);
+        }
+        
+        .progress-bar:hover::-moz-range-thumb {
+          transform: scale(1);
+        }
+        
+        .progress-bar::-moz-range-track {
+          height: 4px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 2px;
+          border: none;
+        }
+        
+        .progress-bar::-moz-range-progress {
+          height: 4px;
+          background: #ffffff;
+          border-radius: 2px;
+        }
+        
+        /* Volume Bar Styling */
+        .volume-bar {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          width: 80px;
+          height: 3px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+        }
+        
+        .volume-bar::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #ffffff;
+          cursor: pointer;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .volume-bar::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #ffffff;
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .volume-bar::-moz-range-track {
+          height: 3px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 2px;
+          border: none;
+        }
+        
+        /* Progress fill overlay */
+ 
+
+        /* Control button hover effects */
+        .control-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          color: white;
+          transition: background-color 0.2s ease;
+          cursor: pointer;
+        }
+
+        .control-btn:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Loading spinner */
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+          width: 48px;
+          height: 48px;
+          border: 3px solid rgba(255, 255, 255, 0.3);
+          border-top: 3px solid #ffffff;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        /* Volume slider transition */
+        .volume-container {
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .volume-slider {
+          width: 0;
+          transition: width 0.3s ease;
+          opacity: 0;
+          margin-left: 8px;
+        }
+
+        .volume-container:hover .volume-slider {
+          width: 80px;
+          opacity: 1;
+        }

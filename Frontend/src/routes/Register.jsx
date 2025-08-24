@@ -26,7 +26,7 @@ const Register = () => {
         setMessage('');
         
         if (formData.password !== formData.confirmPassword) {
-            return setMessage("❌ Passwords do not match");
+            return setMessage(" Passwords do not match");
         }
         
         setLoading(true);
