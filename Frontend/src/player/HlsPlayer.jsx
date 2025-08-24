@@ -467,7 +467,7 @@ export default function HLSVideoPlayer({ src, type = "mp4", onLoad }) {
 /**
  * --- Developer Notes ---
  * 
- * - The progress bar is now fully responsive and lag-free when seeking.
+ * - The progress bar is now lag-free when seeking.
  * - While dragging, the UI updates instantly, but the video only seeks when the user releases the drag.
  * - This avoids the "lag" or "rubber band" effect from the previous debounce-based approach.
  * - All other controls (volume, play/pause, fullscreen, keyboard shortcuts) are unchanged.

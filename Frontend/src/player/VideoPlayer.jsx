@@ -124,7 +124,6 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     setIsPlaying(false);
   };
 
-  // CurrentEpisode always from full animeData, not filtered list
   const currentEpisode =
     animeData?.episodes?.find((ep) => ep.id === currentEpisodeId) ||
     animeData?.episodes?.[0] ||
@@ -265,11 +264,29 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                       </div>
                     )}
                     {currentEpisode.videoUrl && (
-                      <HlsPlayer 
-                        src={currentEpisode.videoUrl} 
-                        type={currentEpisode.videoUrl?.includes('.m3u8') ? 'hls' : 'mp4'}
-                        onLoad={() => setVideoLoading(false)}
-                      />
+                      // <HlsPlayer 
+                      //   src={currentEpisode.videoUrl} 
+                      //   type={currentEpisode.videoUrl?.includes('.m3u8') ? 'hls' : 'mp4'}
+                      //   onLoad={() => setVideoLoading(false)}
+                      // />
+                    <video 
+                    ref={videoRef}
+                    onClick={togglePlay}
+                    controls
+                    autoPlay
+                      onWaiting={()=>setVideoLoading(true) }
+                      onPlay={()=>setVideoLoading(false)}
+                      onLoadedData={()=>setVideoLoading(false)}
+                    muted
+                    className="w-full h-full max-h-fit max-w-full object-contain  object-center  cursor-pointer"
+                    preload="metadata"
+                  >
+                    
+
+                      <source src={currentEpisode.videoUrl} type={type}/>
+                      this browser is not support this player
+                     
+                    </video>
                     )}
                   </>
                 )}
