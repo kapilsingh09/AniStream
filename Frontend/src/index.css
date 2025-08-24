@@ -4,249 +4,266 @@
   background-color: #0f172b;
 } */
 
-#second-slider::-webkit-scrollbar{
-    display: none;
+#second-slider::-webkit-scrollbar {
+  display: none;
 }
-.genre-scroll::-webkit-scrollbar {
-    display: none;
 
-    .genre-scroll {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }}
+.genre-scroll::-webkit-scrollbar {
+  display: none;
+
+  .genre-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* Add in your CSS file or inside a styled component */
 .cool-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #8b5cf6 #1f2937; /* thumb and track colors */
-  }
-  
-  .cool-scrollbar::-webkit-scrollbar {
-    width: 2px;
-  }
-  
-  .cool-scrollbar::-webkit-scrollbar-track {
-    background: #1f2937; /* dark gray */
-    border-radius: 8px;
-  }
-  
-  .cool-scrollbar::-webkit-scrollbar-thumb {
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 #1f2937;
+  /* thumb and track colors */
+}
+
+.cool-scrollbar::-webkit-scrollbar {
+  width: 2px;
+}
+
+.cool-scrollbar::-webkit-scrollbar-track {
+  background: #1f2937;
+  /* dark gray */
+  border-radius: 8px;
+}
+
+.cool-scrollbar::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.cool-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #a78bfa;
+  /* lighter violet */
+  display: none;
+}
+
+
+@layer base {
+  ::selection {
     background: #a78bfa;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-  }
-  
-  .cool-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #a78bfa; /* lighter violet */
-    display: none;
-  }
-  
-
-  @layer base {
-    ::selection {
-      background: #a78bfa;
-      color: #fff;
-    }
-  
-    ::-moz-selection {
-      background: #a78bfa;
-      color: #fff;
-    }
-  }
-
-  .rm-selection {
-    /* background: #a78bfa; */
     color: #fff;
-    -webkit-user-select: none; /* Chrome/Safari */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE/Edge */
-    user-select: none;
   }
-  
-      .scroll-container::-webkit-scrollbar {
-          height: 4px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-          background: linear-gradient(90deg, #a78bfa, #f472b6);
-          border-radius: 9999px;
-        }
-        .rm-selection {
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
 
-        
-        .progress-bar {
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          width: 100%;
-          height: 4px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 2px;
-          outline: none;
-          cursor: pointer;
-          transition: height 0.2s ease;
-        }
-        .progress-fill {
-          position: absolute;
-          top: 21px;
-          left: 0;
-          height: 4px;
-          background: linear-gradient(90deg, #ffffff, #f0f0f0);
-          border-radius: 2px;
-          pointer-events: none;
-          transition: width 0.1s linear;
-          z-index: 1;
-          min-width: 0;
-          max-width: 100%;
-          box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
-        }
+  ::-moz-selection {
+    background: #a78bfa;
+    color: #fff;
+  }
+}
 
-        .progress-bar:hover {
-          height: 6px;
-        }
-        
-        .progress-bar::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: #ffffff;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-          transition: all 0.2s ease;
-          transform: scale(0);
-        }
-        
-        .progress-bar:hover::-webkit-slider-thumb {
-          transform: scale(1);
-        }
+.rm-selection {
+  /* background: #a78bfa; */
+  color: #fff;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE/Edge */
+  user-select: none;
+}
 
-        .progress-bar::-moz-range-thumb {
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: #ffffff;
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-          transition: all 0.2s ease;
-          transform: scale(0);
-        }
-        
-        .progress-bar:hover::-moz-range-thumb {
-          transform: scale(1);
-        }
-        
-        .progress-bar::-moz-range-track {
-          height: 4px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 2px;
-          border: none;
-        }
-        
-        .progress-bar::-moz-range-progress {
-          height: 4px;
-          background: #ffffff;
-          border-radius: 2px;
-        }
-        
-        /* Volume Bar Styling */
-        .volume-bar {
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          width: 80px;
-          height: 3px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 2px;
-          outline: none;
-          cursor: pointer;
-        }
-        
-        .volume-bar::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #ffffff;
-          cursor: pointer;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        .volume-bar::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #ffffff;
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        .volume-bar::-moz-range-track {
-          height: 3px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 2px;
-          border: none;
-        }
-        
-        /* Progress fill overlay */
- 
+.scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
 
-        /* Control button hover effects */
-        .control-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          color: white;
-          transition: background-color 0.2s ease;
-          cursor: pointer;
-        }
+.scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #a78bfa, #f472b6);
+  border-radius: 9999px;
+}
 
-        .control-btn:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-        }
+.rm-selection {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
-        /* Loading spinner */
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
 
-        .loading-spinner {
-          width: 48px;
-          height: 48px;
-          border: 3px solid rgba(255, 255, 255, 0.3);
-          border-top: 3px solid #ffffff;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
+.progress-bar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.2s ease;
+}
 
-        /* Volume slider transition */
-        .volume-container {
-          display: flex;
-          align-items: center;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
+.progress-fill {
+  position: absolute;
+  top: 21px;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ffffff, #f0f0f0);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+  z-index: 1;
+  min-width: 0;
+  max-width: 100%;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
 
-        .volume-slider {
-          width: 0;
-          transition: width 0.3s ease;
-          opacity: 0;
-          margin-left: 8px;
-        }
+.progress-bar:hover {
+  height: 6px;
+}
 
-        .volume-container:hover .volume-slider {
-          width: 80px;
-          opacity: 1;
-        }
+.progress-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  transform: scale(0);
+}
+
+.progress-bar:hover::-webkit-slider-thumb {
+  transform: scale(1);
+}
+
+.progress-bar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  transform: scale(0);
+}
+
+.progress-bar:hover::-moz-range-thumb {
+  transform: scale(1);
+}
+
+.progress-bar::-moz-range-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  border: none;
+}
+
+.progress-bar::-moz-range-progress {
+  height: 4px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+
+/* Volume Bar Styling */
+.volume-bar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.volume-bar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.volume-bar::-moz-range-track {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  border: none;
+}
+
+/* Progress fill overlay */
+
+
+/* Control button hover effects */
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: white;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.control-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Volume slider transition */
+.volume-container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.volume-slider {
+  width: 0;
+  transition: width 0.3s ease;
+  opacity: 0;
+  margin-left: 8px;
+}
+
+.volume-container:hover .volume-slider {
+  width: 80px;
+  opacity: 1;
+}

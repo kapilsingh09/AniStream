@@ -3,9 +3,7 @@ import { Star, Calendar, Film } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-// Fetch top spotlight anime from the endpoint (using Kitsu trending as example)
 const fetchSpotlightAnime = async () => {
-  // Replace with your actual "top spotlight" endpoint if different
   const res = await fetch('https://kitsu.io/api/edge/trending/anime?limit=12');
   if (!res.ok) throw new Error('Failed to fetch spotlight anime');
   const data = await res.json();

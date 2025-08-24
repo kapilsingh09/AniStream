@@ -28,6 +28,7 @@ const fetchAnime = async (animeId) => {
 };
 
 const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
+  const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Track current episode by ID, not by index
@@ -47,7 +48,6 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const [selectedSub, setSelectedSub] = useState('hd-1');
   const [selectedDub, setSelectedDub] = useState('hd-1');
 
-  // Use TanStack Query to fetch anime data
   const {
     data: animeData,
     isLoading: loading,
@@ -90,8 +90,14 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   }, [loading, animeData, currentEpisodeId]);
 
   const togglePlay = () => {
-    // This function is now handled by the HlsPlayer component
-    setIsPlaying(!isPlaying);
+    const video = videoRef.current;
+    if (video?.paused) {
+      video?.play();
+      setIsPlaying(true);
+    } else {
+      video?.pause();
+      setIsPlaying(false);
+    }
   };
 
   const getDisplayEpisodeNumber = (ep, idx) => {
@@ -240,16 +246,15 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                   </div>
                 ) : !currentEpisode.videoUrl ? (
                   <div className="flex flex-col items-center justify-center h-full p-8 relative">
-                    <div className="text-center text-white">
-                      <div className="text-6xl mb-4">🎬</div>
-                      <h3 className="text-xl font-semibold mb-2">No Video Available</h3>
-                      <p className="text-gray-400 mb-4">This episode doesn't have a video source yet.</p>
-                      <button 
-                        onClick={crossBack}
-                        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-                      >
-                        Try Previous Episode
-                      </button>
+                    {/* SorryCard is now shown relative to this parent */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <SorryCard
+                        show={showSorry}
+                        onClose={() => {
+                          setShowSorry(false);
+                          crossBack();
+                        }}
+                      />
                     </div>
                   </div>
                 ) : (
