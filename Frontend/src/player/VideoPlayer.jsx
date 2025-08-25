@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import {
   Play,
   Pause,
-  Search,   
+  Search,
   Star,
   Lightbulb,
   PlayCircle,
@@ -16,29 +16,26 @@ import {
 } from 'lucide-react';
 // import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import SorryCard from '../utils/SorryCard';
 import RecomendedAnime from '../components/RecomendedAnime';
 import SkeletonLoader from '../loader/SkeletonLoader';
-import HlsPlayer from './HlsPlayer'
-const fetchAnime = async (animeId) => {
-  if (!animeId) throw new Error('No animeId provided');
-  const res = await axios.get(`http://localhost:3000/api/anime/${animeId}`);
-  return res.data;
-};
 
 const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Track current episode by ID, not by index
+  // ❌ OLD: const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState(0);
+  // ✅ UPDATED: track current episode by ID, not by index
   const [currentEpisodeId, setCurrentEpisodeId] = useState(null);
 
   const [expandMode, setExpandMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [animeData, setAnimeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [showSorry, setShowSorry] = useState(false);
   const [setshowupcomingep, setSetshowupcomingep] = useState(false);
-  const [videoLoading, setVideoLoading] = useState(true);
+  const [videoLoding, setVideoLoding] = useState(false)
 
   const [lightsOn, setLightsOn] = useState(false);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -48,30 +45,39 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const [selectedSub, setSelectedSub] = useState('hd-1');
   const [selectedDub, setSelectedDub] = useState('hd-1');
 
-  const {
-    data: animeData,
-    isLoading: loading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ['anime', animeId],
-    queryFn: () => fetchAnime(animeId),
-    enabled: !!animeId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 1,
-    onSuccess: (data) => {
-      // Set first episode as default if none selected
-      if (data?.episodes?.length > 0 && !currentEpisodeId) {
-        setCurrentEpisodeId(data.episodes[0].id);
-      }
-    },
-  });
-
-  // Reset video loading state when episode changes
+  // ✅ fetch anime
   useEffect(() => {
-    setVideoLoading(true);
-    setShowSorry(false);
+    const fetchAnime = async () => {
+      if (!animeId) return;
+
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/api/anime/${animeId}`
+        );
+        setAnimeData(res.data);
+
+        // ✅ set first episode as default if none selected
+        if (res.data?.episodes?.length > 0 && !currentEpisodeId) {
+          setCurrentEpisodeId(res.data.episodes[0].id);
+        }
+      } catch (error) {
+        setFetchError('Error fetching anime data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnime();
+    // eslint-disable-next-line
+  }, [animeId]);
+
+  // ✅ reload video when currentEpisodeId changes
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.load();
+    }
   }, [currentEpisodeId]);
 
   // Show SorryCard if the current episode has no videoUrl
@@ -110,7 +116,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     return idx + 1;
   };
 
-  // Search only filters the display list, not the current playing ep
+  // ✅ search only filters the display list, not the current playing ep
   const filteredEpisodes =
     animeData?.episodes?.filter(
       (ep) =>
@@ -118,12 +124,13 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
         ep.id?.toString().includes(searchQuery)
     ) || [];
 
-  // Handle selecting episode by ID instead of index
+  // ✅ handle selecting episode by ID instead of index
   const handleSelect = (episodeId) => {
     setCurrentEpisodeId(episodeId);
     setIsPlaying(false);
   };
 
+  // ✅ currentEpisode always from full animeData, not filtered list
   const currentEpisode =
     animeData?.episodes?.find((ep) => ep.id === currentEpisodeId) ||
     animeData?.episodes?.[0] ||
@@ -148,16 +155,14 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
 
   if (loading) {
     return (
-      <SkeletonLoader />
+     <SkeletonLoader />
     );
   }
 
-  if (isError) {
+  if (fetchError) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
-        <div className="text-lg font-semibold text-red-400">
-          {error?.message || 'Error fetching anime data.'}
-        </div>
+        <div className="text-lg font-semibold text-red-400">{fetchError}</div>
       </div>
     );
   }
@@ -165,6 +170,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   return (
     <div className="w-full mx-auto h-auto min-h-screen  bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-xl text-white relative overflow-hidden">
       {/* SorryCard Modal */}
+      
       {lightsOn && (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-10 pointer-events-none transition-opacity duration-500" />
       )}
@@ -175,7 +181,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           className={`transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30  h-lvh cool-scrollbar flex flex-col ${
             expandMode
               ? 'w-full lg:w-[20%]'
-              : 'w-full lg:w-[22%]'
+              : 'w-full lg:w-[23%]'
           } ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}
         >
           <div className="flex items-center gap-3 mb-2 ml-1">
@@ -258,49 +264,39 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                   </div>
                 ) : (
                   <>
-                    {videoLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
-                        <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-                      </div>
-                    )}
-                    {currentEpisode.videoUrl && (
-                      // <HlsPlayer 
-                      //   src={currentEpisode.videoUrl} 
-                      //   type={currentEpisode.videoUrl?.includes('.m3u8') ? 'hls' : 'mp4'}
-                      //   onLoad={() => setVideoLoading(false)}
-                      // />
-                    <video 
+                  {
+                    videoLoding && (<div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
+                      <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                    </div>)
+                  }
+                       <video
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
                     autoPlay
-                      onWaiting={()=>setVideoLoading(true) }
-                      onPlay={()=>setVideoLoading(false)}
-                      onLoadedData={()=>setVideoLoading(false)}
+                    
                     muted
                     className="w-full h-full max-h-fit max-w-full object-contain  object-center  cursor-pointer"
                     preload="metadata"
                   >
-                    
-
-                      <source src={currentEpisode.videoUrl} type={type}/>
-                      this browser is not support this player
-                     
-                    </video>
-                    )}
+                    <source src={currentEpisode.videoUrl} type={type} />
+                    Your browser does not support the video tag.
+                  </video> 
                   </>
+
+             
                 )}
               </div>
             </div>
 
             {/* video player bottom */}
-            <div className="p-3 flex flex-wrap items-center justify-between gap-4 ">
+            <div className="p-3 flex flex-wrap items-center justify-between gap-4">
               {/* Left Controls */}
               <div className="w-full flex items-center flex-nowrap overflow-x-auto gap-3 text-sm pb-1">
                 {/* Expand */}
                 <button
                   onClick={() => setExpandMode(!expandMode)}
-                  className="min-w-fit px-2 py-2 rounded cursor-pointer text-sm font-semibold text-white flex items-center gap-1"
+                  className="min-w-fit px-2 py-2 rounded cursor-pointer text-sm font-semibold text-white flex items-center gap-1 transition-all duration-300 transform"
                 >
                   {expandMode ? (
                     <>
@@ -318,7 +314,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                 {/* Lights */}
                 <button
                   onClick={() => setLightsOn(!lightsOn)}
-                  className={`min-w-fit px-3 text-sm py-2 text-white rounded-xl  font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${
+                  className={`min-w-fit px-3 py-2 text-white rounded-xl text-sm font-semibold flex items-center gap-1 cursor-pointer transition-all duration-300 transform ${
                     lightsOn ? 'bg-violet-500' : ''
                   }`}
                 >
@@ -472,9 +468,9 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           {/* Anime Details Panel */}
           {expandMode && (
             <div className="w-full lg:w-[20%] lg:min-w-[280px] p-4 bg-transparent backdrop-blur-md border-l border-white/10">
-              <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+              {/* <h2 className="text-lg font-semibold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Anime Details
-              </h2>
+              </h2> */}
               <div className="space-y-5">
                 <div className=" overflow-hidden  ">
                 <div className="h-[180px] w-[120px] rounded-lg">
@@ -507,21 +503,13 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                     <div className="flex items-center gap-2">
                       <Calendar className="w-3.5 h-3.5 text-purple-400" />
                       <span className="text-gray-400">Status:</span>
-                      <span className="ml-auto text-white px-2 py-1 bg-green-400 rounded font-semibold">
+                      <span className="ml-auto text-green-400 font-semibold">
                         {animeData?.status || 'Ongoing'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs">
-                      <span className="text-gray-400">Episode Length:</span>
-                      <span className="ml-auto px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded">
-                        {animeData?.episodeLength
-                          ? `${animeData.episodeLength} min`
-                          : 'Unknown'}
-                      </span>
-                    </div>
                     <div className="flex items-center gap-2">
-                      {/* <Play className="w-3.5 h-3.5 text-purple-400" /> */}
-                      <span className="text-gray-400"> Total Episodes:</span>
+                      <Play className="w-3.5 h-3.5 text-purple-400" />
+                      <span className="text-gray-400">Episodes:</span>
                       <span className="ml-auto">
                         {animeData?.episodes?.length
                           ? `${animeData.episodes.length} / ${animeData.episodes.length}`
@@ -529,18 +517,6 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                       </span>
                     </div>
                   </div>
-                  <div className="pt-2 border-t border-white/10">
-                    <h4 className="font-medium mb-1 text-purple-300 text-sm">
-                      Synopsis
-                    </h4>
-                    <div className='h-40 overflow-y-auto '>
-                    <p className="text-gray-300 text-xs leading-snug ">
-                      {animeData?.synopsis ||
-                        'Desc.. not avaliable'}
-                    </p>
-                    </div>
-                  </div>
-
                   <div>
                     <span className="text-gray-400">Genres:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
@@ -557,10 +533,25 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                       ))}
                     </div>
 
-                   
+                    <div className="flex items-center gap-2 mt-1 text-xs">
+                      <span className="text-gray-400">Episode Length:</span>
+                      <span className="ml-auto px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded">
+                        {animeData?.episodeLength
+                          ? `${animeData.episodeLength} min`
+                          : 'Unknown'}
+                      </span>
+                    </div>
 
                   </div>
-                
+                  <div className="pt-2 border-t border-white/10">
+                    <h4 className="font-medium mb-1 text-purple-300 text-sm">
+                      Synopsis
+                    </h4>
+                    <p className="text-gray-300 text-xs leading-snug line-clamp-5">
+                      {animeData?.synopsis ||
+                        'A young warrior discovers magical powers and must unite with allies to stop an ancient evil. Epic fantasy adventure awaits.'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
