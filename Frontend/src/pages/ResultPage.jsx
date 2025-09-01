@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const fetchSearchResults = async (searchQuery, page) => {
   if (!searchQuery.trim()) {
     return { data: [], pagination: { items: { total: 0 }, last_visible_page: 1 } };
@@ -20,6 +20,7 @@ const fetchSearchResults = async (searchQuery, page) => {
 
 const ResultPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate()
   const query = searchParams.get("query") || "";
   const [page, setPage] = useState(1);
   const [paginationWindow, setPaginationWindow] = useState(4);
@@ -156,6 +157,7 @@ const ResultPage = () => {
                       return (
                         <div
                           key={anime.mal_id || i}
+                          onClick={()=>(navigate(`/play/${anime.mal_id}`))}
                           className="group relative cursor-pointer bg-slate-800 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
                         >
                           <div className="relative overflow-hidden">

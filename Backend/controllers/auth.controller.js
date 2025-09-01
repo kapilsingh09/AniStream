@@ -31,7 +31,7 @@ const JWT_SECRET =
 // Register Controller
 export const register = async (req, res) => {
   try {
-    const { username, name, email, password } = req.body;
+    const {  name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
     }
 
     const newUser = new User({
-      username,
+      // username,
       name,
       email,
       password,

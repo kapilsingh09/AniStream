@@ -23,20 +23,20 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="container  flex flex-col md:flex-row justify-between items-center gap-4 pb-6">
         {/* Left */}
-        <p className="text-xs text-gray-500">
+        <p className="text-sm text-gray-500">
           
-          © {new Date().getFullYear()} MySite. Crafted with ❤️ by a student.
+          © {new Date().getFullYear()} AniStream. Crafted with ❤️ by a student.
         </p>
 
         {/* Center Links */}
         <div className="flex gap-4 text-sm group">
-          <a href="/privacy" className="hover:text-white hover:underline transition-colors">
+          <a href="#" className="hover:text-white hover:underline transition-colors">
             Privacy
           </a>
-          <a href="/terms" className="hover:text-white transition-colors hover:underline">
+          <a href="#" className="hover:text-white transition-colors hover:underline">
             Terms
           </a>
-          <a href="/contact" className="hover:text-white transition-colors hover:underline">
+          <a href="#" className="hover:text-white transition-colors hover:underline">
             Contact
           </a>
         </div>

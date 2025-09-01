@@ -25,13 +25,16 @@ const KitsuAnimeCard = ({ onNavigate }) => {
             setError(null);
 
             const response = await fetch(`https://kitsu.io/api/edge/anime/${id}`);
-            
+           
             if (!response.ok) {
+                // navigate(`/play/${id}`)
                 throw new Error(`HTTP error! status: ${response.status}`);
+                
+
             }
 
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             
 
             if (!data || !data.data) {

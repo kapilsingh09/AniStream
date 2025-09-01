@@ -33,7 +33,7 @@ import {
  * 
  * All other controls and features are unchanged.
  */
-export default function HLSVideoPlayer({ src, type = "mp4", onLoad }) {
+export default function HLSVideoPlayer({ src, type = "mp4" | "m3u8", onLoad }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);

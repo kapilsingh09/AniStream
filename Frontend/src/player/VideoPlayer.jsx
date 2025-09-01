@@ -19,6 +19,7 @@ import axios from 'axios';
 import SorryCard from '../utils/SorryCard';
 import RecomendedAnime from '../components/RecomendedAnime';
 import SkeletonLoader from '../loader/SkeletonLoader';
+import  Hlsplayer  from  './HlsPlayer'
 
 const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
   const videoRef = useRef(null);
@@ -72,7 +73,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
     // eslint-disable-next-line
   }, [animeId]);
 
-  // ✅ reload video when currentEpisodeId changes
+  // reload video when currentEpisodeId changes
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -178,13 +179,13 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
         <div
-          className={`transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30  h-lvh cool-scrollbar flex flex-col ${
+          className={` scroll-container transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30  h-lvh cool-scrollbar flex flex-col ${
             expandMode
               ? 'w-full lg:w-[20%]'
               : 'w-full lg:w-[23%]'
           } ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}
         >
-          <div className="flex items-center gap-3 mb-2 ml-1">
+          <div className="flex items-center  gap-3 mb-2 ml-1">
             <h2 className="text-xl font-bold    text-white">
                List of episodes
             </h2>
@@ -203,7 +204,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
           </div>
 
           {/* Episode List Items */}
-          <div className="space-y-3 overflow-y-auto flex-1 pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
+          <div className="space-y-3 overflow-y-auto flex-1  pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
             {filteredEpisodes.length === 0 ? (
               <div className="text-gray-400 text-center py-8">
                 No episodes found.
@@ -264,12 +265,14 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                   </div>
                 ) : (
                   <>
-                  {
+                  {/* //loading state for simple video player */}
+                  {/* {
                     videoLoding && (<div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
                       <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>)
-                  }
-                       <video
+                  } */}
+{/*                      
+  <video
                     ref={videoRef}
                     onClick={togglePlay}
                     controls
@@ -281,9 +284,10 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
                     Your browser does not support the video tag.
-                  </video> 
-                  </>
+                  </video>  */}
 
+                  <Hlsplayer  onClick={togglePlay} src={currentEpisode.videoUrl} type={type} />
+                  </>
              
                 )}
               </div>

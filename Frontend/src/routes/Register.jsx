@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const [formData, setFormData] = useState({
-        username: '',
+        // username: '',
         name: '',
         email: '',
         password: '',
@@ -41,17 +41,17 @@ const Register = () => {
             const data = await res.json();
             
             if (res.ok) {
-                setMessage("✅ Registered successfully!");
+                setMessage("✅ Registered successfully!!");
                 // Add a small delay to show success message
                 setTimeout(() => {
                     navigate("/login");
                 }, 1000);
             } else {
-                setMessage(`❌ ${data.message || 'Registration failed'}`);
+                setMessage(` ${data.message || 'Registration failed'}`);
             }
         } catch (err) {
             console.error('Registration error:', err);
-            setMessage("❌ Server error. Try again later.");
+            setMessage(" Server error. Try again later.");
         } finally {
             setLoading(false);
         }
@@ -62,7 +62,7 @@ const Register = () => {
             <div className="w-full max-w-md p-8 rounded-xl bg-zinc-800 shadow-lg">
                 <h2 className="text-2xl font-bold text-center text-zinc-100 mb-6">Register</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
+                    {/* <input
                         type="text"
                         name="username"
                         placeholder="Username"
@@ -70,7 +70,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-2 bg-zinc-700 text-zinc-100 border border-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    /> */}
 
                     <input
                         type="text"
