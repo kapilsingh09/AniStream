@@ -100,9 +100,13 @@ const EploaderJikhan = ({ animeId, animeTitle, onClose }) => {
             );
           })
         )}
+        
       </div>
     </div>
   );
+
 };
+
+
 
 export default EploaderJikhan;

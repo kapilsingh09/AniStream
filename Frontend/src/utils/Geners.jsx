@@ -102,4 +102,8 @@ const GenreList = () => {
   );
 };
 
+
+
+
+
 export default GenreList;

@@ -1,5 +1,3 @@
-// src/utils/SorryCard.jsx
-
 import React from 'react';
 
 const SorryCard = ({ show, onClose }) => {
