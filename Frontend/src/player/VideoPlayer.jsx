@@ -162,7 +162,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
 
   if (fetchError) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 text-white">
+      <div className="w-full min-h-screen flex items-center justify-center bg-zinc-900/70 text-white">
         <div className="text-lg font-semibold text-red-400">{fetchError}</div>
       </div>
     );
@@ -179,54 +179,58 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
       <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
         {/* Episodes List */}
         <div
-          className={` scroll-container transition-all duration-500 ease-in p-2 max-h-full backdrop-blur-md bg-black/30  h-lvh cool-scrollbar flex flex-col ${
-            expandMode
-              ? 'w-full lg:w-[20%]'
-              : 'w-full lg:w-[23%]'
-          } ${expandMode ? 'lg:min-w-[280px]' : 'lg:min-w-[300px]'}`}
+          className={`
+            flex flex-col
+            bg-zinc-900/70
+            p-4
+            shadow-lg
+            min-h-[70vh]
+            max-h-[90vh]
+            overflow-y-auto
+            transition-all duration-300
+            ${expandMode ? "w-full lg:w-[20%] lg:min-w-[280px]" : "w-full lg:w-[23%] lg:min-w-[300px]"}
+          `}
         >
-          <div className="flex items-center  gap-3 mb-2 ml-1">
-            <h2 className="text-xl font-bold    text-white">
-               List of episodes
-            </h2>
+          {/* Title */}
+          <div className="flex items-center gap-3 mb-4 ml-1">
+            <h2 className="text-xl font-bold text-white tracking-tight">List of episodes</h2>
           </div>
-
           {/* Search Bar */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search episodes..."
-              className="w-full bg-white/5 border border-white/10 text-white text-sm pl-10 pr-4 py-3 rounded-xl placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/10"
+              className="w-full bg-white/10 border border-white/10 text-white text-sm pl-10 pr-4 py-2 rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
             />
           </div>
-
           {/* Episode List Items */}
-          <div className="space-y-3 overflow-y-auto flex-1  pr-2 h-[100vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
-            {filteredEpisodes.length === 0 ? (
+          <div className="flex-1 space-y-2 overflow-y-auto pr-1 custom-scrollbar">
+            {filteredEpisodes && filteredEpisodes.length === 0 ? (
               <div className="text-gray-400 text-center py-8">
                 No episodes found.
               </div>
             ) : (
+              filteredEpisodes &&
               filteredEpisodes
                 .filter((ep) => ep.airdate !== null)
                 .map((ep, i) => (
                   <div
                     key={ep.id || i}
                     onClick={() => handleSelect(ep.id)}
-                    className={`cursor-pointer p-3 rounded mb-2 ${
+                    className={`cursor-pointer p-3 rounded-lg mb-1 transition-colors duration-200 border border-transparent ${
                       ep.id === currentEpisodeId
-                        ? 'bg-purple-500/30'
-                        : 'bg-white/5 hover:bg-white/10'
+                        ? "bg-purple-600/30 border-purple-400/40 shadow"
+                        : "bg-white/5 hover:bg-purple-400/10"
                     }`}
                   >
                     <div className="font-bold text-white text-sm">
                       Episode {getDisplayEpisodeNumber(ep, i)}
                     </div>
-                    <div className="text-xs text-white/60">
-                      {ep.title || 'Untitled'}
+                    <div className="text-xs text-white/70 truncate">
+                      {ep.title || "Untitled"}
                     </div>
                   </div>
                 ))
@@ -271,7 +275,7 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                       <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>)
                   } */}
-{/*                      
+                     
   <video
                     ref={videoRef}
                     onClick={togglePlay}
@@ -284,9 +288,9 @@ const VideoPlayer = ({ src, type = 'video/mp4', animeId }) => {
                   >
                     <source src={currentEpisode.videoUrl} type={type} />
                     Your browser does not support the video tag.
-                  </video>  */}
+                  </video> 
 
-                  <Hlsplayer  onClick={togglePlay} src={currentEpisode.videoUrl} type={type} />
+                  {/* <Hlsplayer  onClick={togglePlay} src={currentEpisode.videoUrl} type={type} /> */}
                   </>
              
                 )}
