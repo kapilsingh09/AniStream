@@ -1,3 +1,6 @@
+// NOTE: The responsive width and aspect ratio styles for the anime image cards in this component
+// are needed for other components as well. Consider reusing or extracting these styles for consistency.
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Star } from "lucide-react";
@@ -39,22 +42,45 @@ const AviAnime = () => {
 
   const handleClick = (id) => {
     navigate(`/watch/${id}`);
-    // console.log(id);
-    
   };
 
   return (
-    <div className="min-h-[50vh]  bg-black">
+    <div className="min-h-[40vh] bg-black">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-white px-8 ">Local Anime Grid</h1>
+          <h1 className="text-2xl font-bold text-white px-4 sm:px-8">
+            Local Anime Grid
+          </h1>
         </div>
-        <div className="flex flex-wrap gap-5 px-2 sm:px-4 md:px-8 py-2 ">
+
+        {/* Responsive horizontal scroll on mobile, grid on larger screens */}
+        <div
+          className="
+            flex 
+            gap-3 
+            px-1 sm:px-4 md:px-8 py-2 
+            overflow-x-auto 
+            scrollbar-hide
+            sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6
+            sm:overflow-x-visible
+          "
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
           {loading
             ? [...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="animate-pulse h-[55vh] w-[90vw] sm:w-[45vw] md:w-[22vw] lg:w-[14vw] bg-white/10 rounded-xl"
+                  className="
+                    animate-pulse 
+                    aspect-[2/3]
+                    w-[32vw] sm:w-[20vw] md:w-[14vw] lg:w-full
+                    bg-white/10 
+                    rounded-xl 
+                    flex-shrink-0
+                  "
                 ></div>
               ))
             : animeData.map((anime) => {
@@ -78,24 +104,40 @@ const AviAnime = () => {
                   <div
                     key={id}
                     onClick={() => handleClick(id)}
-                    className="w-[90vw] sm:w-[45vw] md:w-[22vw] lg:min-w-[14vw] lg:max-w-[12vw] rounded-xl overflow-hidden text-white flex flex-col hover:scale-[1.03] transition-transform duration-300 cursor-pointer group h-[50vh]"
+                    className="
+                      bg-black/20
+                      rounded-xl 
+                      overflow-hidden 
+                      text-white 
+                      flex flex-col 
+                      hover:scale-[1.03] 
+                      transition-transform 
+                      duration-300 
+                      cursor-pointer 
+                      group 
+                      flex-shrink-0
+                      w-[32vw] sm:w-[20vw] md:w-[14vw] lg:w-full
+                      max-w-[180px] sm:max-w-none
+                    "
                   >
-                    <div className="relative h-[44vh] w-full">
+                    {/* Image Wrapper with fixed aspect ratio */}
+                    <div className="relative aspect-[2/3] w-full">
                       <img
                         src={img}
                         alt={title}
                         className="w-full h-full object-cover rounded-xl group-hover:brightness-110 transition-all duration-300"
                         loading="lazy"
+                        style={{ objectFit: "cover", objectPosition: "center" }}
                       />
+
                       {/* Play Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                         <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-black/80 to-transparent z-10" />
-                        <div className="rounded-full z-40 border-2 border-white/40 h-14 flex items-center group-hover:scale-110 duration-400 animate-pulse justify-center w-14 text-white bg-black/40">
-                          <Play size={24} />
+                        <div className="rounded-full z-40 border-2 border-white/40 h-10 w-10 flex items-center group-hover:scale-110 duration-400 animate-pulse justify-center text-white bg-black/40">
+                          <Play size={18} />
                         </div>
                       </div>
-                      {/* Black overlay on hover */}
-                    
+
                       {/* Star Rating */}
                       {displayRating !== "N/A" && (
                         <div className="absolute top-2 right-2 flex items-center text-xs gap-1 bg-red-500 text-white font-semibold px-2 py-1 rounded-lg backdrop-blur-sm z-30">
@@ -105,14 +147,21 @@ const AviAnime = () => {
                           </span>
                         </div>
                       )}
-                      {/* Ongoing Badge */}
+
+                      {/* Status Badge */}
                       {status && status.toLowerCase() && (
-                        <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeClass(status)} z-30`}>
+                        <div
+                          className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeClass(
+                            status
+                          )} z-30`}
+                        >
                           {status}
                         </div>
                       )}
                     </div>
-                    <div className="py-1 ml-1 text-sm font-medium leading-tight">
+
+                    {/* Title */}
+                    <div className="py-1 ml-1 text-xs sm:text-sm font-medium leading-tight">
                       <div
                         className="line-clamp-2 group-hover:text-yellow-400 transition-colors"
                         title={title}
