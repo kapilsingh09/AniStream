@@ -60,7 +60,7 @@ async function fetchAnimeTopRated() {
 function SliderSkeleton() {
   // Show 1 skeleton slide
   return (
-    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-15 bg-black">
+    <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-1z5 bg-black">
       {/* Category Selector Skeleton */}
       <div className="absolute top-4 left-4 z-40 flex gap-2">
         <div className="px-8 py-2 rounded-lg bg-white/10 animate-pulse" />
@@ -326,19 +326,7 @@ export default function Slider() {
 
   return (
     <div className="relative w-full h-[70vh] min-h-[80vh] overflow-hidden mt-14 bg-black">
-      {/* Category Selector */}
-      <div className="absolute top-4 left-4 z-40 flex gap-2">
-        <motion.button
-          key={currentCategory}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 backdrop-blur-sm bg-white/20 text-white border border-white/30`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          disabled
-        >
-          {getCategoryIcon(currentCategory)}
-          {getCategoryTitle(currentCategory)}
-        </motion.button>
-      </div>
+   
 
       {/* Gradient Overlays */}
       <div className="pointer-events-none absolute inset-0 z-10">

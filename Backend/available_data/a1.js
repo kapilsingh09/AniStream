@@ -117,13 +117,13 @@ const available_data = [
     "episodes_aired": null,
     "total_episodes": null,
     "start_date": "2021-12-20",
-    "img": "https://cdn.myanimelist.net/images/anime/1182/149879.jpg",
+    "img": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/49205.jpg",
     "genres": [
       "Drama",
       "Psychological",
       "Sci-Fi"
     ],
-    "studios": [],
+    "studios": [],  
     "licensor": "",
     "cast": [
       {
@@ -187,7 +187,7 @@ const available_data = [
     "episodes_aired": 0,
     "total_episodes": null,
     "start_date": "2025-01-01",
-    "img": "https://cdn.myanimelist.net/images/anime/1841/141026.jpg",
+    "img": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/49205.jpg",
     "genres": [
       "Action",
       "Fantasy",
@@ -241,7 +241,7 @@ const available_data = [
     "episodes_aired": 0,
     "total_episodes": null,
     "start_date": "2026-04-01",
-    "img": "https://cdn.myanimelist.net/images/anime/1126/141886.jpg",
+    "img": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/49205.jpg",
     "genres": [
       "Action",
       "Fantasy",
@@ -295,7 +295,7 @@ const available_data = [
     "episodes_aired": 1118,
     "total_episodes": null,
     "start_date": "1999-10-20",
-    "img": "https://cdn.myanimelist.net/images/anime/6/73245.jpg",
+    "img": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/49205.jpg",
     "genres": [
       "Action",
       "Adventure",
@@ -384,7 +384,7 @@ const available_data = [
     "episodes_aired": 0,
     "total_episodes": null,
     "start_date": "2026-07-01",
-    "img": "https://cdn.myanimelist.net/images/anime/1138/141021.jpg",
+    "img": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/49205.jpg",
     "genres": [
       "Adventure",
       "Sci-Fi",

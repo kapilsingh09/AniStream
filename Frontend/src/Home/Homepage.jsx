@@ -105,23 +105,23 @@ const Homepage = () => {
       />
 
       {/* 5. Featured Banner */}
-      <AnimeBanner />
+      {/* <AnimeBanner /> */}
 
       {/* 6. Trending Now */}
-      <JikhanAnimeComponent
+      {/* <JikhanAnimeComponent
         title="Trending Now"
         fetchFunction={FetchTopRatedAnime}
         sectionName="trending-now"
-      />
+      /> */}
 
       {/* 7. Romantic Movies */}
-      <SectionComponentKitsu
+      {/* <SectionComponentKitsu
         title="Romantic Movies for Your Heart"
         fetchFunction={fetchRomanceticAnime}
-      />
+      /> */}
 
       {/* 8. Romance Anime Grid + Genres */}
-      <div className="flex gap-3">
+      {/* <div className="flex gap-3">
         <div className="flex-1">
           <AnimeGrid
             fetchFn={fetchRomanceAnimeForAnimeGrid}
@@ -139,75 +139,75 @@ const Homepage = () => {
           </div>
           <Genres />
         </div>
-      </div>
+      </div> */}
 
       {/* 9. Full Anime Banner */}
-      <FullAnimeBanner />
+      {/* <FullAnimeBanner /> */}
 
       {/* 10. Horror Anime */}
-      <SectionComponentKitsu
+      {/* <SectionComponentKitsu
         title="👻 Horror Anime"
         fetchFunction={fetchHorrorAnime}
-      />
+      /> */}
 
       {/* 11. Ghibli Banner */}
-      <div className="my-8">
+      {/* <div className="my-8">
         <GhibliMovieBanner />
-      </div>
+      </div> */}
 
       {/* 12. Comedy Anime Grid + Genres */}
-      <div className="flex gap-3">
-        <div className="flex-1">
+      {/* <div className="flex gap-3"> */}
+        {/* <div className="flex-1">
           <AnimeGrid
             fetchFn={fetchComedyAnime}
             queryKey={["comedy-anime"]}
             title="Comedy Anime"
           />
-        </div>
-        <div className="w-[25%] mr-7 mt-6">
-          <div className="max-w-8xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-white text-4xl font-bold">
-                Genres<sub>-searches</sub>
-              </h1>
+        </div> */}
+          {/* <div className="w-[25%] mr-7 mt-6">
+            <div className="max-w-8xl mx-auto">
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-white text-4xl font-bold">
+                  Genres<sub>-searches</sub>
+                </h1>
+              </div>
             </div>
-          </div>
-          <Genres />
-        </div>
-      </div>
+            <Genres />
+          </div> */}
+      {/* </div> */}
 
       {/* 13. Random Romcom */}
-      <SectionComponentKitsu
+      {/* <SectionComponentKitsu
         title="🎲 Random Romcom"
         fetchFunction={fetchRandomRomcomAnime}
-      />
+      /> */}
 
       {/* 14. Full Anime Banner */}
-      <FullAnimeBanner />
+      {/* <FullAnimeBanner /> */}
 
       {/* 15. Upcoming Anime */}
-      <JikhanAnimeComponent
+      {/* <JikhanAnimeComponent
         title=" Upcoming Anime (Peak Next Seasons)"
         fetchFunction={FetchUpcomingAnime}
         sectionName="upcoming-anime-peak"
-      />
+      /> */}
 
       {/* 16. Pure Romance */}
-      <JikhanAnimeComponent
+      {/* <JikhanAnimeComponent
         title="Pure Romance"
         fetchFunction={FetchRomanceAnime}
         sectionName="pure-romance"
-      />
+      /> */}
 
       {/* 17. Full Anime Banner */}
-      <div>
-        <FullAnimeBanner />
-      </div>
+      {/* <div> */}
+        {/* <FullAnimeBanner /> */}
+      {/* </div> */}    
 
       {/* 18. Footer with Facts Slider */}
-      <footer>
+      {/* <footer>
         <FactsSlider />
-      </footer>
+      </footer> */}
     </div>
   );
 };

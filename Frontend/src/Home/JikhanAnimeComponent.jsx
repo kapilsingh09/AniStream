@@ -1,20 +1,31 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Calendar, ChevronLeft, ShieldAlert, Baby, AlertTriangle, Eye, ChevronRight, Info, RefreshCw, Star } from 'lucide-react';
+import { Calendar, ChevronLeft, ShieldAlert, Baby, AlertTriangle, Eye, ChevronRight, Info, RefreshCw, Star, Plus, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Simulate API call to add to watchlist (replace with real API in production)
+const addToWatchlistAPI = async (anime) => {
+  // Simulate network delay
+  return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 500));
+};
+
+// Simulate API call to check if anime is in watchlist (replace with real API in production)
+const isInWatchlistAPI = async (animeId) => {
+  // For demo, always return false
+  return false;
+};
 
 const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "" }) => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [retrying, setRetrying] = useState(false);
   const [retryDelay, setRetryDelay] = useState(1000);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
 
   const [hoveredAnime, setHoveredAnime] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
-
+  const [watchlistStatus, setWatchlistStatus] = useState({}); // { [mal_id]: true/false }
+  const [addingWatchlist, setAddingWatchlist] = useState({}); // { [mal_id]: true/false }
   const sliderRef = useRef();
   const showOverlayTimer = useRef(null);
   const hideOverlayTimer = useRef(null);
@@ -22,18 +33,6 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
   const isMouseOverOverlay = useRef(false);
 
   const navigate = useNavigate();
-
-  // Responsive breakpoint detection
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
 
   // Use React Query
   const {
@@ -114,11 +113,8 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     }
   }, [checkScrollPosition]);
 
-  const getScrollAmount = () => {
-    if (isMobile) return 250;
-    if (isTablet) return 450;
-    return 1000;
-  };
+  // No responsive scroll amount
+  const getScrollAmount = () => 1000;
 
   const scrollLeft = () => {
     sliderRef.current?.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
@@ -139,9 +135,10 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     navigate(`/anime/${anime.mal_id}`);
   };
 
+  // No responsive hover card size
   const calculateHoverPosition = (rect) => {
-    const hoverCardWidth = isMobile ? 280 : 320;
-    const hoverCardHeight = isMobile ? 350 : 400;
+    const hoverCardWidth = 320;
+    const hoverCardHeight = 400;
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const padding = 20;
@@ -176,16 +173,25 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     }
   };
 
-  // Show overlay with delay (only on desktop)
+  // Show overlay with delay (always enabled, no responsive check)
   const showOverlay = (anime, rect) => {
-    if (isMobile || isTablet) return; // Disable hover overlay on mobile/tablet
-    
     clearAllTimers();
 
     showOverlayTimer.current = setTimeout(() => {
       const position = calculateHoverPosition(rect);
       setHoverPosition(position);
       setHoveredAnime(anime);
+
+      // Optionally, check if in watchlist when overlay is shown
+      if (anime?.mal_id && watchlistStatus[anime.mal_id] === undefined) {
+        // Simulate API call to check if in watchlist
+        isInWatchlistAPI(anime.mal_id).then((inWatchlist) => {
+          setWatchlistStatus((prev) => ({
+            ...prev,
+            [anime.mal_id]: inWatchlist,
+          }));
+        });
+      }
 
       // Auto-hide after 2 seconds
       hideOverlayTimer.current = setTimeout(() => {
@@ -197,8 +203,6 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
   };
 
   const hideOverlay = () => {
-    if (isMobile || isTablet) return;
-    
     clearAllTimers();
 
     setTimeout(() => {
@@ -209,30 +213,22 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
   };
 
   const handleCardMouseEnter = (anime, e) => {
-    if (isMobile || isTablet) return;
-    
     isMouseOverCard.current = true;
     const rect = e.currentTarget.getBoundingClientRect();
     showOverlay(anime, rect);
   };
 
   const handleCardMouseLeave = () => {
-    if (isMobile || isTablet) return;
-    
     isMouseOverCard.current = false;
     hideOverlay();
   };
 
   const handleOverlayMouseEnter = () => {
-    if (isMobile || isTablet) return;
-    
     isMouseOverOverlay.current = true;
     clearAllTimers();
   };
 
   const handleOverlayMouseLeave = () => {
-    if (isMobile || isTablet) return;
-    
     isMouseOverOverlay.current = false;
     setHoveredAnime(null);
   };
@@ -248,6 +244,24 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     navigate(`/play/${anime.mal_id}`);
   };
 
+  // Add to watchlist handler
+  const handleAddToWatchlist = async (anime, e) => {
+    e.stopPropagation();
+    if (!anime?.mal_id) return;
+    setAddingWatchlist((prev) => ({ ...prev, [anime.mal_id]: true }));
+    try {
+      // Simulate API call
+      await addToWatchlistAPI(anime);
+      setWatchlistStatus((prev) => ({
+        ...prev,
+        [anime.mal_id]: true,
+      }));
+    } catch (err) {
+      // Optionally show error
+    }
+    setAddingWatchlist((prev) => ({ ...prev, [anime.mal_id]: false }));
+  };
+
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "currently airing":
@@ -256,7 +270,7 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
         return "bg-gray-600 text-white";
       case "upcoming":
       case "not yet aired":
-        return "bg-yellow-500 text-black";
+        return "bg-yellow-500 text-white";
       case "cancelled":
         return "bg-red-600 text-white";
       case "paused":
@@ -323,42 +337,22 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
     }
   };
 
-  // Get responsive card dimensions
-  const getCardDimensions = () => {
-    if (isMobile) {
-      return {
-        minWidth: 'min-w-[40vw]',
-        maxWidth: 'max-w-[38vw]',
-        height: 'h-[30vh]',
-        titleHeight: 'h-[3vh]'
-      };
-    }
-    if (isTablet) {
-      return {
-        minWidth: 'min-w-[25vw]',
-        maxWidth: 'max-w-[23vw]',
-        height: 'h-[35vh]',
-        titleHeight: 'h-[4vh]'
-      };
-    }
-    return {
-      minWidth: 'min-w-[14vw]',
-      maxWidth: 'max-w-[12vw]',
-      height: 'h-[44vh]',
-      titleHeight: 'h-[4.5vh]'
-    };
+  // Fixed card dimensions (no responsive)
+  const cardDimensions = {
+    minWidth: 'min-w-[14vw]',
+    maxWidth: 'max-w-[12vw]',
+    height: 'h-[44vh]',
+    titleHeight: 'h-[4.5vh]'
   };
-
-  const cardDimensions = getCardDimensions();
 
   if (loading) {
     return (
-      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center bg-black ${className}`}>
-        <div className={`grid ${isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-6'} px-4 sm:px-6 md:px-8 gap-3 sm:gap-4 md:gap-6 w-full mt-4`}>
-          {[...Array(isMobile ? 4 : isTablet ? 6 : 6)].map((_, i) => (
+      <div className={`h-[60vh] py-3 flex items-center justify-center bg-black ${className}`}>
+        <div className={`grid grid-cols-6 px-4 sm:px-6 md:px-8 gap-6 w-full mt-4`}>
+          {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className={`${isMobile ? 'h-40' : isTablet ? 'h-60' : 'h-75'} bg-white/10 rounded-xl animate-pulse`}
+              className={`h-75 bg-white/10 rounded-xl animate-pulse`}
             ></div>
           ))}
         </div>
@@ -368,9 +362,9 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
 
   if (error) {
     return (
-      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center ${className}`}>
+      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center px-4">
-          <div className={`${isMobile ? 'text-base' : 'text-lg'} mb-4`}>
+          <div className={`text-lg mb-4`}>
             {error.message || error.toString()}
           </div>
           <motion.button
@@ -378,10 +372,10 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
             disabled={retrying}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-sm sm:text-base"
+            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-base"
           >
             <RefreshCw
-              size={isMobile ? 16 : 18}
+              size={18}
               className={retrying ? 'animate-spin' : ''}
             />
             {retrying ? 'Retrying...' : 'Try Again'}
@@ -393,19 +387,19 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
 
   if (!animeDataRaw || animeDataRaw.length === 0) {
     return (
-      <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-3 flex items-center justify-center ${className}`}>
+      <div className={`h-[60vh] py-3 flex items-center justify-center ${className}`}>
         <div className="text-white text-center px-4">
           <div className="text-4xl mb-4">📺</div>
-          <div className={`${isMobile ? 'text-base' : 'text-lg'} mb-4`}>No anime found</div>
+          <div className={`text-lg mb-4`}>No anime found</div>
           <motion.button
             onClick={handleRetry}
             disabled={retrying}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-sm sm:text-base"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed text-base"
           >
             <RefreshCw
-              size={isMobile ? 16 : 18}
+              size={18}
               className={retrying ? 'animate-spin' : ''}
             />
             {retrying ? 'Retrying...' : 'Retry'}
@@ -419,64 +413,68 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
   const animeData = animeDataRaw;
 
   return (
-    <div className={`${isMobile ? 'h-[40vh]' : isTablet ? 'h-[50vh]' : 'h-[60vh]'} py-2 sm:py-3 ${className} relative bg-black text-white`}>
+    <div className={`h-[60vh] py-3 ${className} relative bg-black text-white`}>
       
-      <div className="flex items-center px-4 sm:px-6 lg:px-10 mb-2 z-[999]">
-        <h1 className={`text-white ${isMobile ? 'text-lg' : isTablet ? 'text-xl' : 'text-2xl'} font-bold drop-shadow-lg`}>
+      <div className="flex items-center px-10 mb-2 z-[999]">
+        <h1 className={`text-white text-2xl font-bold drop-shadow-lg`}>
           {title}
         </h1>
-        <div className="flex-1 h-px bg-white/30 ml-2 sm:ml-4"></div>
-        <div className={`text-white/80 ${isMobile ? 'text-xs' : 'text-sm'} ml-2 sm:ml-4 drop-shadow`}>
+        <div className="flex-1 h-px bg-white/30 ml-4"></div>
+        <div className={`text-white/80 text-sm ml-4 drop-shadow`}>
           {animeData.length} items
         </div>
       </div>
 
-      {/* Gradient overlays - hide on mobile for better performance */}
-      {!isMobile && (
-        <>
-          <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-30 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-30 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
-        </>
-      )}
+      {/* Gradient overlays - always show */}
+      <>
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+      </>
 
-      <div className="relative px-2 sm:px-4 lg:px-8">
+      <div className="relative px-8">
         <div
           ref={sliderRef}
-          className={`w-full ${isMobile ? 'h-[35vh]' : isTablet ? 'h-[45vh]' : 'h-[55vh]'} flex overflow-x-auto gap-2 sm:gap-3 lg:gap-5 scroll-smooth py-2 scrollbar-hide`}
+          className={`w-full h-[55vh] flex overflow-x-auto gap-5 scroll-smooth py-2 scrollbar-hide`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {animeData.map((anime, index) => (
             <motion.div
               key={anime.mal_id}
               onClick={() => handleCardClick(anime)}
-              onMouseEnter={!isMobile && !isTablet ? (e) => handleCardMouseEnter(anime, e) : undefined}
-              onMouseLeave={!isMobile && !isTablet ? handleCardMouseLeave : undefined}
+              onMouseEnter={(e) => handleCardMouseEnter(anime, e)}
+              onMouseLeave={handleCardMouseLeave}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              className={`${cardDimensions.minWidth} ${cardDimensions.maxWidth} rounded-xl overflow-hidden text-white flex flex-col transition-transform duration-300 cursor-pointer group ${
-                !isMobile && !isTablet ? 'hover:scale-[1.03]' : 'active:scale-95'
-              }`}
+              className={`${cardDimensions.minWidth} ${cardDimensions.maxWidth} rounded-xl overflow-hidden text-white flex flex-col transition-transform duration-300 cursor-pointer group hover:scale-[1.03]`}
             >
               <div className={`relative ${cardDimensions.height} w-full`}>
                 <img
                   src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url}
                   alt={anime.title}
                   onError={handleImageError}
-                  className={`w-full h-full object-cover rounded transition-all duration-300 ${
-                    !isMobile && !isTablet ? 'group-hover:brightness-110' : ''
-                  }`}
+                  className={`w-full h-full object-cover rounded transition-all duration-300 group-hover:brightness-110`}
                   loading="lazy"
                 />
 
-                {!isMobile && !isTablet && (
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
-                )}
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
 
                 {(anime.score || anime.scored_by) && (
-                  <motion.div className={`absolute top-1 sm:top-2 right-1 sm:right-2 flex items-center gap-1 bg-red-500 text-white font-semibold px-1 sm:px-2 py-1 rounded-lg backdrop-blur-sm ${isMobile ? 'text-xs' : 'text-xs'}`}>
-                    <Star className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'}`} />
+                  <motion.div className={`absolute top-2 right-2 flex items-center gap-1 bg-red-500 text-white font-semibold px-2 py-1 rounded-lg backdrop-blur-sm text-xs`}>
+                    <Star className={`w-3 h-3`} />
                     {anime.score || anime.scored_by || 'N/A'}
+                  </motion.div>
+                )}
+
+                {watchlistStatus[anime.mal_id] && (
+                  <motion.div
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute bottom-2 right-2 flex items-center gap-1 bg-white/10 text-white font-semibold px-2 py-2 rounded-lg backdrop-blur-sm text-xs">
+                    <Check className="text-green-400  font-extrabold"  />
+                    
                   </motion.div>
                 )}
 
@@ -487,10 +485,9 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
                   ) {
                     return (
                       <div
-                        className={`absolute top-1 sm:top-2 left-1 sm:left-2 ${getStatusBadgeClass(anime.status)} 
-                        ${isMobile ? 'text-xs px-2 py-0.5' : 'text-xs px-3 py-1'} flex items-center gap-1 rounded backdrop-blur-sm`}
+                        className={`absolute top-2 left-2 ${getStatusBadgeClass(anime.status)} text-xs px-3 py-1 flex items-center gap-1 rounded backdrop-blur-sm`}
                       >
-                        <Calendar className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'}`} />
+                        <Calendar className={`w-3 h-3`} />
                         {anime.status || anime.popularity || "N/A"}
                       </div>
                     );
@@ -499,8 +496,7 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
                     const { className, label } = getAgeRatingBadge(anime.rating);
                     return (
                       <motion.div
-                        className={`absolute top-1 sm:top-2 left-1 sm:left-2 ${isMobile ? 'text-xs px-2 py-0.5' : 'text-xs px-2 py-1'} flex font-semibold items-center gap-1 ${className} 
-                        font-semibold rounded-lg backdrop-blur-sm`}
+                        className={`absolute top-2 left-2 text-xs px-2 py-1 flex font-semibold items-center gap-1 ${className} font-semibold rounded-lg backdrop-blur-sm`}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >
@@ -513,11 +509,9 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
                 })()}
               </div>
 
-              <div className={`py-1 sm:py-2 ml-1 ${isMobile ? 'text-xs' : 'text-sm'} font-medium leading-tight ${cardDimensions.titleHeight}`}>
+              <div className={`py-2 ml-1 text-sm font-medium leading-tight ${cardDimensions.titleHeight}`}>
                 <div 
-                  className={`line-clamp-2 transition-colors ${
-                    !isMobile && !isTablet ? 'group-hover:text-yellow-400' : ''
-                  }`} 
+                  className={`line-clamp-2 transition-colors group-hover:text-yellow-400`} 
                   title={anime.title_english || anime.title}
                 >
                   {anime.title_english || anime.title}
@@ -527,9 +521,9 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
           ))}
         </div>
 
-        {/* Simplified Overlay - Only show on desktop */}
+        {/* Simplified Overlay - always show */}
         <AnimatePresence>
-          {hoveredAnime && !isMobile && !isTablet && (
+          {hoveredAnime && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -617,14 +611,28 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
                     Watch Now
                   </button>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMoreInfo(hoveredAnime, e);
-                    }}
-                    className="flex-1 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-1"
+                    onClick={(e) => handleAddToWatchlist(hoveredAnime, e)}
+                    disabled={!!watchlistStatus[hoveredAnime.mal_id] || addingWatchlist[hoveredAnime.mal_id]}
+                    className={`flex-1 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-1
+                      ${watchlistStatus[hoveredAnime.mal_id] ? 'opacity-80 cursor-not-allowed' : ''}
+                    `}
                   >
-                    <Info size={14} />
-                    More Info
+                    {watchlistStatus[hoveredAnime.mal_id] ? (
+                      <>
+                        <Check size={20} className="text-green-400" />
+                        Added
+                      </>
+                    ) : addingWatchlist[hoveredAnime.mal_id] ? (
+                      <>
+                        <Plus size={20} className="animate-spin" />
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={20}  className='font-semibold' />
+                        Watchlist
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -636,20 +644,20 @@ const SectionComponent = ({ title = "Unkown Anime", fetchFunction, className = "
         {canScrollLeft && (
           <motion.button
             onClick={scrollLeft}
-            className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-4' : 'left-12'} bg-gray-700/90 hover:bg-gray-600 ${isMobile ? 'p-2' : 'p-3'} rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
+            className={`absolute top-1/2 -translate-y-1/2 left-12 hover:cursor-pointer bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
             aria-label="Scroll left"
           >
-            <ChevronLeft size={isMobile ? 20 : 24} />
+            <ChevronLeft size={24} />
           </motion.button>
         )}
 
         {canScrollRight && (
           <motion.button
             onClick={scrollRight}
-            className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-12'} bg-gray-700/90 hover:bg-gray-600 ${isMobile ? 'p-2' : 'p-3'} rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
+            className={`absolute top-1/2 -translate-y-1/2 right-12  hover:cursor-pointer bg-gray-700/90 hover:bg-gray-600 p-3 rounded-full text-white shadow-lg transition-all duration-200 hover:scale-110 z-10`}
             aria-label="Scroll right"
           >
-            <ChevronRight size={isMobile ? 20 : 24} />
+            <ChevronRight size={24} />
           </motion.button>
         )}
       </div>

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import animeRoutes from './routes/anime.routes.js'
+import unifiedAnimeRoutes from './routes/unifiedAnime.routes.js'
 import path from 'path'
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.routes.js';
@@ -26,14 +27,23 @@ app.use('/videos', express.static(path.join(__dirname, '..', 'videos')));
 app.use('/videos', express.static('videos'));
      
 app.use("/api/auth", authRoutes);
-  app.use("/api/available_data", availableDataRoutes);
-
-app.use("/api/anime",animeRoutes)
+app.use("/api/available_data", availableDataRoutes);
+app.use("/api/anime", animeRoutes);
+app.use("/api/unified", unifiedAnimeRoutes);
 
 
 
 app.get('/', (req, res) => {
   res.send('Hello from Express app! The server will start from server.js');
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
 });
 
 

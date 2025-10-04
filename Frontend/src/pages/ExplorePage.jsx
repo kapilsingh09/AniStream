@@ -33,7 +33,7 @@ export default function ExplorePage() {
         {/* <Community /> */}
 
         {/* Trending Anime - Main se  ction */}
-        <Filter />
+        {/* <Filter /> */}
         {/* Top Rated Anime */}
         <TrendingKitsuAnime 
           fetchFunction={fetchTopRatedAnime}

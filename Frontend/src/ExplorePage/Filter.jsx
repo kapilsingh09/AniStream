@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAnimeData } from '../hooks/useAnimeData';
 
 const genreOptions = [
   "Action",
@@ -42,7 +43,7 @@ const selectClass =
 const inputClass =
   "w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition placeholder-zinc-400";
 
-const AnimeFilter = () => {
+const AnimeFilter = ({ onFiltersApplied }) => {
   const [filters, setFilters] = useState({
     type: "",
     status: "",
@@ -52,14 +53,42 @@ const AnimeFilter = () => {
     source: "",
     rating: "",
   });
+  const [loading, setLoading] = useState(false);
+
+  const { getAnimeByGenre, searchAnime } = useAnimeData();
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const handleApply = () => {
-    console.log("Applied Filters:", filters);
-    // API call or pass filters to parent component
+  const handleApply = async () => {
+    setLoading(true);
+    try {
+      let results = [];
+      
+      // Apply genre filter if selected
+      if (filters.genre) {
+        const genreResults = await getAnimeByGenre(filters.genre.toLowerCase(), 20);
+        results = genreResults.data || genreResults;
+      }
+      
+      // Apply search if no genre filter
+      if (!filters.genre && filters.sort) {
+        const searchResults = await searchAnime(filters.sort, 20);
+        results = searchResults.data || searchResults;
+      }
+      
+      // Pass results to parent component
+      if (onFiltersApplied) {
+        onFiltersApplied(results, filters);
+      }
+      
+      console.log("Applied Filters:", filters, "Results:", results.length);
+    } catch (error) {
+      console.error("Error applying filters:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -193,9 +222,10 @@ const AnimeFilter = () => {
       <div className="mt-8 flex justify-center">
         <button
           onClick={handleApply}
-          className="bg-gradient-to-r from-blue-600 via-zinc-700 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white font-semibold px-8 py-2 rounded-lg shadow-md transition-all duration-200 border border-zinc-700"
+          disabled={loading}
+          className="bg-gradient-to-r from-blue-600 via-zinc-700 to-purple-700 hover:from-blue-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-8 py-2 rounded-lg shadow-md transition-all duration-200 border border-zinc-700"
         >
-          Apply Filters
+          {loading ? 'Applying...' : 'Apply Filters'}
         </button>
       </div>
     </div>
