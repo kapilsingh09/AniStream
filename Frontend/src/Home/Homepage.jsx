@@ -89,7 +89,7 @@ const Homepage = () => {
       <AnimeSlider />
 
       {/* 2. Avatar/Animation */}
-      <AviAnime />
+      {/* <AviAnime /> */}
 
       {/* 3. All-Time Top Anime */}
       <JikhanAnimeComponent

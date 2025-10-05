@@ -47,14 +47,14 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 z-50 transition-all duration-300  ${
           scrolled
-            ? 'bg-gradient-to-br from-cyan-900/80 via-blue-900/80 to-indigo-900/80 backdrop-blur-sm border-b border-cyan-700/30 text-white shadow-lg'
-            : 'bg-gradient-to-r from-cyan-800/90 via-blue-800/90 to-indigo-800/90 backdrop-blur-xl border-b-2 border-cyan-700/20 text-white shadow-2xl'
+            ? 'w-full  bg-gradient-to-br from-cyan-900/80 via-blue-900/80 to-indigo-900/80 backdrop-blur-sm border-b border-cyan-700/30 text-white shadow-lg'
+            : 'w-full  bg-gradient-to-r from-cyan-800/90 via-blue-800/90 to-indigo-800/90 backdrop-blur-xl border-b-2 border-cyan-700/20 text-white shadow-2xl'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9">
+          <div className="flex items-center justify-between h-15">
             {/* Brand Logo */}
             <Link
               to="/"
@@ -98,13 +98,17 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
-                  <span className="text-white/80 text-sm">👋 {user.name}</span>
-                  <button
+                <div className='h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-shadow-sm text-2xl'>
+                  {/* {user.name[0]} */}
+                    <button className="text-white/80 text-base">{user.name[0]}</button>
+                </div>
+                  {/* <span className="text-white/80 text-sm">👋 {user.name}</span> */}
+                  {/* <button
                     onClick={handleLogout}
                     className="px-3 py-1 rounded-full border border-cyan-400/30 hover:border-red-400 hover:bg-red-500/20 transition-all duration-300 text-sm text-white/80 hover:text-white"
                   >
                     Logout
-                  </button>
+                  </button> */}
                 </>
               ) : (
                 <NavLink
