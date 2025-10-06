@@ -3,68 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#1a1a1a" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="AnimeStream" />
-    <meta name="msapplication-TileColor" content="#1a1a1a" />
-    <meta name="msapplication-config" content="/browserconfig.xml" />
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="A modern anime streaming platform with unified API integration from multiple sources" />
-    <meta name="keywords" content="anime, streaming, jikan, kitsu, anime database" />
-    <meta name="author" content="AnimeStream Team" />
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="AnimeStream - Unified Anime Platform" />
-    <meta property="og:description" content="A modern anime streaming platform with unified API integration" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://anime-stream.com" />
-    <meta property="og:image" content="/og-image.png" />
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AnimeStream - Unified Anime Platform" />
-    <meta name="twitter:description" content="A modern anime streaming platform with unified API integration" />
-    <meta name="twitter:image" content="/twitter-image.png" />
-    
-    <!-- Favicon and Icons -->
-    <link rel="icon" href="./public/AnimeXlogo.jpg" />
-    <link rel="apple-touch-icon" href="/icon-192x192.png" />
-    <link rel="manifest" href="/manifest.json" />
-    
-    <!-- Stylesheets -->
-    <link href="/src/index.css" rel="stylesheet" />
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/src/main.jsx" as="script" />
-    <link rel="preload" href="/src/index.css" as="style" />
-    
-    <!-- DNS Prefetch for external APIs -->
-    <link rel="dns-prefetch" href="//api.jikan.moe" />
-    <link rel="dns-prefetch" href="//kitsu.io" />
-    
-    <title>AnimeStream - Unified Anime Platform</title>
+    <title>AnimeStream</title>
+    <meta name="description" content="A modern anime streaming platform." />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
-    </script>
   </body>
 </html>

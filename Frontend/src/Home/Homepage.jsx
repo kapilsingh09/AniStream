@@ -60,6 +60,7 @@ import {
   FetchRomanceAnime,
   fetchRomanceAnimeForAnimeGrid,
 } from '../services/JikhanAnimeApi';
+import TopAnimeBox from './TopAnimeBox';
 
 // --- HOMEPAGE COMPONENT ORDER SUGGESTION ---
 // 1. Hero/Slider (AnimeSlider)
@@ -104,6 +105,43 @@ const Homepage = () => {
         fetchFunction={fetchSeasonalAnime}
       />
 
+<section className='flex items-center justify-center pl-25 sm:pl-4 sm:pr-4 pr-25 pb-5 pt-5 '>
+        <FullAnimeBanner />
+
+</section>
+<div className='flex w-full gap-3 h-full min-h-screen items-center justify-center'>
+
+    <TopAnimeBox
+      title="Top Anime"
+      limit={5}
+      fetchFunction={FetchUpcomingAnime}
+      orientation="left"
+      className="border-r"
+    />
+    {/* <TopAnimeBox
+      title="Trending Anime"
+      limit={5}
+      fetchFunction={FetchTopRatedAnime}
+      orientation="right"
+      className="border-r"
+    /> */}
+   
+    {/* <TopAnimeBox
+      title="Newly Released"
+      limit={5}
+      fetchFunction={FetchNewlyReleasedAnime}
+      orientation="right"
+      className="border-r"
+    /> */}
+    {/* <TopAnimeBox title="Top Anime" limit={5}
+  // title="Trending Anime"
+  orientation="left"
+  className="border-r"/>
+    <TopAnimeBox title="Top Anime" limit={5}
+  // title="Trending Anime"
+  orientation="left"
+  className="border-r"/> */}
+</div>
       {/* 5. Featured Banner */}
       {/* <AnimeBanner /> */}
 
@@ -183,7 +221,6 @@ const Homepage = () => {
       /> */}
 
       {/* 14. Full Anime Banner */}
-      {/* <FullAnimeBanner /> */}
 
       {/* 15. Upcoming Anime */}
       {/* <JikhanAnimeComponent

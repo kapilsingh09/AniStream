@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Play, Star, Calendar, Eye, Heart, Bookmark } from "lucide-react";
-
+import { Play, Star, Calendar, Eye, Heart, Bookmark, PlayCircle } from "lucide-react";
+import { motion } from "framer-motion";
 export default function FullAnimeBanner() {
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,12 +105,12 @@ export default function FullAnimeBanner() {
 
       {/* Main content container */}
       <div 
-        className="relative w-full h-full flex items-center justify-center transition-transform duration-300"
+        className="relative w-full h-full sm:w-full sm:max-w-7xl flex items-center justify-center  rounded-xl overflow-hidden transition-transform duration-300"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Background image with parallax effect */}
-        <div className={`absolute inset-0 transition-transform duration-700 ${isHovered ? 'scale-103' : 'scale-100'}`}>
+        <div className={`absolute inset-0 transition-transform duration-700 ${isHovered ? 'scale-100' : 'scale-100'}`}>
           {loading ? (
             <div className="flex items-center justify-center h-full bg-gradient-to-br from-purple-900 via-blue-900 to-pink-900">
               <div className="flex space-x-2">
@@ -137,7 +137,7 @@ export default function FullAnimeBanner() {
           
           {/* Dynamic gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+          {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" /> */}
         </div>
 
         {/* Content overlay */}
@@ -152,80 +152,115 @@ export default function FullAnimeBanner() {
               //   ? '0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3)' 
               //   : '2px 2px 4px rgba(0, 0, 0, 0.8)'
             }}>
-              {anime?.title || "Loading..."}
+              <motion.div
+                initial={{ x: 100, opacity: 0 }}
+                animate={imageLoaded ? { x: 0, opacity: 1 } : {}} // Animate in from right when loaded
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="absolute top-[35%] left-15 w-16 h-16  border-l-2 border-white/60"
+              ></motion.div>
+              <motion.span
+                initial={{ y: 30, opacity: 0, scale: 0.95 }}
+                animate={
+                  imageLoaded
+                    ? {
+                        y: 0,
+                        opacity: 1,
+                        // scale: isHovered ? 1.04 : 1,
+                        transition: { type: "spring", stiffness: 260, damping: 24 }
+                      }
+                    : {}
+                }
+                transition={{ type: "spring", stiffness: 260, damping: 24 }}
+                style={{
+                  display: "inline-block"
+                }}
+              >
+                {anime?.title || "Loading..."}
+              </motion.span>
             </h1>
 
             {/* Anime info badges */}
-            {anime && (
+        {/*    {anime && (
               <div className="flex flex-wrap gap-3 items-center">
                 {/* <div className="flex items-center space-x-1 bg-yellow-500/20 backdrop-blur-sm px-3 py-1 rounded-full border border-yellow-500/30">
                   <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                   <span className="text-yellow-200 text-sm font-medium">{anime.rating}/10</span>
                 </div> */}
-                <div className="flex items-center space-x-1  justify-center bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full border border-blue-500/30">
+                {/* <div className="flex items-center space-x-1  justify-center bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full border border-blue-500/30">
                   <Calendar className="w-4 h-4 text-blue-400" />
                   <span className="text-blue-200 text-sm font-medium">{anime.year}</span>
-                </div>
+                </div> */}
                 {/* <div className="bg-purple-500/20 backdrop-blur-sm px-3 py-1 rounded-full border border-purple-500/30">
                   <span className="text-purple-200 text-sm font-medium">{anime.episodeCount} Episodes</span>
                 </div> */}
-                <div className="bg-green-500/20 flex items-center justify-center backdrop-blur-sm px-3 py-1 rounded-full border border-green-500/30">
+                {/* <div className="bg-green-500/20 flex items-center justify-center backdrop-blur-sm px-3 py-1 rounded-full border border-green-500/30">
                   <span className="text-green-200 text-sm font-medium capitalize">{anime.status}</span>
                 </div>
               </div>
-            )}
+            )} */}   
 
        
 
             {/* Action buttons */}
-            <div className="flex flex-wrap gap-4 pt-4">
-              <button
-              
-              className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25">
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <div className="cursor-pointer  relative flex items-center space-x-2">
-                  <Play className="w-6 h-6 fill-white" />
-                  <span>Watch Now</span>
-                </div>
-              </button>
+            <div className="flex flex-wrap gap-3 pt-4">
+              <motion.button
+                className="bg-white/20 bg-clip-padding backdrop-blur-xl bg-opacity-20
+                          flex items-center justify-center
+                          border border-white/30 text-white 
+                          py-3 px-5 rounded-3xl 
+                          font-semibold text-sm
+                          gap-1.5
+                          transition-all duration-300 
+                          hover:scale-105 hover:bg-white/20 hover:bg-opacity-30
+                          cursor-pointer shadow-lg w-full max-w-[110px]
+                          ring-1 ring-white/20"
+                style={{
+                  minWidth: '80px',
+                  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                  backdropFilter: 'blur(16px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                  border: '1px solid rgba(255,255,255,0.18)'
+                }}
+              >
+                <PlayCircle className="w-6 h-6" />
+                <span className="inline xs:hidden">Watch</span>
+              </motion.button>
 
               {/* <button 
-                onClick={() => setIsFavorited(!isFavorited)}
-                className={`p-4 rounded-xl transition-all duration-300 transform hover:scale-110 ${
-                  isFavorited 
-                    ? 'bg-red-500/20 border-2 border-red-500 text-red-400' 
-                    : 'bg-white/10 border-2 border-white/20 text-white hover:bg-white/20'
-                }`}
-              >
-                <Heart className={`w-6 h-6 ${isFavorited ? 'fill-red-400' : ''}`} />
-              </button> */}
-
-              <button 
                 onClick={() => setIsBookmarked(!isBookmarked)}
-                className={`p-4 rounded-xl transition-all duration-300 transform hover:scale-110 cursor-pointer ${
+                className={`p-3 rounded-xl transition-all duration-300 transform hover:scale-110 cursor-pointer ${
                   isBookmarked 
                     ? 'bg-blue-500/20 border-2 border-blue-500 text-blue-400' 
                     : 'bg-white/10 border-2 border-white/20 text-white hover:bg-white/20'
                 }`}
+                style={{ minWidth: '48px', minHeight: '48px' }}
               >
                 <Bookmark className={`w-6 h-6 ${isBookmarked ? 'fill-blue-400' : ''}`} />
-              </button>
+              </button> */}
             </div>
 
             {/* Refresh button */}
-            <button
+            {/* <button
               onClick={handleRefresh}
               disabled={loading}
               className="text-white/60 hover:text-white text-sm underline transition-colors duration-200 disabled:opacity-50"
             >
               {loading ? 'Loading new anime...' : 'Show different anime'}
-            </button>
+            </button> */}
           </div>
         </div>
 
         {/* Corner decorations */}
-        <div className="absolute top-8 right-8 w-16 h-16 border-t-2 border-r-2 border-white/20"></div>
-        <div className="absolute bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-white/20"></div>
+         
+        {/* <motion.div
+          className="absolute top-8 right-8 w-40 max-w-3xl h-10 border-r-2 border-white/60 flex items-center justify-end pr-2 text-right text-white font-bold text-lg truncate"
+          initial={{ x: 100, opacity: 0 }}
+          animate={imageLoaded ? { x: 0, opacity: 1 } : {}} // Animate in from right when loaded
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        >
+          {anime?.title || "Loading..."}
+        </motion.div> */}
+        {/* <div className="absolute bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-white/20"></div> */}
       </div>
     </div>
   );

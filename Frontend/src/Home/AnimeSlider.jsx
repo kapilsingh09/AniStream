@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const API_ENDPOINTS = {
   topRated:
-    'https://kitsu.io/api/edge/trending/anime?limit=10&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+  'https://kitsu.io/api/edge/trending/anime?limit=10&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
 };
 
 async function fetchAnimeTopRated() {
@@ -25,8 +25,10 @@ async function fetchAnimeTopRated() {
   if (!data || data.length === 0) {
     return [];
   }
+  // console.log([0].attributes.averageRating);
   return data.map((anime) => {
     const attributes = anime.attributes;
+    // console.log(attributes.ageRating);
     return {
       id: anime.id,
       malId: attributes.mappings?.find(
@@ -63,7 +65,11 @@ async function fetchAnimeTopRated() {
       category: 'topRated',
     };
   });
+  
 }
+
+// console.log(fetchAnimeTopRated());
+
 
 // Skeleton Loader for the slider
 function SliderSkeleton() {
@@ -410,9 +416,9 @@ export default function Slider() {
                 </span>
                 {slides[current].ageRating && (
                   <span
-                    className={`px-2 py-1  text-xs font-medium border-2 border-white/20 rounded-2xl`}
+                    className={`px-2 py-1  text-xs font-medium border ${getAgeRatingBadge(slides[current].ageRating)} rounded-xl`}
                   >
-                    {getAgeRatingBadge(slides[current].ageRating).label}
+                    {slides[current].ageRating}
                   </span>
                 )}
                 {slides[current].popularityRank && (
@@ -460,7 +466,7 @@ export default function Slider() {
 
               {/* Description */}
               <motion.p
-                className="text-gray-200 text-[3vw]  mt-1 sm:text-[1vw] md:text-[1vw] leading-relaxed max-w-md sm:max-w-2xl md:max-w-3xl line-clamp-3"
+                className="text-gray-200 text-[3vw]  mt-1 sm:text-[1.5vw] md:text-[1vw] leading-relaxed max-w-md sm:max-w-2xl md:max-w-3xl line-clamp-3"
                 variants={itemVariants}
               >
                 {slides[current].description}
