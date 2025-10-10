@@ -105,7 +105,7 @@ const Homepage = () => {
         fetchFunction={fetchSeasonalAnime}
       />
 
-<section className='flex items-center justify-center pl-25 sm:pl-4 sm:pr-4 pr-25 pb-5 pt-5 '>
+<section className='flex items-center justify-center m-2 '>
         <FullAnimeBanner />
 
 </section>

@@ -86,22 +86,8 @@ export default function FullAnimeBanner() {
     fetchNewAnime();
   };
   return (
-    <div className="relative w-full h-[70vh] overflow-hidden bg-black">
+    <div className="relative w-full flex items-center justify-center h-[40vh] sm:h-[70vh] overflow-hidden bg-black">
       {/* Animated background particles */}
-      <div className="absolute inset-0 opacity-20">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
 
       {/* Main content container */}
       <div 
@@ -142,8 +128,14 @@ export default function FullAnimeBanner() {
 
         {/* Content overlay */}
         <div className={`absolute inset-0 flex items-center transition-all duration-500 ${isHovered ? 'translate-x-0' : 'translate-x-0'}`}>
-          <div className="max-w-2xl ml-8 md:ml-16 space-y-6">
+          <div className="max-w-2xl relative ml-8 md:ml-16 space-y-6">
             {/* Title with glowing effect */}
+            <motion.div
+              initial={{ x: 100, opacity: 0 }}
+              animate={imageLoaded ? { x: 0, opacity: 1 } : {}} // Animate in from right when loaded
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="absolute  left-0 w-16 h-12  border-l-2 border-white/60"
+            ></motion.div>
             <h1 className={`text-2xl md:text-4xl font-black text-white leading-tight transition-all duration-500 ${
               isHovered ? 'text-shadow-glow' : ''
             }`} 
@@ -152,12 +144,6 @@ export default function FullAnimeBanner() {
               //   ? '0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3)' 
               //   : '2px 2px 4px rgba(0, 0, 0, 0.8)'
             }}>
-              <motion.div
-                initial={{ x: 100, opacity: 0 }}
-                animate={imageLoaded ? { x: 0, opacity: 1 } : {}} // Animate in from right when loaded
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute top-[35%] left-15 w-16 h-16  border-l-2 border-white/60"
-              ></motion.div>
               <motion.span
                 initial={{ y: 30, opacity: 0, scale: 0.95 }}
                 animate={
@@ -223,7 +209,7 @@ export default function FullAnimeBanner() {
                 }}
               >
                 <PlayCircle className="w-6 h-6" />
-                <span className="inline xs:hidden">Watch</span>
+                <span className="inline">Watch</span>
               </motion.button>
 
               {/* <button 

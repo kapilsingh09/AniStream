@@ -51,7 +51,7 @@ export default function TopAnimeBox({
   }
 
   return (
-    <aside className={`h-full overflow-auto ${className}`.trim()} aria-label="Top anime list">
+    <aside className={`h-full overflow-auto ${className}`.trim()}  aria-label="Top anime list">
       <div className="max-w-3xl mx-auto p-3">
         <h2 className="text-lg font-semibold mb-3">{title}</h2>
 
@@ -79,7 +79,7 @@ export default function TopAnimeBox({
             {anime.map((a) => (
               <article
                 key={a.mal_id}
-                className="flex items-stretch rounded-xl shadow-md overflow-hidden bg-white dark:bg-gray-800 hover:shadow-lg transition"
+                className="flex items-stretch rounded-xl shadow-md overflow-hidden bg-white/30 dark:bg-gray-800 hover:shadow-lg transition"
               >
                 {orientation === 'left' && (
                   <div className="w-32 md:w-40 flex-shrink-0 relative">
