@@ -125,13 +125,7 @@ const Homepage = () => {
       orientation="left"
       className="border-r"
     />
-     <TopAnimeBox
-      title="Top Anime"
-      limit={5}
-      fetchFunction={FetchUpcomingAnime}
-      orientation="left"
-      className="border-r"
-    />
+    
     {/* <TopAnimeBox
       title="Trending Anime"
       limit={5}
