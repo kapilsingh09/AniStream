@@ -98,9 +98,10 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
-                <div className='h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-shadow-sm text-2xl'>
+                <div className='h-10  p-3 w-10 rounded-full bg-gray-900 border border-red-600 flex items-center justify-center text-white text-shadow-sm text-2xl'>
                   {/* {user.name[0]} */}
                     <button className="text-white/80 text-base">{user.name[0]}</button>
+
                 </div>
                   {/* <span className="text-white/80 text-sm">👋 {user.name}</span> */}
                   {/* <button

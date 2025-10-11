@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLink, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, Sparkles, ChevronDown, Info } from 'lucide-react';
 import { useParams, useNavigate, useAsyncError } from 'react-router-dom';
 import Eploader from '../utils/Eploader';
+import { number } from 'framer-motion';
 
 const KitsuAnimeCard = ({ onNavigate }) => {
     const { id } = useParams();
@@ -19,15 +20,20 @@ const KitsuAnimeCard = ({ onNavigate }) => {
     const [activeTab, setActiveTab] = useState('overview');
 
     // Fetch anime details from Kitsu API
+
     const fetchAnimeDetails = async () => {
         try {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`https://kitsu.io/api/edge/anime/${id}`);
-           
+            
+                const response = await fetch(`https://kitsu.io/api/edge/anime/${id}`);
+
+        
+
+
             if (!response.ok) {
-                // navigate(`/play/${id}`)
+                navigate(`/play/${id}`)
                 throw new Error(`HTTP error! status: ${response.status}`);
                 
 
@@ -50,6 +56,8 @@ const KitsuAnimeCard = ({ onNavigate }) => {
         }
     };
 
+   
+    
     useEffect(() => {
         if (id) {
             fetchAnimeDetails();
