@@ -3,8 +3,9 @@ import { Home, Search, Compass, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Searchbar from './Searchbar';
 import { useAuth } from '../../context/AuthContext';
+import Profilebanner from '../User/Profilebanner';
 
-// NavLink with new color scheme, no before/after
+// NavLink with color scheme and active detection
 const NavLink = ({ to, children, className, noSlider }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -14,19 +15,18 @@ const NavLink = ({ to, children, className, noSlider }) => {
       to={to}
       className={`${className} ${
         isActive
-          ? "text-cyan-400"
-          : "text-white/80 hover:text-cyan-200 hover:bg-cyan-700/20"
+          ? 'text-cyan-400'
+          : 'text-white/80 hover:text-cyan-200 hover:bg-cyan-700/20'
       } relative`}
     >
       {children}
-      {/* No before/after slider */}
     </Link>
   );
 };
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-
+  const [showProfilebanner, setShowProfilebanner] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -47,10 +47,10 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 z-50 transition-all duration-300  ${
+        className={`fixed top-0 left-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'w-full  bg-gradient-to-br from-cyan-900/80 via-blue-900/80 to-indigo-900/80 backdrop-blur-sm border-b border-cyan-700/30 text-white shadow-lg'
-            : 'w-full  bg-gradient-to-r from-cyan-800/90 via-blue-800/90 to-indigo-800/90 backdrop-blur-xl border-b-2 border-cyan-700/20 text-white shadow-2xl'
+            ? 'w-full bg-gradient-to-br from-cyan-900/80 via-blue-900/80 to-indigo-900/80 backdrop-blur-sm border-b border-cyan-700/30 text-white shadow-lg'
+            : 'w-full bg-gradient-to-r from-cyan-800/90 via-blue-800/90 to-indigo-800/90 backdrop-blur-xl border-b-2 border-cyan-700/20 text-white shadow-2xl'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9">
@@ -97,20 +97,26 @@ export default function Navbar() {
             {/* Auth Section */}
             <div className="flex items-center gap-4">
               {user ? (
-                <>
-                <div className='h-10  p-3 w-10 rounded-full bg-gray-900 border border-red-600 flex items-center justify-center text-white text-shadow-sm text-2xl'>
-                  {/* {user.name[0]} */}
-                    <button className="text-white/80 text-base">{user.name[0]}</button>
+                <div className="relative">
+                  {/* Profile Icon */}
+                  <div
+                  
+                    onClick={() => setShowProfilebanner(!showProfilebanner)}
+                  className="h-10 w-10 rounded-full bg-gray-900 border border-red-600 flex items-center justify-center text-white text-2xl cursor-pointer">
+                    <button
+                      className="text-white/80 text-base"
+                    >
+                      {user.name[0]}
+                    </button>
+                  </div>
 
+                  {/* Profile Banner Dropdown */}
+                  {showProfilebanner && (
+                    <div className="absolute right-0  mt-3 z-50">
+                      <Profilebanner user={user} />
+                    </div>
+                  )}
                 </div>
-                  {/* <span className="text-white/80 text-sm">👋 {user.name}</span> */}
-                  {/* <button
-                    onClick={handleLogout}
-                    className="px-3 py-1 rounded-full border border-cyan-400/30 hover:border-red-400 hover:bg-red-500/20 transition-all duration-300 text-sm text-white/80 hover:text-white"
-                  >
-                    Logout
-                  </button> */}
-                </>
               ) : (
                 <NavLink
                   to="/login"
@@ -131,7 +137,7 @@ export default function Navbar() {
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
           <div className="relative w-full max-w-2xl mx-4 px-4">
-            <Searchbar 
+            <Searchbar
               onClose={() => setIsSearchOpen(false)}
               onItemClick={handleSearchItemClick}
             />
