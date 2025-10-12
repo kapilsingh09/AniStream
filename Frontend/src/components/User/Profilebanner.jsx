@@ -1,17 +1,15 @@
 import React from "react";
 import {
   Heart,
-  Film,
   Clock,
   Settings,
   LogOut,
-  Mail,
   ListTodo,
   Bell,
-  User as UserIcon,
+  User,
 } from "lucide-react";
 
-// ✅ Default avatar fallback with gradient
+// Default avatar fallback with gradient
 const DefaultNameBanner = ({ user }) => {
   const initial =
     user && user.name && user.name.trim() !== ""
@@ -19,89 +17,105 @@ const DefaultNameBanner = ({ user }) => {
       : "?";
 
   return (
-    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 border-2 border-white/30 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-xl">
+    <div className="h-16 w-16 rounded-full bg-orange-950  flex items-center justify-center text-yellow-500 text-2xl font-bold shadow-lg">
       {initial}
     </div>
   );
 };
 
-// ✅ Main Profile Banner Component
-const Profilebanner = ({ user }) => {
+const Profilebanner = ({ user, logout }) => {
   return (
-    <div className="w-full max-w-sm mx-auto bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-gray-100 rounded-3xl shadow-2xl border border-white/10 p-5 sm:p-6 flex flex-col items-center gap-4 sm:gap-5 backdrop-blur-xl transition-all duration-300 hover:scale-[1.01] hover:shadow-cyan-500/10">
-      
-      {/* 🔔 Top row buttons (Notifications + Profile) */}
-      <div className="w-full flex justify-end gap-3 mb-2">
-        <button
-          className="p-2 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-transparent hover:border-cyan-400/30 transition-all duration-300 text-gray-300 hover:text-cyan-300"
-          title="Notifications"
-        >
-          <Bell size={18} />
-        </button>
+    <div
+      className="w-[40vh] text-gray-100 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 p-5 flex flex-col gap-4 transition-all duration-300 hover:shadow-cyan-500/10"
+    //   style={{
+    //     background: "rgba(23, 24, 35, 0.83)", // deep glass bg for effect (zinc-900/90)
+    //     backdropFilter: "blur(32px) saturate(190%)", // ultra high blur
+    //     WebkitBackdropFilter: "blur(32px) saturate(190%)", // safari support
+    //     border: "1px solid rgba(255,255,255,0.06)",
+    //     boxShadow: "0 8px 36px 0 rgba(36,151,233, 0.06)"
+    //   }}
+    >
+      {/* Top Row: Avatar+Info and notifications+logout (in corner) */}
+      <div className="flex justify-between items-start mt-2">
+        <div className="flex items-center gap-3">
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user?.name || "User avatar"}
+              className="w-14 h-14 rounded-full object-cover border border-cyan-400 shadow-lg"
+            />
+          ) : (
+            <DefaultNameBanner user={user} />
+          )}
+          <div className="flex flex-col justify-center">
+            <div className="flex items-start flex-col gap-1 text-xs text-gray-400 ml-1">
+              <h2 className="text-lg font-base  text-white">
+                {user?.username?.trim() + " " + user?.name?.trim() || "Unknown User"}
+                
+                {""}
+                {/* {) || "Unknown User"} */}
+              </h2>
+              <span>{user?.email || "xyz@gmail.com"}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <button
+            className="p-2 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-transparent hover:border-cyan-400/30 transition-all duration-300 text-gray-300 hover:text-cyan-300 cursor-pointer "
+            title="Notifications"
+            type="button"
+          >
+            <div className="hover:animate-bounce h-full w-full">
 
-        <button
-          className="p-2 rounded-full bg-white/5 hover:bg-purple-500/20 border border-transparent hover:border-purple-400/30 transition-all duration-300 text-gray-300 hover:text-purple-300"
-          title="Profile"
-        >
-          <UserIcon size={18} />
-        </button>
-      </div>
-
-      {/* 🖼 Avatar or Default Initial */}
-      {user?.avatar ? (
-        <img
-          src={user.avatar}
-          alt={user?.name || "User avatar"}
-          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-cyan-400 shadow-xl"
-        />
-      ) : (
-        <DefaultNameBanner user={user} />
-      )}
-
-      {/* 👤 User Info */}
-      <div className="text-center w-full px-2">
-        <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-          {user?.name?.trim() || "Unknown User"}
-        </h2>
-        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-400">
-          <Mail size={14} className="text-cyan-400" />
-          <span className="truncate max-w-[200px]">
-            {user?.email || "xyz@gmail.com"}
-          </span>
+            <Bell size={17} />
+            </div>
+          </button>
+          {/* Logout button: minimal (icon only), no styling, very compact */}
+        
         </div>
       </div>
 
       {/* 🔘 Action Buttons */}
-      <div className="w-full flex flex-col gap-2 mt-2">
-        <button className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30">
-          <Heart size={18} className="group-hover:text-pink-400 transition-all" />
-          <span className="text-sm sm:text-base">Favourites</span>
+      <div className="flex flex-col gap-2">
+        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" type="button">
+          <User size={16} className="group-hover:text-pink-400 transition-all" />
+          Profile
         </button>
-
-        <button className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-purple-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-purple-400/30">
-          <ListTodo size={18} className="group-hover:text-purple-400 transition-all" />
-          <span className="text-sm sm:text-base">Watchlist</span>
+        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" type="button">
+          <Heart size={16} className="group-hover:text-pink-400 transition-all" />
+          Favourites
         </button>
-
-        <button className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-blue-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-blue-400/30">
-          <Clock size={18} className="group-hover:text-blue-400 transition-all" />
-          <span className="text-sm sm:text-base">Continue Watching</span>
+        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-purple-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-purple-400/30 text-sm cursor-pointer" type="button">
+          <ListTodo size={16} className="group-hover:text-purple-400 transition-all" />
+          Watchlist
         </button>
-
-        <button className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-gray-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-gray-400/30">
-          <Settings size={18} className="group-hover:text-gray-300 transition-all" />
-          <span className="text-sm sm:text-base">Settings</span>
+        <button 
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-blue-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-blue-400/30 text-sm cursor-pointer opacity-60 cursor-not-allowed disabled:cursor-not-allowed" 
+          type="button" 
+          disabled
+        >
+          <Clock size={16} className="group-hover:text-blue-400 transition-all" />
+          Continue
+        </button>
+        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-gray-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-gray-400/30 text-sm cursor-pointer" type="button">
+          <Settings size={16} className="group-hover:text-gray-300 transition-all" />
+          Settings
+        </button>
+        {/* Designed Logout button */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mt-1 backdrop-blur-md" />
+        <button
+          onClick={logout}
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-red-600/10 hover:bg-red-600/30 transition-all duration-300 text-red-400 hover:text-white border border-transparent hover:border-red-500/40 text-sm cursor-pointer font-semibold shadow-sm mt-2"
+          title="Logout"
+          type="button"
+        >
+          <LogOut size={18} className="group-hover:animate-pulse transition-all" />
+          Logout
         </button>
       </div>
 
+      
       {/* Divider */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent my-1" />
-
-      {/* 🚪 Logout Button */}
-      <button className="group w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold hover:from-red-500 hover:to-pink-500 hover:shadow-lg transition-all duration-300">
-        <LogOut size={18} className="group-hover:rotate-12 transition-transform" />
-        <span className="text-sm sm:text-base">Logout</span>
-      </button>
     </div>
   );
 };

@@ -49,8 +49,8 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'w-full bg-gradient-to-br from-cyan-900/80 via-blue-900/80 to-indigo-900/80 backdrop-blur-sm border-b border-cyan-700/30 text-white shadow-lg'
-            : 'w-full bg-gradient-to-r from-cyan-800/90 via-blue-800/90 to-indigo-800/90 backdrop-blur-xl border-b-2 border-cyan-700/20 text-white shadow-2xl'
+            ? 'w-full bg-white/20 backdrop-blur-md border-b-2 border-white/20 text-white shadow-lg bg-clip-padding bg-opacity-70 backdrop-saturate-150'
+            : 'w-full bg-white/20 backdrop-blur-2xl border-b-2 border-white/10 text-white shadow-2xl bg-clip-padding bg-opacity-70 backdrop-saturate-200'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9">
@@ -97,23 +97,41 @@ export default function Navbar() {
             {/* Auth Section */}
             <div className="flex items-center gap-4">
               {user ? (
-                <div className="relative">
+                <div className="relative ">
                   {/* Profile Icon */}
                   <div
-                  
-                    onClick={() => setShowProfilebanner(!showProfilebanner)}
-                  className="h-10 w-10 rounded-full bg-gray-900 border border-red-600 flex items-center justify-center text-white text-2xl cursor-pointer">
-                    <button
-                      className="text-white/80 text-base"
+                      onClick={() => setShowProfilebanner(!showProfilebanner)}
+                      className="h-11 w-11 flex items-center justify-center 
+                                rounded-full bg-purple-900
+                                text-white font-semibold text-lg cursor-pointer
+                                shadow-lg 
+                                border border-white/10
+                                transition-all duration-300
+                                hover:bg-purple-700 hover:scale-105 hover:border-cyan-400"
+
                     >
-                      {user.name[0]}
-                    </button>
-                  </div>
+                      <span className="select-none text-xl font-base mb-0.5  text-white">
+                        {/* Example of using "map" on an array of users */}
+                        <>
+                          {Array.isArray(user) ? (
+                            user.map((u, idx) => (
+                              <span key={idx}>
+                                {u?.username?.[0]?.toUpperCase() || "?"}
+                              </span>
+                            ))
+                          ) : (
+                            <>{user?.username?.[0]?.toUpperCase() || "?"}</>
+                          )}
+                        </>
+                        {/* {user?.username?.[0]?.toUpperCase() || "?"} */}
+                      </span>
+                    </div>
+
 
                   {/* Profile Banner Dropdown */}
                   {showProfilebanner && (
-                    <div className="absolute right-0  mt-3 z-50">
-                      <Profilebanner user={user} />
+                    <div className="absolute right-0 mt-3 z-50">
+                      <Profilebanner user={user} logout={logout} />
                     </div>
                   )}
                 </div>
