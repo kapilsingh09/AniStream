@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AnimeContext from './context/AnimeContext.jsx'
 import ApiContextProvider from './context/ApiContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
-
+import App1 from './App.example.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
 

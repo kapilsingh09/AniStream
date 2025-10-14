@@ -99,64 +99,41 @@ const Homepage = () => {
         sectionName="all-time-top"
       />
 
-      {/* 4. Seasonal Highlights */}
-      <SectionComponentKitsu
+      {/* 4. Seasonal Highlights alreday on the   next */}
+      {/* <SectionComponentKitsu
         title="🌸 Seasonal Highlights"
         fetchFunction={fetchSeasonalAnime}
-      />
+      /> */}
 
 <section className='flex items-center justify-center m-2 '>
         <FullAnimeBanner />
 
 </section>
-<div className="flex  gap-6 w-full min-h-screen p-6  text-white justify-center">
-  {/* 🎯 Top Rated on Kitsu */}
-  {/* <TopAnimeBox
-    title="🔥 Top Rated on Kitsu"
-    url="https://kitsu.io/api/edge/anime?sort=-averageRating&page[limit]=6"
-    className="text-white"
-  /> */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-1 w-full h-full min-h-screen p-6 bg-zinc-950 text-white">
+      <TopAnimeBox
+        title="Spring 2024 Most Popular"
+        url="https://kitsu.io/api/edge/anime?sort=-userCount&filter[season]=spring&filter[year]=2024&page[limit]=6"
+      />
 
-  {/* 🌍 Trending Now on Kitsu */}
-  <TopAnimeBox
-    title="🌟 Trending on Kitsu"
-    url="https://kitsu.io/api/edge/trending/anime?page[limit]=6"
-    className="text-white"
-  />
+      <TopAnimeBox
+        title="Trending Right Now "
+        url="https://api.jikan.moe/v4/top/anime?sfw&limit=6"
+        limit={6}
+      />
 
-  {/* 📈 Most Popular (Kitsu) */}
+      <TopAnimeBox
+        title="Top Rated ONA"
+        url="https://api.jikan.moe/v4/top/anime?type=ona&limit=6"
+        limit={6}
+      />
 
-  {/* 🏆 Top Rated (Jikan) */}
-
-
-  {/* 📺 Currently Airing (Jikan) */}
-  <TopAnimeBox
-    title="📡 Airing Hits (Jikan)"
-    url="https://api.jikan.moe/v4/top/anime?filter=airing&limit=6"
-    className="text-white"
-  />
-
-  {/* 🎬 Upcoming Anime (Jikan) */}
-  <TopAnimeBox
-    title="🕒 Upcoming Anime (Jikan)"
-    url="https://api.jikan.moe/v4/top/anime?filter=upcoming&limit=6"
-    className="text-white"
-  />
-
-  {/* 🎞 Top Anime Movies (Jikan) */}
-  {/* <TopAnimeBox
-    title="🎥 Top Anime Movies (Jikan)"
-    url="https://api.jikan.moe/v4/top/anime?type=movie&limit=6"
-    className="text-white"
-  /> */}
-
-  {/* 🏁 Recently Finished (Kitsu) */}
-  {/* <TopAnimeBox
-    title="🏁 Recently Finished (Kitsu)"
-    url="https://kitsu.io/api/edge/anime?sort=-endDate&filter[status]=finished&page[limit]=6"
-    className="text-white"
-  /> */}
-</div>
+      <TopAnimeBox
+        title="Upcoming Anime "
+        url="https://api.jikan.moe/v4/seasons/upcoming?limit=6"
+        limit={6}
+      />
+    </div>
+    
 
       {/* 5. Featured Banner */}
       {/* <AnimeBanner /> */}
@@ -175,25 +152,25 @@ const Homepage = () => {
       /> */}
 
       {/* 8. Romance Anime Grid + Genres */}
-      {/* <div className="flex gap-3">
+      <div className="flex gap-3">
         <div className="flex-1">
           <AnimeGrid
             fetchFn={fetchRomanceAnimeForAnimeGrid}
             queryKey={["romance-anime"]}
-            title="Romance Anime💖"
+            title="Romance Anime"
           />
         </div>
         <div className="w-[25%] mr-7 mt-6">
           <div className="max-w-8xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-white text-4xl font-bold">
+            <div className="flex items-center justify-between mb-8 mt-10">
+              <h1 className="text-white text-4xl font-bold hidden">
                 Genres<sub>-searches</sub>
               </h1>
             </div>
           </div>
           <Genres />
         </div>
-      </div> */}
+      </div>
 
       {/* 9. Full Anime Banner */}
       {/* <FullAnimeBanner /> */}

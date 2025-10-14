@@ -49,7 +49,7 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'w-full bg-white/20 backdrop-blur-md border-b-2 border-white/20 text-white shadow-lg bg-clip-padding bg-opacity-70 backdrop-saturate-150'
+            ? 'w-full bg-white/20 backdrop-blur-md  border-white/20 text-white shadow-lg bg-clip-padding bg-opacity-70 backdrop-saturate-150'
             : 'w-full bg-white/20 backdrop-blur-2xl border-b-2 border-white/10 text-white shadow-2xl bg-clip-padding bg-opacity-70 backdrop-saturate-200'
         }`}
       >
@@ -57,15 +57,18 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-15">
             {/* Brand Logo */}
             <Link
-              to="/"
-              className="flex items-center text-xl font-bold bg-white bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
-            >
-              <img
-                className="h-10 w-10 rounded-xl"
-                src="/AnimeXlogo.jpg"
-                alt="Anime-X"
-              />
-            </Link>
+  to="/"
+  className="flex items-center text-2xl font-bold hover:scale-105 transition-transform duration-300"
+>
+  <img
+    className="h-10 w-10 rounded-md mr-3" // increased width from w-10 → w-14
+    src="/Neco-animelogo.png"
+    alt="Neco-Me"
+  />
+  <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+    neco-me
+  </span>
+</Link>
 
             {/* Navigation Links */}
             <div className="flex items-center gap-6 text-sm font-medium">

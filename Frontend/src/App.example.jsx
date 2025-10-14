@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+// import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -48,7 +48,7 @@ const LoadingSpinner = () => (
 // Main App component
 const App = () => {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    // <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
         <div className="min-h-screen bg-black text-white">
           <Suspense fallback={<LoadingSpinner />}>
@@ -124,7 +124,7 @@ const App = () => {
           <ReactQueryDevtools initialIsOpen={false} />
         )}
       </QueryClientProvider>
-    </ErrorBoundary>
+    // </ErrorBoundary>
   );
 };
 

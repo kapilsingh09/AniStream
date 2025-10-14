@@ -1,8 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { Star, Calendar, Play, Users } from "lucide-react";
-import Genres from "../utils/Geners";
+  import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { Star, Calendar, Play, Users } from "lucide-react";
 
 const AnimeGrid = ({
   fetchFn,
@@ -13,10 +11,6 @@ const AnimeGrid = ({
   staleTime = 1000 * 60 * 10,
   cacheTime = 1000 * 60 * 30,
 }) => {
-  const [hoveredAnime, setHoveredAnime] = useState(null);
-  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
-  const hoverTimerRef = useRef(null);
-
   const navigate = useNavigate();
 
   const genreColors = [
@@ -34,65 +28,31 @@ const AnimeGrid = ({
     cacheTime,
   });
 
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimerRef.current) {
-        clearTimeout(hoverTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleMouseEnter = (anime, e) => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current);
-      hoverTimerRef.current = null;
+  function getStatusColor(status) {
+    switch (status?.toLowerCase()) {
+      case "finished airing":
+      case "finished":
+      case "completed":
+        return "bg-green-500/20 text-green-400";
+      case "currently airing":
+      case "ongoing":
+      case "publishing":
+        return "bg-blue-500/20 text-blue-400";
+      case "not yet aired":
+      case "tba":
+      case "upcoming":
+        return "bg-yellow-500/20 text-yellow-400";
+      case "hiatus":
+        return "bg-orange-500/20 text-orange-400";
+      case "cancelled":
+        return "bg-red-500/20 text-red-400";
+      default:
+        return "bg-gray-500/20 text-gray-400";
     }
-    setHoveredAnime(anime);
-    setHoverPosition({ x: e.clientX + 20, y: e.clientY - 20 });
-  };
-
-  const handleMouseMove = (e) => {
-    setHoverPosition({ x: e.clientX + 20, y: e.clientY - 20 });
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current);
-    }
-    hoverTimerRef.current = setTimeout(() => {
-      setHoveredAnime(null);
-    }, 200); // Reduce delay to 200ms for better UX
-  };
- function getStatusColor(status) {
-  switch (status?.toLowerCase()) {
-    case "finished airing":
-    case "finished":
-    case "completed":
-      return "bg-green-500/20 text-green-400";
-
-    case "currently airing":
-    case "ongoing":
-    case "publishing":
-      return "bg-blue-500/20 text-blue-400";
-
-    case "not yet aired":
-    case "tba":
-    case "upcoming":
-      return "bg-yellow-500/20 text-yellow-400";
-
-    case "hiatus":
-      return "bg-orange-500/20 text-orange-400";
-
-    case "cancelled":
-      return "bg-red-500/20 text-red-400";
-
-    default:
-      return "bg-gray-500/20 text-gray-400";
   }
-}
+
   const renderSkeletonCard = () => (
-    <div className="animate-pulse">
+    <div>
       <div className="bg-white/10 rounded-xl overflow-hidden">
         <div className="h-56 bg-white/20"></div>
         <div className="p-3">
@@ -112,25 +72,13 @@ const AnimeGrid = ({
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white">{title}</h1>
-         
         </div>
-
-        <div className="flex gap-6">
-          <div className="flex-1">
-            <div
-              className="
-                grid gap-6
-                grid-cols-1
-                sm:grid-cols-2
-                md:grid-cols-3
-                lg:grid-cols-4
-                2xl:grid-cols-6
-
-              "
-            >
-              {loading || animeData.length === 0
-                ? [...Array(skeletonCount)].slice(0,8).map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
-
+        {/* NO flex, NO responsive grid */}
+        <div>
+          <div>
+            <div className="grid gap-4 grid-cols-4">
+              {(loading || animeData.length === 0
+                ? [...Array(skeletonCount)].slice(0, 8).map((_, i) => <div key={i}>{renderSkeletonCard()}</div>)
                 : animeData.map((anime, i) => {
                     const animeTitle =
                       anime.title_english ||
@@ -143,7 +91,6 @@ const AnimeGrid = ({
                       anime.images?.jpg?.image_url ||
                       anime.attributes?.coverImage?.original ||
                       anime.attributes?.posterImage?.original;
-                    // Fix: .toFixed(1) only if value is a number
                     const score =
                       typeof anime.score === "number"
                         ? anime.score.toFixed(1)
@@ -162,7 +109,6 @@ const AnimeGrid = ({
                     const status = anime.status || anime.attributes?.status || "Unknown";
                     const members = anime.members || anime.attributes?.userCount || 0;
                     const animeId = anime.mal_id || anime.id;
-                    // Fix: genres array and keys
                     let genres = [];
                     if (Array.isArray(anime.genres) && anime.genres.length > 0) {
                       genres = anime.genres.map((g, idx) => ({
@@ -178,27 +124,22 @@ const AnimeGrid = ({
                         name: cat.attributes?.title || cat.attributes?.name || "Unknown"
                       }));
                     }
-
                     return (
                       <div
                         key={animeId || i}
-                        className="group relative cursor-pointer bg-slate-900 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 hover:border-white/40 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
-                        onMouseEnter={(e) => handleMouseEnter(anime, e)}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseLeave}
+                        className="bg-zinc-900/70 rounded-xl overflow-hidden border border-white/10 transition-all duration-300 cursor-pointer hover:border-white/40"
                         onClick={() => navigate(`/play/${animeId}`)}
                       >
                         <div className="relative overflow-hidden">
                           <img
                             src={image}
                             alt={animeTitle}
-                            className="w-full h-56 object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                            className="w-full h-56 object-cover object-center"
                             loading="lazy"
                             onError={e => { e.target.src = "/fallback.jpg"; }}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           {year && (
-                            <div className="absolute top-2 left-2 bg-gradient-to-l from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded-2xl shadow-md flex items-center gap-1">
+                            <div className="absolute top-2 left-2 bg-zinc-900/70 text-white text-[10px] font-bold px-2 py-1 rounded-2xl shadow-md flex items-center gap-1">
                               # {year}
                             </div>
                           )}
@@ -206,18 +147,11 @@ const AnimeGrid = ({
                             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                             {score}
                           </div>
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="rounded-full p-4 border-4 border-white/30 transform scale-75 px-6 py-6 group-hover:scale-100 transition-transform duration-300">
-                              <Play className="w-7 h-7 text-white fill-white" />
-                            </div>
-                          </div>
                         </div>
-
                         <div className="p-3">
-                          <h3 className="text-white font-medium text-sm mb-1 line-clamp-2 leading-snug group-hover:text-gray-300 transition-colors duration-300">
+                          <h3 className="text-white font-medium text-sm mb-1 line-clamp-2 leading-snug">
                             {animeTitle}
                           </h3>
-
                           {/* Genre Tags */}
                           {genres && genres.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2 mb-1">
@@ -234,7 +168,6 @@ const AnimeGrid = ({
                               })}
                             </div>
                           )}
-
                           <div className="flex items-center justify-between text-[10px] text-white/70 mb-1">
                             <div className="flex items-center gap-1">
                               <Play className="w-3 h-3" />
@@ -249,11 +182,9 @@ const AnimeGrid = ({
                               </span>
                             </div>
                           </div>
-
                           <div className="flex items-center justify-between">
                             <span
-                              className={`text-[10px] px-2 py-0.5 rounded-full ${getStatusColor(status)
-                                }`}
+                              className={`text-[10px] px-2 py-0.5 rounded-full ${getStatusColor(status)}`}
                             >
                               {status}
                             </span>
@@ -265,11 +196,10 @@ const AnimeGrid = ({
                         </div>
                       </div>
                     );
-                  })}
+                }))
+              }
             </div>
           </div>
-
-     
         </div>
       </div>
     </div>

@@ -213,14 +213,14 @@ const ResultPage = () => {
                                 <Play className="w-3 h-3" />
                                 <span>{episodes} eps</span>
                               </div>
-                              <div className="flex items-center gap-1">
+                              {/* <div className="flex items-center gap-1">
                                 <Users className="w-3 h-3" />
                                 <span>
                                   {members > 1000
                                     ? `${Math.round(members / 1000)}k`
                                     : members}
                                 </span>
-                              </div>
+                              </div> */}
                             </div>
 
                             <div className="flex items-center justify-between">
@@ -267,10 +267,10 @@ const ResultPage = () => {
       <button
         key={pageNum}
         onClick={() => handlePageClick(pageNum, idx)}
-        className={`transition-all duration-200 hover:cursor-pointer font-semibold border rounded-full px-4 py-1.5
+        className={`transition-all duration-200 hover:cursor-pointer font-semibold border rounded-full h-10 w-10
           ${
             pageNum === page
-              ? "bg-gradient-to-l from-purple-500 to-pink-500 text-white shadow-lg  border-purple-500/50  box-border border scale-105"
+              ? "bg-white/20 box-border border scale-105"
               : "border-purple-500/50 bg-transparent text-white/70 hover:bg-purple-500/10"
           }
         `}
@@ -289,7 +289,7 @@ const ResultPage = () => {
   <button
     onClick={() => handlePageClick(page + 1)}
     disabled={page === totalPages}
-    className="flex items-center justify-center gap-1 hover:cursor-pointer px-3 py-1 border border-purple-500/50 rounded-full 
+    className="flex items-center justify-center gap-1 hover:cursor-pointer p-1 h-10 w-10 border border-purple-500/50 rounded-full 
                text-white/70 bg-transparent hover:bg-purple-500/10 
                transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
   >
