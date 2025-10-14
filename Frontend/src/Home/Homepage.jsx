@@ -109,7 +109,8 @@ const Homepage = () => {
         <FullAnimeBanner />
 
 </section>
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-1 w-full h-full min-h-screen p-6 bg-zinc-950 text-white">
+{/* bg-zinc-950 */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-1 w-full h-full min-h-screen p-6  text-white">
       <TopAnimeBox
         title="Spring 2024 Most Popular"
         url="https://kitsu.io/api/edge/anime?sort=-userCount&filter[season]=spring&filter[year]=2024&page[limit]=6"

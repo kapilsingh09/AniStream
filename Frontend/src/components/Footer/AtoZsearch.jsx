@@ -34,10 +34,11 @@ const AtoZSearch = ({ onResults }) => {
             onClick={() => handleAlphabet(letter)}
             className={`h-7 w-7 sm:h-8 sm:w-8 md:h-9 hover:cursor-pointer md:w-9 
                         rounded-md sm:rounded-[9px] 
+                        
                         font-semibold text-xs sm:text-sm md:text-base
                         transition-colors duration-200 
                         shadow-sm focus:outline-none focus:ring-2 
-                        bg-purple-400/40 hover:bg-purple-700 
+                      bg-white/20 hover:bg-purple-700 
                         text-white focus:ring-purple-400`}
           >
             {letter}
