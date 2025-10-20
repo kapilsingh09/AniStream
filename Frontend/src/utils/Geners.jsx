@@ -55,7 +55,7 @@ const GenreList = () => {
       <h2
   className="text-3xl font-semibold mb-4 tracking-wide 
   bg-[#ffbade]
-  bg-clip-text text-transparent select-none"
+  bg-clip-text text-transparent select-none border-b"
 >
   Browse Genres
 </h2>

@@ -13,6 +13,8 @@ router.get("/", (req, res, next) => {
     res.json(available_data);
 });
 
+router.post("/watchlist",watchlistController)
+    
 // router.get('/api/kitsu-anime', (req, res) => fetchAndSendKitsuAnime(res));
 
 export default router;

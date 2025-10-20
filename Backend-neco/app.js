@@ -27,9 +27,11 @@ app.use('/videos', express.static(path.join(__dirname, '..', 'videos')));
 app.use('/videos', express.static('videos'));
      
 app.use("/api/auth", authRoutes);
+
 app.use("/api/available_data", availableDataRoutes);
 app.use("/api/anime", animeRoutes);
 app.use("/api/unified", unifiedAnimeRoutes);
+// app.use("/")
 
 
 
