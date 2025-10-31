@@ -23,9 +23,9 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900 text-white text-2xl">
+    <div className="flex flex-col min-h-screen  text-white text-2xl">
       <Navbar />
-      <main className="flex-1 pt-13 relative">
+      <main className="flex-1 relative">
         <Outlet />
 
         {/* Floating "Up" Button */}
@@ -34,15 +34,17 @@ const Layout = () => {
             onClick={handleUp}
             className="
               fixed bottom-8 right-8 z-50
-              bg-white text-black
-               rounded-full p-3 shadow-lg
+              bg-white text-black font-semibold 
+               rounded-full p-3 shadow-lg 
               hover:shadow-xl hover:scale-110 transition-all duration-300
               border border-white/20
               "
               // animate-bounce
             aria-label="Scroll to top"
           >
-            <ArrowUp size={24} />
+
+            <ArrowUp size={24}/>
+          
           </button>
         )}
       </main>

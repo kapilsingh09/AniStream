@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Home, Search, Compass, User } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import Searchbar from './Searchbar';
-import { useAuth } from '../../context/AuthContext';
-import Profilebanner from '../User/Profilebanner';
+import React, { useEffect, useState } from "react";
+import { Home, Search, Compass, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import Searchbar from "./Searchbar";
+import { useAuth } from "../../context/AuthContext";
+import Profilebanner from "../User/Profilebanner";
 
-// NavLink with color scheme and active detection
-const NavLink = ({ to, children, className, noSlider }) => {
+// Fixed: Remove erroneous scrolled usage; make NavLink a simple link, styling passed as className prop
+const NavLink = ({ to, children, className = "", noSlider }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
 
   return (
     <Link
       to={to}
-      className={`${className} ${
-        isActive
-          ? 'text-cyan-400'
-          : 'text-white/80 hover:text-cyan-200 hover:bg-cyan-700/20'
-      } relative`}
+      className={`
+        ${className} 
+        ${
+          isActive
+            ? "text-white bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-purple-500 shadow-md font-semibold"
+            : "text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:via-fuchsia-500/10 hover:to-purple-500/10 hover:shadow-lg hover:border-cyan-400/20"
+        } 
+        relative transition-all duration-300 rounded-md px-3 py-1.5
+      `}
     >
       {children}
     </Link>
@@ -32,13 +36,9 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 90);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleLogout = () => {
-    logout();
-  };
 
   const handleSearchItemClick = () => {
     setIsSearchOpen(false);
@@ -47,91 +47,84 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'w-full bg-white/20 backdrop-blur-md  border-white/20 text-white shadow-lg bg-clip-padding bg-opacity-70 backdrop-saturate-150'
-            : 'w-full bg-white/20 backdrop-blur-2xl border-b-2 border-white/10 text-white shadow-2xl bg-clip-padding bg-opacity-70 backdrop-saturate-200'
+            ? "bg-white/20 backdrop-blur-md border-white/20 text-white shadow-lg"
+            : "bg-gradient-to-r from-black  via-[#0f0e0ed4] to-transparent    text-white  shadow-2xl"
         }`}
+        style={{ fontFamily: 'Poppins, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9">
-          <div className="flex items-center justify-between h-15">
-            {/* Brand Logo */}
+        <div className="max-w-7xl mx-auto sm:px-4 lg:px-6 px-9">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {/* Logo */}
             <Link
-  to="/"
-  className="flex items-center text-2xl font-bold hover:scale-105 transition-transform duration-300"
->
-  <img
-    className="h-10 w-10 rounded-md mr-3" // increased width from w-10 → w-14
-    src="/Neco-animelogo.png"
-    alt="Neco-Me"
-  />
-  <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-    neco-me
-  </span>
-</Link>
+              to="/"
+              className="flex items-center font-bold transition-transform duration-300 hover:scale-105"
+              style={{
+                fontFamily:
+                  'Poppins, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+              }}
+            >
+              <img
+                src="/Neco-animelogo.png"
+                alt="Neco-Me"
+                className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-md mr-2 sm:mr-3"
+              />
+              <span className="text-lg text-[16px] sm:text-xl md:text-2xl ">
+                neco-me
+              </span>
+            </Link>
 
-            {/* Navigation Links */}
-            <div className="flex items-center gap-6 text-sm font-medium">
+            {/* Nav Links */}
+            <div
+              className="
+                flex items-center justify-center
+                gap-2 xs:gap-3 sm:gap-5 md:gap-6
+                text-[11px] xs:text-xs sm:text-sm md:text-base font-medium
+              "
+            >
               <NavLink
                 to="/"
-                className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md transition-all duration-300"
               >
-                <Home size={16} />
-                Home
+                <Home size={14} className="hidden sm:inline-block sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                <span>Home</span>
               </NavLink>
 
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="relative px-4 py-2 rounded-md transition-all cursor-pointer duration-300 flex items-center gap-2 text-white/80 hover:text-cyan-200 hover:bg-cyan-700/20"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md transition-all duration-300 text-white/80 hover:text-cyan-200 hover:bg-cyan-700/20"
+                type="button"
               >
-                <Search size={16} />
-                Search
+                <Search size={14} className="hidden sm:inline-block sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                <span>Search</span>
               </button>
 
               <NavLink
                 to="/explore"
-                className="relative px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md transition-all duration-300"
               >
-                <Compass size={16} />
-                Explore
+                <Compass size={14} className="hidden sm:inline-block sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                <span>Explore</span>
               </NavLink>
             </div>
 
-            {/* Auth Section */}
-            <div className="flex items-center gap-4">
+            {/* User / Auth Section */}
+            <div className="flex items-center gap-2 sm:gap-4">
               {user ? (
-                <div className="relative ">
-                  {/* Profile Icon */}
+                <div className="relative">
                   <div
-                      onClick={() => setShowProfilebanner(!showProfilebanner)}
-                      className="h-11 w-11 flex items-center justify-center 
-                                rounded-full bg-purple-900
-                                text-white font-semibold text-lg cursor-pointer
-                                shadow-lg 
-                                border border-white/10
-                                transition-all duration-300
-                                hover:bg-purple-700 hover:scale-105 hover:border-cyan-400"
-
-                    >
-                      <span className="select-none text-xl font-base mb-0.5  text-white">
-                        {/* Example of using "map" on an array of users */}
-                        <>
-                          {Array.isArray(user) ? (
-                            user.map((u, idx) => (
-                              <span key={idx}>
-                                {u?.username?.[0]?.toUpperCase() || "?"}
-                              </span>
-                            ))
-                          ) : (
-                            <>{user?.username?.[0]?.toUpperCase() || "?"}</>
-                          )}
-                        </>
-                        {/* {user?.username?.[0]?.toUpperCase() || "?"} */}
-                      </span>
-                    </div>
-
-
-                  {/* Profile Banner Dropdown */}
+                    onClick={() => setShowProfilebanner(!showProfilebanner)}
+                    className="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-purple-900 text-white font-semibold text-sm sm:text-lg cursor-pointer shadow-lg border border-white/10 transition-all duration-300 hover:bg-purple-700 hover:scale-105 hover:border-cyan-400"
+                  >
+                    {Array.isArray(user) ? (
+                      user.map((u, i) => (
+                        <span key={i}>{u?.username?.[0]?.toUpperCase() || "?"}</span>
+                      ))
+                    ) : (
+                      <>{user?.username?.[0]?.toUpperCase() || "?"}</>
+                    )}
+                  </div>
                   {showProfilebanner && (
                     <div className="absolute right-0 mt-3 z-50">
                       <Profilebanner user={user} logout={logout} />
@@ -141,10 +134,10 @@ export default function Navbar() {
               ) : (
                 <NavLink
                   to="/login"
-                  className="px-4 py-2 rounded-full border border-cyan-400/30 hover:border-cyan-400 hover:bg-gradient-to-r hover:from-cyan-700/20 hover:to-blue-700/20 transition-all duration-300 flex items-center gap-2 text-sm text-white/80 hover:text-white"
+                  className="px-3 sm:px-3 md:px-4 py-2 sm:py-2 rounded-full border border-cyan-400/30 hover:border-cyan-400 hover:bg-gradient-to-r hover:from-cyan-700/20 hover:to-blue-700/20 transition-all duration-300 flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-white/80 hover:text-white"
                   noSlider={true}
                 >
-                  <User size={16} />
+                  <User size={14} className="sm:w-4 hidden sm:inline-block sm:h-4 md:w-5 md:h-5" />
                   Login
                 </NavLink>
               )}
