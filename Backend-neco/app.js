@@ -7,6 +7,7 @@ import path from 'path'
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.routes.js';
 import availableDataRoutes from './routes/available.routes.js'
+import watchlistRoutes from './routes/watchlist.routes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/available_data", availableDataRoutes);
 app.use("/api/anime", animeRoutes);
 app.use("/api/unified", unifiedAnimeRoutes);
+app.use("/api/watchlist", watchlistRoutes);
 // app.use("/")
 
 
