@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, Heart, Share2, Eye, Award, Globe, List, ChevronRight, Film, ChevronDown, Info } from 'lucide-react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import EploaderJikhan from '../utils/EploaderJikhan';
+import WatchlistButton from '../components/WatchlistButton';
 import { useQuery } from '@tanstack/react-query';
 import GenreList from '../utils/Geners';
 import AnimeGrid from '../Home/AnimeGrid';
@@ -237,13 +238,16 @@ const JikanAnimeCard = ({ onNavigate }) => {
                                         Watch Now
                                     </button>
                                     <div className="grid grid-cols-4 gap-3">
-                                        <button
-                                            onClick={() => setIsBookmarked(!isBookmarked)}
-                                            className={`${isBookmarked ? 'bg-amber-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
-                                        >
-                                            <Bookmark className="h-4 w-4" fill={isBookmarked ? "white" : "none"} />
-                                            <span className="text-xs font-medium">Save</span>
-                                        </button>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <WatchlistButton
+                                                animeId={String(anime?.mal_id)}
+                                                title={anime?.title}
+                                                image={getPosterImage()}
+                                                variant="icon-only"
+                                                className="w-full py-3 px-3 rounded-xl"
+                                            />
+                                            <span className="text-xs font-medium text-gray-300">Watchlist</span>
+                                        </div>
                                         <button
                                             onClick={() => setIsFavorited(!isFavorited)}
                                             className={`${isFavorited ? 'bg-pink-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}

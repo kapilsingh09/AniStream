@@ -3,6 +3,7 @@ import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, ExternalLi
 import { useParams, useNavigate, useAsyncError } from 'react-router-dom';
 import Eploader from '../utils/Eploader';
 import { number } from 'framer-motion';
+import WatchlistButton from '../components/WatchlistButton';
 
 const KitsuAnimeCard = ({ onNavigate }) => {
     const { id } = useParams();
@@ -289,13 +290,16 @@ const KitsuAnimeCard = ({ onNavigate }) => {
 
                                     {/* Secondary Actions */}
                                     <div className="grid grid-cols-4 gap-3">
-                                        <button
-                                            onClick={() => setIsBookmarked(!isBookmarked)}
-                                            className={`${isBookmarked ? 'bg-amber-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
-                                        >
-                                            <Bookmark className="h-4 w-4" fill={isBookmarked ? "white" : "none"} />
-                                            <span className="text-xs font-medium">Save</span>
-                                        </button>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <WatchlistButton
+                                                animeId={anime?.id}
+                                                title={attributes?.canonicalTitle}
+                                                image={getPosterImage()}
+                                                variant="icon-only"
+                                                className="w-full py-3 px-3 rounded-xl"
+                                            />
+                                            <span className="text-xs font-medium text-gray-300">Watchlist</span>
+                                        </div>
 
                                         <button
                                             onClick={() => setIsFavorited(!isFavorited)}

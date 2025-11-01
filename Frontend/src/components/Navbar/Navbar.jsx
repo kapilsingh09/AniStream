@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Home, Search, Compass, User } from "lucide-react";
+import { Home, Search, Compass, User, Bookmark } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import Searchbar from "./Searchbar";
 import { useAuth } from "../../context/AuthContext";
@@ -107,6 +107,16 @@ export default function Navbar() {
                 <Compass size={14} className="hidden sm:inline-block sm:w-4 sm:h-4 md:w-5 md:h-5" />
                 <span>Explore</span>
               </NavLink>
+
+              {user && (
+                <NavLink
+                  to="/watchlist"
+                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md transition-all duration-300"
+                >
+                  <Bookmark size={14} className="hidden sm:inline-block sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                  <span>Watchlist</span>
+                </NavLink>
+              )}
             </div>
 
             {/* User / Auth Section */}
