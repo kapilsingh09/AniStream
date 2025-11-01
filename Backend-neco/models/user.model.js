@@ -25,6 +25,24 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     //avatar here
+    watchlist: [{
+        animeId: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        image: {
+            type: String,
+            required: true
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
 
     createdAt: { type: Date, default: Date.now },
 },{timestamps:true})

@@ -17,8 +17,8 @@ const NavLink = ({ to, children, className = "", noSlider }) => {
         ${className} 
         ${
           isActive
-            ? "text-white bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-purple-500 shadow-md font-semibold"
-            : "text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:via-fuchsia-500/10 hover:to-purple-500/10 hover:shadow-lg hover:border-cyan-400/20"
+            ? "text-white font-semibold"
+            : "text-gray-300 hover:text-white"
         } 
         relative transition-all duration-300 rounded-md px-3 py-1.5
       `}
@@ -50,7 +50,7 @@ export default function Navbar() {
         className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
           scrolled
             ? "bg-white/20 backdrop-blur-md border-white/20 text-white shadow-lg"
-            : "bg-gradient-to-r from-black  via-[#0f0e0ed4] to-transparent    text-white  shadow-2xl"
+            : "bg-gradient-to-r from-black  via-[#0f0e0ed4] to-black border-b border-black   text-white  shadow-2xl"
         }`}
         style={{ fontFamily: 'Poppins, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' }}
       >

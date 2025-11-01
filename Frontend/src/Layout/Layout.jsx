@@ -25,8 +25,11 @@ const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen  text-white text-2xl">
       <Navbar />
-      <main className="flex-1 relative">
+      <main className="flex-1 relative mt-16" >
+        
+      {/* tyle={{ fontFamily: 'Poppins, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' }} */}
         <Outlet />
+
 
         {/* Floating "Up" Button */}
         {scrolled && (

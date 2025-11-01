@@ -11,10 +11,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 const API_ENDPOINTS = {
   topRated:
-  'https://kitsu.io/api/edge/trending/anime?limit=10&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
+  'https://kitsu.io/api/edge/anime?sort=-updatedAt&page[limit]=12&fields[anime]=titles,synopsis,coverImage,posterImage,averageRating,status,startDate,endDate,episodeCount,ageRating,userCount,favoritesCount,popularityRank',
 };
 
 async function fetchAnimeTopRated() {
@@ -146,7 +147,7 @@ export default function Slider() {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
   const currentCategory = 'topRated';
-
+  const navigate = useNavigate();
   // TanStack Query for fetching anime, refetch every 24 hours (24*60*60*1000 ms)
   const {
     data: slides = [],
@@ -338,6 +339,18 @@ export default function Slider() {
     tap: { scale: 0.95 },
   };
 
+  const handlewatchnow = () => {
+    console.log('watch now');
+    navigate(`/kitsu/${slides[current].id}`);
+  }
+
+  const handlemoreinfo = () => {
+    console.log('more info');
+    navigate(`/kitsu/${slides[current].id}`);
+  }
+
+  
+
   if (loading) {
     // Show skeleton loader
     return <SliderSkeleton />;
@@ -466,7 +479,7 @@ export default function Slider() {
 
               {/* Description */}
               <motion.p
-                className="text-gray-200 text-[3vw]  mt-1 sm:text-[1.5vw] md:text-[1vw] leading-relaxed max-w-md sm:max-w-2xl md:max-w-3xl line-clamp-3"
+                className="text-gray-200 text-[2vw] sm:line-clamp-none  mt-1 sm:text-[1vw] md:text-[1.2vw] leading-relaxed max-w-md sm:max-w-2xl md:max-w-3xl line-clamp-3"
                 variants={itemVariants}
               >
                 {slides[current].description}
@@ -493,6 +506,7 @@ export default function Slider() {
             whileHover="hover"
             whileTap="tap"
             style={{ minWidth: '120px' }}
+            onClick={handlewatchnow}
           >
             <PlayCircle  className="w-5 h-5 sm:w-6  sm:h-6 " />
             <span className="hidden xs:inline">Watch Now</span>
@@ -512,6 +526,7 @@ export default function Slider() {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
+            onClick={handlemoreinfo}
           >
             <span className="hidden xs:inline ml-1">More Info</span>
             <span className="inline xs:hidden ml-2">Details  </span>

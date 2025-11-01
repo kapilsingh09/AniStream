@@ -39,6 +39,7 @@ const App = () => {
             <Route path="/play/:id" element={<JikhanAnimeCard />} />
             <Route path="/find" element={<JikhanAnimeCard />} />
             <Route path="/kitsu/:id" element={<KitsuAnimeCard />} />
+            {/* ////just add recently added anime page here */}
             {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
             <Route path="/genres" element={<ResultPage />} />
 
