@@ -3,134 +3,130 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 
-// Add anime to watchlist
+// Add an anime to user's watchlist
 export const addToWatchlist = asyncHandler(async (req, res) => {
-    const { animeId, title, image } = req.body;
-    const userId = req.user._id;
+    const { animeId, title, image } = req.body; // get anime info from request
+    const userId = req.user._id; // get logged-in user's id
 
-    // Validate required fields
+    // Check if all required info is provided
     if (!animeId || !title || !image) {
         throw new ApiError(400, "Anime ID, title, and image are required");
     }
 
-    // Find user
+    // Find the user in the database
     const user = await User.findById(userId);
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
-    // Check if anime is already in watchlist
-    const existingAnime = user.watchlist.find(
-        (item) => item.animeId === animeId
-    );
-
-    if (existingAnime) {
+    // Check if this anime is already in the user's watchlist
+    const exists = user.watchlist.find((item) => item.animeId === animeId);
+    if (exists) {
         throw new ApiError(400, "Anime is already in your watchlist");
     }
 
-    // Add anime to watchlist
+    // Add new anime to the user's watchlist
     user.watchlist.push({
         animeId,
         title,
         image,
-        addedAt: new Date(),
+        addedAt: new Date(), // store when it was added
     });
 
-    await user.save();
+    await user.save(); // save changes to database
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                { watchlist: user.watchlist },
-                "Anime added to watchlist successfully"
-            )
-        );
+    // Send success response
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { watchlist: user.watchlist },
+            "Anime added to watchlist"
+        )
+    );
 });
 
-// Remove anime from watchlist
+// Remove an anime from user's watchlist
 export const removeFromWatchlist = asyncHandler(async (req, res) => {
-    const { animeId } = req.params;
-    const userId = req.user._id;
+    const { animeId } = req.params; // get anime id from URL
+    const userId = req.user._id; // get user id
 
+    // Check if anime ID is provided
     if (!animeId) {
         throw new ApiError(400, "Anime ID is required");
     }
 
-    // Find user and remove anime from watchlist
+    // Find user in database
     const user = await User.findById(userId);
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
-    const initialLength = user.watchlist.length;
-    user.watchlist = user.watchlist.filter(
-        (item) => item.animeId !== animeId
-    );
+    // Remove anime from watchlist
+    const before = user.watchlist.length;
+    user.watchlist = user.watchlist.filter((item) => item.animeId !== animeId);
 
-    if (user.watchlist.length === initialLength) {
+    // If anime wasn't in watchlist
+    if (user.watchlist.length === before) {
         throw new ApiError(404, "Anime not found in watchlist");
     }
 
-    await user.save();
+    await user.save(); // save updated list
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                { watchlist: user.watchlist },
-                "Anime removed from watchlist successfully"
-            )
-        );
+    // Send success response
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { watchlist: user.watchlist },
+            "Anime removed from watchlist"
+        )
+    );
 });
 
-// Get user's watchlist
+// Get all animes in user's watchlist
 export const getWatchlist = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user._id; // get user id
+    const user = await User.findById(userId).select("watchlist"); // only get watchlist field
 
-    const user = await User.findById(userId).select("watchlist");
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                { watchlist: user.watchlist || [] },
-                "Watchlist retrieved successfully"
-            )
-        );
+    // Send user's watchlist (empty array if none)
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { watchlist: user.watchlist || [] },
+            "Watchlist fetched successfully"
+        )
+    );
 });
 
-// Check if anime is in watchlist
+// Check if a specific anime is in user's watchlist
 export const checkWatchlistStatus = asyncHandler(async (req, res) => {
-    const { animeId } = req.params;
-    const userId = req.user._id;
+    const { animeId } = req.params; // get anime id
+    const userId = req.user._id; // get user id
 
     if (!animeId) {
         throw new ApiError(400, "Anime ID is required");
     }
 
+    // Find user and only get watchlist field
     const user = await User.findById(userId).select("watchlist");
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
+    // Check if anime exists in the list
     const isInWatchlist = user.watchlist.some(
         (item) => item.animeId === animeId
     );
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                { isInWatchlist },
-                "Watchlist status retrieved successfully"
-            )
-        );
+    // Send true/false result
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { isInWatchlist },
+            "Watchlist status fetched"
+        )
+    );
 });

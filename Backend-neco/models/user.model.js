@@ -25,7 +25,29 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     //avatar here
+    
+    // Watchlist: User's saved anime to watch later (similar to Crunchyroll watchlist)
     watchlist: [{
+        animeId: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        image: {
+            type: String,
+            required: true
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+
+    // Favourites: User's favorite anime (liked/hearted anime)
+    favourites: [{
         animeId: {
             type: String,
             required: true

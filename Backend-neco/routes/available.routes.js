@@ -13,7 +13,8 @@ router.get("/", (req, res, next) => {
     res.json(available_data);
 });
 
-router.post("/watchlist",watchlistController)
+// Note: Watchlist routes are now handled in /api/watchlist
+// router.post("/watchlist",watchlistController) // Removed - use /api/watchlist instead
     
 // router.get('/api/kitsu-anime', (req, res) => fetchAndSendKitsuAnime(res));
 
