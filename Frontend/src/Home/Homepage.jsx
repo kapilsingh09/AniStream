@@ -61,6 +61,7 @@ import {
   fetchRomanceAnimeForAnimeGrid,
 } from '../services/JikhanAnimeApi';
 import TopAnimeBox from './TopAnimeBox';
+import WatchlistSection from './WatchlistSection';
 
 // --- HOMEPAGE COMPONENT ORDER SUGGESTION ---
 // 1. Hero/Slider (AnimeSlider)
@@ -92,7 +93,13 @@ const Homepage = () => {
       {/* 2. Avatar/Animation */}
       {/* <AviAnime /> */}
 
-      {/* 3. All-Time Top Anime */}
+      {/* 3. User's Watchlist (if logged in) */}
+      <WatchlistSection 
+        title="📚 Your Watchlist"
+        showIfEmpty={false}
+      />
+
+      {/* 4. All-Time Top Anime */}
       <JikhanAnimeComponent
         title="All-Time Top Anime"
         fetchFunction={FetchTopAnime}

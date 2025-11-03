@@ -3,6 +3,7 @@ import { Play, Bookmark, Star, Calendar, Tv, Users, Clock, ArrowLeft, Heart, Sha
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import EploaderJikhan from '../utils/EploaderJikhan';
 import WatchlistButton from '../components/WatchlistButton';
+import FavouritesButton from '../components/FavouritesButton';
 import { useQuery } from '@tanstack/react-query';
 import GenreList from '../utils/Geners';
 import AnimeGrid from '../Home/AnimeGrid';
@@ -38,8 +39,7 @@ const JikanAnimeCard = ({ onNavigate }) => {
     const keyword = searchres.get("keyword");
     const { id } = useParams();       
     const navigate = useNavigate();
-    const [isBookmarked, setIsBookmarked] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(false);
+    // Removed isBookmarked, isFavorited - now using WatchlistButton and FavouritesButton components
     const [isWatched, setIsWatched] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(true);
     const [isEpOpen, setIsEpOpen] = useState(false);
@@ -248,13 +248,17 @@ const JikanAnimeCard = ({ onNavigate }) => {
                                             />
                                             <span className="text-xs font-medium text-gray-300">Watchlist</span>
                                         </div>
-                                        <button
-                                            onClick={() => setIsFavorited(!isFavorited)}
-                                            className={`${isFavorited ? 'bg-pink-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}
-                                        >
-                                            <Heart className="h-4 w-4" fill={isFavorited ? "white" : "none"} />
-                                            <span className="text-xs font-medium">Love</span>
-                                        </button>
+                                        {/* Favourites Button - Add/remove from favourites */}
+                                        <div className="flex flex-col items-center gap-2">
+                                            <FavouritesButton
+                                                animeId={String(anime?.mal_id)}
+                                                title={anime?.title}
+                                                image={getPosterImage()}
+                                                variant="icon-only"
+                                                className="w-full py-3 px-3 rounded-xl"
+                                            />
+                                            <span className="text-xs font-medium text-gray-300">Favourites</span>
+                                        </div>
                                         <button
                                             onClick={() => setIsWatched(!isWatched)}
                                             className={`${isWatched ? 'bg-emerald-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} py-3 px-3 rounded-xl transition-all duration-300 flex flex-col items-center gap-2 hover:scale-105 shadow-sm`}

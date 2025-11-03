@@ -20,6 +20,7 @@ import {
 import AnimeGrid from "../Home/AnimeGrid";
 import Genres from "../utils/Geners";
 import filters from "../ExplorePage/Filter"
+import WatchlistSection from "../Home/WatchlistSection"
 
 
 
@@ -31,6 +32,12 @@ export default function ExplorePage() {
       <div className="space-x-6 bg-slate-900">
 
         {/* <Community /> */}
+
+        {/* User's Watchlist (if logged in) */}
+        <WatchlistSection 
+          title="📚 Your Watchlist"
+          showIfEmpty={false}
+        />
 
         {/* Trending Anime - Main se  ction */}
         {/* <Filter /> */}

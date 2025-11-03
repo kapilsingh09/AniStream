@@ -47,6 +47,12 @@
   - Added watchlist routes import
   - Registered `/api/watchlist` route
 
+- 🔄 **Anime Routes** (`Backend-neco/routes/anime.routes.js`)
+  - Removed incorrect `watchlistController` import (was causing syntax error)
+
+- 🔄 **Available Routes** (`Backend-neco/routes/available.routes.js`)
+  - Commented out old watchlist route (moved to dedicated watchlist routes)
+
 #### Frontend
 - 🔄 **Main App** (`Frontend/src/main.jsx`)
   - Wrapped app with `WatchlistProvider`
@@ -79,7 +85,8 @@
 - ✅ Empty state with call-to-action
 
 ### 🐛 Bug Fixes
-- N/A (New feature, no existing bugs fixed)
+- ✅ Fixed incorrect `watchlistController` import in `anime.routes.js`
+- ✅ Removed old watchlist route from `available.routes.js` (duplicate route)
 
 ### 📚 Documentation
 - ✅ Created `WATCHLIST_FEATURE.md` with complete documentation
@@ -105,14 +112,16 @@
 5. `Frontend/src/pages/MyWatchlist.jsx`
 6. `WATCHLIST_FEATURE.md` (this documentation)
 
-### Modified Files (7)
+### Modified Files (9)
 1. `Backend-neco/models/user.model.js`
 2. `Backend-neco/app.js`
-3. `Frontend/src/main.jsx`
-4. `Frontend/src/App.jsx`
-5. `Frontend/src/routes/KitsuAnimeCard.jsx`
-6. `Frontend/src/routes/JikhanAnimeCard.jsx`
-7. `Frontend/src/components/Navbar/Navbar.jsx`
+3. `Backend-neco/routes/anime.routes.js` (fixed import error)
+4. `Backend-neco/routes/available.routes.js` (removed duplicate route)
+5. `Frontend/src/main.jsx`
+6. `Frontend/src/App.jsx`
+7. `Frontend/src/routes/KitsuAnimeCard.jsx`
+8. `Frontend/src/routes/JikhanAnimeCard.jsx`
+9. `Frontend/src/components/Navbar/Navbar.jsx`
 
 ---
 

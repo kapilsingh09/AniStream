@@ -19,6 +19,8 @@ import Player from './player/Player';
 // import { Pizza } from 'lucide-react'; // Not used
 import ResultPage from './pages/ResultPage';
 import MyWatchlist from './pages/MyWatchlist';
+import MyFavourites from './pages/MyFavourites';
+import Profile from './pages/Profile';
 
 const rizz = new QueryClient();
 
@@ -43,7 +45,11 @@ const App = () => {
             {/* ////just add recently added anime page here */}
             {/* To visit this route, go to: http://localhost:3000/genres/your-id-here */}
             <Route path="/genres" element={<ResultPage />} />
+            
+            {/* User Collection Pages */}
             <Route path="/watchlist" element={<MyWatchlist />} />
+            <Route path="/favourites" element={<MyFavourites />} />
+            <Route path="/profile" element={<Profile />} />
 
             <Route path="/watch/:id" element={<Player animeName="Naruto" />} />
             {/* 404 */}

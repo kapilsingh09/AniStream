@@ -1,0 +1,26 @@
+# Watchlist Feature - Files to track (DO NOT IGNORE)
+# These files are part of the watchlist feature implementation
+
+# Backend
+Backend-neco/controllers/watchlist.controller.js
+Backend-neco/routes/watchlist.routes.js
+
+# Frontend
+Frontend/src/context/WatchlistContext.jsx
+Frontend/src/components/WatchlistButton.jsx
+Frontend/src/pages/MyWatchlist.jsx
+
+# Documentation
+WATCHLIST_FEATURE.md
+CHANGELOG.md
+QUICK_REFERENCE.md
+
+# Modified files (keep track of these)
+Backend-neco/models/user.model.js
+Backend-neco/app.js
+Frontend/src/main.jsx
+Frontend/src/App.jsx
+Frontend/src/routes/KitsuAnimeCard.jsx
+Frontend/src/routes/JikhanAnimeCard.jsx
+Frontend/src/components/Navbar/Navbar.jsx
+

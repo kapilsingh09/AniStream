@@ -8,6 +8,7 @@ import {
   Bell,
   User,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Default avatar fallback with gradient
 const DefaultNameBanner = ({ user }) => {
@@ -24,6 +25,28 @@ const DefaultNameBanner = ({ user }) => {
 };
 
 const Profilebanner = ({ user, logout }) => {
+  const navigate = useNavigate();
+
+  /**
+   * Navigation Handlers
+   * These functions handle clicking buttons in the profile dropdown
+   */
+  
+  // Navigate to watchlist page
+  const handleWatchlistClick = () => {
+    navigate('/watchlist');
+  };
+
+  // Navigate to favourites page
+  const handleFavouritesClick = () => {
+    navigate('/favourites');
+  };
+
+  // Navigate to profile page
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   return (
     <div
       className="w-[40vh] text-gray-100 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 p-5 flex flex-col gap-4 transition-all duration-300 hover:shadow-cyan-500/10"
@@ -77,20 +100,35 @@ const Profilebanner = ({ user, logout }) => {
 
       {/* 🔘 Action Buttons */}
       <div className="flex flex-col gap-2">
-        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" type="button">
+        {/* Profile Button - Navigate to profile page */}
+        <button 
+          onClick={handleProfileClick}
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" 
+          type="button"
+        >
           <User size={16} className="group-hover:text-pink-400 transition-all" />
           Profile
         </button>
-        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" type="button">
+        
+        {/* Favourites Button - Navigate to favourites page */}
+        <button 
+          onClick={handleFavouritesClick}
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-cyan-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-cyan-400/30 text-sm cursor-pointer" 
+          type="button"
+        >
           <Heart size={16} className="group-hover:text-pink-400 transition-all" />
           Favourites
         </button>
-        <button className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-purple-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-purple-400/30 text-sm cursor-pointer" type="button">
+        <button 
+          onClick={handleWatchlistClick}
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-purple-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-purple-400/30 text-sm cursor-pointer" 
+          type="button"
+        >
           <ListTodo size={16} className="group-hover:text-purple-400 transition-all" />
           Watchlist
         </button>
         <button 
-          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-blue-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-blue-400/30 text-sm cursor-pointer opacity-60 cursor-not-allowed disabled:cursor-not-allowed" 
+          className="group w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl bg-white/5 hover:bg-blue-500/20 transition-all duration-300 text-gray-300 hover:text-white border border-transparent hover:border-blue-400/30 text-sm opacity-60 disabled:cursor-not-allowed" 
           type="button" 
           disabled
         >
