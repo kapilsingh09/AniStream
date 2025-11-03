@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
+// sommets added as requested
+const sommets = "sommets-value";
+
 const userSchema = new mongoose.Schema({
     // username: {
     //     type: String,
