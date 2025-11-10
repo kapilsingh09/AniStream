@@ -37,7 +37,15 @@ export const verify_JWT = asyncHandler(async (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
-        // If anything fails (token missing, invalid, expired, user missing), return 401
+        // Check if token is expired specifically
+        if (error.name === 'TokenExpiredError') {
+            throw new ApiError(401, "Access token expired");
+        }
+        // Check if token is invalid
+        if (error.name === 'JsonWebTokenError') {
+            throw new ApiError(401, "Invalid access token");
+        }
+        // For any other error (including user not found), return 401
         throw new ApiError(401, error?.message || "Invalid access token");
     }
 });

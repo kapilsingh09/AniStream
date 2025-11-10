@@ -117,6 +117,65 @@ export const login = asyncHandler(async (req, res) => {
     );
 });
 
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  // Get refresh token from cookies or request body
+  const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request - No refresh token");
+  }
+
+  try {
+    // Verify the refresh token
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET || process.env.ACCESS_TOKEN_SECRET
+    );
+
+    // Find user by ID from decoded token
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    // Check if the refresh token matches the one stored in database
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+
+    // Generate new tokens
+    const { accessToken, refreshToken: newRefreshToken } =
+      await generateAccesTokenAndRefreshTokens(user._id);
+
+    const cookieAge = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: cookieAge,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          {
+            accessToken,
+            refreshToken: newRefreshToken,
+          },
+          "Access token refreshed successfully"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
+});
+
 export const logOutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
@@ -130,7 +189,8 @@ export const logOutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   };
 
   return res

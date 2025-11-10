@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 
-import { login, logOutUser, registerUser } from '../controllers/auth.controller.js'; // Make sure it's a named export
+import { login, logOutUser, registerUser, refreshAccessToken } from '../controllers/auth.controller.js'; // Make sure it's a named export
 import { register } from "../controllers/auth.controller.js";
 import { verify_JWT } from "../middlewares/auth.middlewares.js";
 
@@ -11,6 +11,7 @@ router.post("/register", register);
 router.route(
     '/login'
 ).post(login)
+router.route('/refresh-token').post(refreshAccessToken)
 router.route('/logout').post(verify_JWT,logOutUser)
 //another syntax
 router.route('/registerUser').post(registerUser)
